@@ -1,7 +1,6 @@
 # List of Interesting Publications
 
-## [American Mathematical
-Society](https://www.ams.org/publications/journals/journalsframework/jams)
+## [American Mathematical Society](https://www.ams.org/publications/journals/journalsframework/jams)
 
 ## [Society for Industrial and Applied Mathematics](https://www.siam.org/publications/journals)
 
