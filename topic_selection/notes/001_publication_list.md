@@ -10,9 +10,9 @@
 
 ## De Gruyter
 
-### Journal of Integrative Bioinformatics 1613-4516
+### ++ Journal of Integrative Bioinformatics 1613-4516
 
-### Pure Mathematics and Applications 1788-800X
+### ++ Pure Mathematics and Applications 1788-800X
 
 ### Open Computer Science 2299-1093
 
@@ -36,11 +36,9 @@
 
 ## MSP
 
-### [Analysis & PDE](https://msp.org/apde)
+### ++ [Analysis & PDE](https://msp.org/apde)
 
-### [Communications in Applied Mathematics and Computational Science](https://msp.org/camcos)
-
-### [Journal of Software for Algebra and Geometry](https://msp.org/jsag)
+### ++ [Communications in Applied Mathematics and Computational Science](https://msp.org/camcos)
 
 ## Royal Society
 
