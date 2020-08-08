@@ -8,7 +8,7 @@ classoption:
 - a4paper
 - 11pt
 geometry:
-- margin=1.25in
+- margin=1in
 hyperrefoptions:
 - linktoc=all
 - colorlinks=true
