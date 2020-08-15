@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/usr/bin/pandoc 0*.md -o topic_selection.pdf \
+/usr/bin/pandoc *.md -o topic_selection.pdf \
     --pdf-engine=xelatex \
     -s \
     --toc
