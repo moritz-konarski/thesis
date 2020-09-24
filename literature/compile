@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd ./.build
+latexmk -lualatex ../src/00_main.tex
+cd ..
+cp ./.build/00_main.pdf lit_review.pdf

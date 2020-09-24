@@ -1,0 +1,38 @@
+\documentclass[a4paper, 12pt, reqno]{amsart}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle = {Thesis Literature Review},
+    pdfauthor = {Moritz M. Konarski},
+    breaklinks=true
+}
+\urlstyle{same}
+\renewcommand{\baselinestretch}{1.25}
+
+\usepackage{subfiles}
+
+\numberwithin{equation}{section}
+
+\author{Moritz M. Konarski}
+\title{Thesis Literature Review}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\subfile{../src/fft_ga_abnormality_detection}
+
+
+
+\end{document}
