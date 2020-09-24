@@ -6,5 +6,5 @@ Repository for my bachelor's thesis at AUCA.
 
 - [x] select Topic
 - [ ] literature review
-    - [ ] list of sources
+    - [ ] read provided sources
     - [ ] write summaries
