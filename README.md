@@ -1,8 +1,10 @@
-# Thesis
+# Thesis -- ECG Abnormality Classification
+
 Repository for my bachelor's thesis at AUCA.
 
 ## Todo List
 
-- [ ] Select Topic
-    - [ ] choose area of interest
-    - [ ] make list of publications
+- [x] select Topic
+- [ ] literature review
+    - [ ] list of sources
+    - [ ] write summaries
