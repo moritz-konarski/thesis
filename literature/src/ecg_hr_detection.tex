@@ -1,0 +1,38 @@
+\documentclass[../00_main.tex]{subfiles}
+
+\begin{document}
+
+\section{\textcite{c}}
+
+\fullcite{c}
+
+\subsubsection*{Summary}
+
+\begin{itemize}
+    \item digital signal filtering methods for ECGs
+    \item remove 50Hz network and breathing muscle artifacts
+    \item 3 heart rate detection algorithms
+    \item main problems with ECGs are interfering 50Hz supply signals and
+        muscle artifacts
+    \item for real--time applications, these things should be very efficient
+    \item heart rate is important and can be computed from ECGs among other
+        things
+    \item often, heart rate is detected by measuring the distance between QRS
+        complexes
+    \item neural networks, genetic algorithms, wavelet transforms, filter
+        banks, adaptive threshold, signal spectral analysis, short--term
+        autocorrelation can be used to find it
+    \item the methods here are simpler and real--time suited
+    \item Butterworth filter is used in professional ECG applications
+    \item they remove all the noise from the signal first, using the described
+        methods
+    \item Butterworth filters are used to also detect the R peaks
+    \item with the highlighted R peaks one can detect heart rate
+    \item for heart rate detection, the autocorrelation method can be use
+        because R peaks are quasi--periodical
+    \item other methods find the difference between R peaks, by either using
+        thresholds, or peak detector
+    \item the three algorithms find completely different results
+\end{itemize}
+
+\end{document}

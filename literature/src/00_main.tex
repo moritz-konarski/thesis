@@ -1,6 +1,13 @@
-\documentclass[a4paper, 12pt, reqno]{amsart}
+\documentclass[
+    a4paper,
+    12pt,
+    reqno
+]{article}
 
-\usepackage[margin=1in]{geometry}
+\newcommand{\reptitle}{Thesis Literature Review}
+\newcommand{\repauthor}{Moritz M. Konarski}
+
+\usepackage[margin=0.75in]{geometry}
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -11,19 +18,28 @@
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=cyan,
-    pdftitle = {Thesis Literature Review},
-    pdfauthor = {Moritz M. Konarski},
+    pdftitle={\reptitle},
+    pdfauthor={\repauthor},
     breaklinks=true
 }
 \urlstyle{same}
 \renewcommand{\baselinestretch}{1.25}
+\usepackage{csquotes}
+\usepackage[
+    backend=biber,
+    bibstyle=numeric,
+    citestyle=authoryear
+]{biblatex}
+\addbibresource{../src/bib.bib}
+\usepackage{enumitem}
+\setlist{nolistsep}
 
 \usepackage{subfiles}
 
 \numberwithin{equation}{section}
 
-\author{Moritz M. Konarski}
-\title{Thesis Literature Review}
+\title{\reptitle}
+\author{\repauthor}
 \date{\today}
 
 \begin{document}
@@ -31,8 +47,16 @@
 \maketitle
 \tableofcontents
 
+\newpage
+
 \subfile{../src/fft_ga_abnormality_detection}
 
+\subfile{../src/feature_extraction}
 
+\subfile{../src/ecg_hr_detection}
+
+
+\newpage
+\printbibliography{}
 
 \end{document}

@@ -2,12 +2,9 @@
 
 \begin{document}
 
-\section{Prasad \& Parthasarathy, 2018}
+\section{\textcite{e}}
 
-B. V. P Prasad \& Velusamy Parthasarathy (2018) 
-\textbf{Detection and classification of cardiovascular abnormalities using FFT 
-based multi-objective genetic algorithm}, Biotechnology \& Biotechnological 
-Equipment, 32:1, 183-193; \url{https://doi.org/10.1080/13102818.2017.1389303}
+\fullcite{e}
 
 \subsubsection*{Summary}
 
@@ -21,6 +18,33 @@ Equipment, 32:1, 183-193; \url{https://doi.org/10.1080/13102818.2017.1389303}
     \item accuracy is achieved by taking into account these factors
     \item maintaining a database of previous results makes prediction better
     \item this provides 98.7\% efficiency in abnormality detection
+    \item accurate ECGs are necessary to classify cardiac abnormalities
+    \item ECGs are noisy and thus an algorithm needs to de-noise the signal
+    \item after noise removal, ECG signals must be extracted -- FFT
+    \item fuzzy--based scheme should classify how sick a patient is
+    \item de-noising can be done using a wavelet transform
+    \item contour wavelet transform CTW -- Daubechies algorithm for de-nosing
+    \item goal is to remove all noise
+    \item discrete wavelet transform is not accurate enough, adaptive wavelet
+        decomposition is proposed
+    \item then FFT is used to extract the features
+    \item ANN for classification
+    \item FFT to discretize the signal
+    \item radix--2 FFT, is the simplest way to evaluate the DFT
+    \item heartbeat is calculated as the interval between two R peaks --
+        heartbeat is the number of R peaks in a particular minute
+    \item RR interval can be useful for fining symptoms that include
+        heart--rate variation
+    \item QRS is the main thing that a heart's conditions is measured by
+    \item QRS duration is the time interval between the two peak Q and
+        S signals
+    \item multi-objective genetic algorithm is exactly what it sounds like
+    \item uses MIT--BIH arrhythmia database
+    \item finds good results for their approach
+    \item methods is more efficient than previous results
+    \item IFR: analysing and modelling the sequence of heartbeats using 
+        advanced machine learning methods can be implemented to achieve better 
+        performance
 \end{itemize}
 
 \end{document}
