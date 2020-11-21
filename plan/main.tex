@@ -1,0 +1,81 @@
+\documentclass[a4paper, 12pt, reqno]{article}
+
+\newcommand{\titl}{Senior Thesis Research Project Plan}
+\newcommand{\auth}{Moritz M. Konarski, AMI--117}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[english]{babel}
+\usepackage[pdftitle={\titl}, pdfauthor={\auth}, final]{hyperref}
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage[document]{ragged2e}
+%\usepackage{draftwatermark}
+%\SetWatermarkScale{1}
+%\SetWatermarkColor[gray]{0.9}
+\setlength{\RaggedRightParindent}{0.25in}
+
+\begin{document}
+\begin{center}
+    \begin{large}
+        \textbf{\titl{}}\\
+    \end{large}
+        \vspace{4pt}
+        \auth{}\\
+        \vspace{3pt}
+        Supervised by Professor Taalaibek Imanaliev\\
+        \vspace{3pt}
+        \today{}
+\end{center}
+
+\subsubsection*{Title}
+
+Mathematical Modeling of ECG Abnormalities
+
+\subsubsection*{Goal}
+
+Develop a simple, accurate, and automatized electrocardiographic analysis tool 
+for the diagnosis of various forms of ischemic heart disease.
+
+\subsubsection*{Major Tasks}
+\begin{itemize}
+    \item Scanning of paper--based ECGs of normal and abnormal heart beats
+    \item Approximation of the obtained data by an appropriate method
+        \begin{itemize}
+            \item Determine an appropriate method (Fourier Series, Fast
+                Fourier Series, or similar)
+            \item Perform analysis of existence, uniqueness of solution, error
+                estimates
+        \end{itemize}
+    \item Creation of a comparison algorithm for normal and abnormal ECGs
+        \begin{itemize}
+            \item Account for age, gender, etc
+            \item Use time and spacial comparisons, possibly almost--periodic
+                functions
+        \end{itemize}
+    \item Create a sufficient digital database of diagnosed ECGs
+    \item Make automated diagnosis that may assist with a doctor's diagnosis
+\end{itemize}
+
+\subsubsection*{Plan}
+\begin{enumerate}
+    \item Literature analysis
+    \item Selection of proper software
+    \item Collecting ECGs
+    \item Scan paper-based ECGs
+    \item Analysis of digital ECGs
+    \item Find criteria for ECG abnormalities
+    \item Automate ECG comparison
+    \item Create database of ECG abnormalities
+    \item Develop software for automatic diagnoses
+    \item Analyse the resulting statistical data
+    \item Write and publish a scientific paper
+\end{enumerate}
+
+\nocite{*}
+\renewcommand{\refname}{\normalsize References}
+\small
+\bibliography{../bibliography}
+\bibliographystyle{ieeetr}
+
+\end{document}
