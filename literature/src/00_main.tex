@@ -1,8 +1,9 @@
 \documentclass[
     a4paper,
     12pt,
-    reqno
-]{article}
+    reqno,
+    oneside
+]{book}
 
 \newcommand{\reptitle}{Thesis Literature Review}
 \newcommand{\repauthor}{Moritz M. Konarski}
@@ -49,7 +50,13 @@
 
 \newpage
 
+\chapter{Good Sources}
+
 \subfile{../src/fft_ga_abnormality_detection}
+
+\subfile{../src/ai_prediction}
+
+\chapter{Bad Sources}
 
 \subfile{../src/feature_extraction}
 
@@ -57,10 +64,11 @@
 
 \subfile{../src/abnormality_class}
 
-\subfile{../src/ai_prediction}
+\chapter{Other}
 
 \subfile{../src/ecg_wave_model}
 
+\subfile{../src/ischemia_model}
 
 \newpage
 \printbibliography{}
