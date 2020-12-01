@@ -1,0 +1,183 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks, pdftitle={CV Moritz M. Konarski \today{}}, 
+pdfauthor={Moritz M. Konarski}]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyfoot[L]{Date:\ \today}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resSubheading}[2]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2
+    \end{tabular*}\vspace{-18pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape CV Moritz Konarski} \\ \vspace{3pt}
+    AUCA ID: 7564 $|$ \small +996-772-808-718 $|$
+    \href{mailto:konarski_m@auca.com}{\underline{konarski\_m@auca.kg}} $|$ 
+    \href{https://github.com/moritz-konarski}{
+        \underline{github.com/moritz-konarski}}
+\end{center}
+
+
+%-----------Personal Information-----------
+\section{Personal Information}
+  \resumeSubHeadingListStart
+    \resSubheading
+      {Full Name}{Moritz Macan Konarski}
+    \resSubheading
+      {Date of Birth}{01.11.1998}
+    \resSubheading
+      {Nationality}{German}
+%    \resSubheading
+%      {Current Address}{Kievskaya st., 154, apt. 57,\\& Pervomaisky district,
+%      Bishkek 720001, KG}
+  \resumeSubHeadingListEnd
+  \vspace{3pt}
+
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {American University of Central Asia}{Aug. 2017 -- May 2021}
+      {BA in Applied Mathematics and Informatics}{Bishkek, KG}
+      \resumeItemListStart
+        \resumeItem{Senior Student}
+        \resumeItem{Current GPA of 3.99}
+        \resumeItem{Dean's List for outstanding academic achievement 2017--2018 
+        and 2018--2019}
+      \resumeItemListEnd
+    \resumeSubheading
+      {Friderico-Francisceum Gymnasium}{Aug. 2011 -- July 2017}
+      {High School}{Bad Doberan, DE}
+      \resumeItemListStart
+        \resumeItem{Received a 1.0 grade with honors (equivalent to a 4.0 GPA)}
+        \resumeItem{Majored with a focus on Mathematics and Physics}
+      \resumeItemListEnd
+    \resumeSubheading
+      {Christliche Münster Schule}{Aug. 2005 -- July 2011}
+      {Primary School}{Bad Doberan, DE}
+  \resumeSubHeadingListEnd
+
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Educational Internship}{Sep. 2020 -- Nov. 2020}
+      {Research Station of the Russian Academy of Sciences Bishkek}{Bishkek, KG}
+      \resumeItemListStart
+        \resumeItem{Internship in cooperation with AUCA}
+        \resumeItem{Download and manipulation of NASA satellite weather data}
+        \resumeItem{Development of Python application for organization,
+        analysis, and plotting of this data}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Writing and Academic Resource Center}{Jan. 2019 -- Present}
+      {Mathematics Tutoring at the WARC at AUCA}{Bishkek, KG}
+      \resumeItemListStart
+        \resumeItem{Online and offline tutoring of students in all areas of 
+        mathematics}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------PROGRAMMING SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Java, Python, C/C++, C\#} \\
+     \textbf{Developer Tools}{: Git, VS Code, Visual Studio, PyCharm} \\
+     \textbf{Libraries}{: NumPy, OpenGL}\\
+     \textbf{Other}{: Microsoft Office, Latex, Markdown}
+    }}
+ \end{itemize}
+
+\end{document}
