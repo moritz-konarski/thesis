@@ -16,7 +16,23 @@
     \item because ischemia is hard to properly study in the wild, having
         a model is very convenient
     \item they use the Luo--Rudy I cellular formulation for a 2D slice
-    \item II. Methods
+    \item based on guinea--pig hearts
+    \item equation of electrical activity of a stimulated cell
+    \item the differential equations were solved using a combination of
+        explicit (Euler) and implicit methods
+    \item intracellular loss of potassium ions is the main alteration of
+        electrical activity -- hyperkalemia
+    \item electrical parameters were altered to simulate these conditions
+    \item good description of why they tweaked which parameters for simulation
+    \item myocardium cell model: 2D 
+    \item cells are connected by gap junctions (low resistance "bridges")
+    \item even a simple square--grid can be used to study complex phenomena
+    \item simple impedance is enough to model the cell--to--cell interactions
+    \item no--flux boundary conditions -- no current is leaving the system at
+        the edges
+    \item it needs to be sufficiently big to have some area that is not
+        affected by the disturbance at the boundaries
+    \item you excite a layer of 5 cells, then let the model run
 \end{itemize}
 
 \end{document}
