@@ -1,12 +1,9 @@
-% TODO: Make section titles all caps, sub section just bold, sub sub sections
-% normal
-% add one empty line after a heading
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{thesis}
     [2020/12/10 v0.01 LaTeX package for my own purposes]
 
 \newcommand{\thesistitle}{Heart Rate Modeling}
-\newcommand{\thesisauthor}{Moritz Macan Konarski}
+\newcommand{\thesisauthor}{Moritz M. Konarski}
 \newcommand{\thesissupervisor}{Professor Taalaibek Imanaliev}
 \newcommand{\thesiskeywords}{heart rate, ECG, model, FFT}
 \newcommand{\thesissubject}{Mathematical Modeling}
@@ -47,17 +44,17 @@
 \RequirePackage{titlesec}
 \newcommand{\sectionbreak}{\clearpage}
 \titleformat{\section}
-    {\normalfont\Large\bfseries}{\thesection}{1em}{}
+    {\normalfont\Large\bfseries\uppercase}{\thesection}{1em}{}
 \titleformat{\subsection}
     {\normalfont\large\bfseries}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}
-    {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+    {\normalfont\normalsize}{\thesubsubsection}{1em}{}
 \titlespacing*{\section}
-    {0pt}{5pt}{5pt}
+    {0pt}{5pt}{12pt}
 \titlespacing*{\subsection}
-    {0pt}{3pt}{5pt}
+    {0pt}{10pt}{12pt}
 \titlespacing*{\subsubsection}
-    {0pt}{4pt}{3pt}
+    {0pt}{11pt}{12pt}
 
 \RequirePackage{fancyhdr}
 \fancypagestyle{plain}{%
@@ -80,6 +77,9 @@
 \setlength{\cftsubsubsecindent}{\parindent}
 \setlength{\cftbeforesecskip}{0pt}
 \renewcommand{\cftsecdotsep}{\cftdotsep}
+
+\RequirePackage{epstopdf}
+\epstopdfsetup{outdir=./output/}
 
 \RequirePackage{subfiles}
 

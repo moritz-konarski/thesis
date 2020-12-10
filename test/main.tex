@@ -3,12 +3,70 @@
 % for each sub file in the same folder
 % \documentclass[../main.tex]{subfiles}
 
+% TODO: fix sizes and spacing on title page
+
 \usepackage{../thesis}
 
 \begin{document}
+
+\begin{center}
+    %
+    \includegraphics[height=1.5cm]{../pictures/auca_logo}\\
+    %
+    \vspace{1.25cm}
+    %
+    \normalsize
+    Applied Mathematics and Informatics Program\\
+    %
+    \vspace{2cm}
+    %
+    \LARGE
+    \textbf{\thesistitle{}}\\
+    %
+    \vspace{2cm}
+    %
+    \normalsize
+    \thesisauthor{}\\
+    %
+    \vspace{2cm}
+    %
+    \footnotesize
+    A Thesis Submitted to the Applied Mathematics and Informatics Program of 
+    American\\
+    University of Central Asia in Partial Fulfillment of the Requirements for 
+    the Degree of\\
+    \textbf{Bachelor of Arts}
+\end{center}
+\vspace{2cm}
+
+\noindent
+\rule{0.5\textwidth}{1pt}\\
+\small
+Author\\
+\textbf{\thesisauthor{}}\\
+\rule{0.5\textwidth}{1pt}\\
+\small
+Certified by Thesis Supervisor\\
+\textbf{\thesissupervisor{}}\\
+\rule{0.5\textwidth}{1pt}\\
+\tiny
+Accepted by\\
+\textbf{Sergey Sklyar}\\
+Head of Applied Mathematics and\\
+Informatics Program, AUCA
+
+\vspace{\fill}
+
+\center
+\normalsize
+\today{}\\
+Bishkek, Kyrgyz Republic
+
+\newpage
+
 \pagestyle{plain}
 
-\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\contentsname}{\uppercase{Table of Contents}}
 \tableofcontents
 
 \section{Introduction}
