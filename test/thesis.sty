@@ -1,0 +1,98 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{thesis}
+    [2020/12/10 v0.01 LaTeX package for my own purposes]
+
+\newcommand{\thesistitle}{Heart Rate Modeling}
+\newcommand{\thesisauthor}{Moritz Macan Konarski}
+\newcommand{\thesissupervisor}{Professor Taalaibek Imanaliev}
+\newcommand{\thesiskeywords}{heart rate, ECG, model, FFT}
+\newcommand{\thesissubject}{Mathematical Modeling}
+
+\RequirePackage[english]{babel}
+\RequirePackage[
+    left=3cm,
+    right=1.5cm,
+    top=2cm,
+    bottom=2cm,
+    showframe
+]{geometry}
+
+\RequirePackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    allcolors=black,
+    final,
+    pdftitle={\thesistitle{}},
+    pdfauthor={\thesisauthor{}},
+    pdfkeywords={\thesiskeywords{}},
+    pdfsubject={\thesissubject{}}
+}
+
+\RequirePackage[no-math]{fontspec}
+\setmainfont
+    [Path=/home/moritz/Documents/thesis.git/fonts/]
+    {times.ttf}[
+    BoldFont       = timesbd.ttf,
+    ItalicFont     = timesi.ttf,
+    BoldItalicFont = timesbi.ttf
+    ]
+\RequirePackage{unicode-math}
+\setmathfont
+    [Path=/home/moritz/Documents/thesis.git/fonts/]
+    {cambriam.ttf}
+
+\RequirePackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+\titleformat{\section}
+    {\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+    {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}
+    {0pt}{5pt}{5pt}
+\titlespacing*{\subsection}
+    {0pt}{3pt}{5pt}
+\titlespacing*{\subsubsection}
+    {0pt}{4pt}{3pt}
+
+\RequirePackage{fancyhdr}
+\fancypagestyle{plain}{%
+    \fancyhf{}
+    \fancyfoot[RO,RE]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+}
+
+\RequirePackage{graphicx}
+
+\RequirePackage{float}
+
+\RequirePackage{color}
+\RequirePackage{colortbl}
+\definecolor{Gray}{gray}{0.85}
+
+\RequirePackage[titles]{tocloft}
+\setlength{\cftsubsecindent}{0.5\parindent}
+\setlength{\cftsubsubsecindent}{\parindent}
+\setlength{\cftbeforesecskip}{0pt}
+\renewcommand{\cftsecdotsep}{\cftdotsep}
+
+\RequirePackage{subfiles}
+
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\renewcommand{\baselinestretch}{1.43}
+
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\newcommand{\tabref}[1]{\tablename~\ref{#1}}
+
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.8}
+\setlength\arrayrulewidth{0.8pt}
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+\endinput

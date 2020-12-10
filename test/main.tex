@@ -1,33 +1,17 @@
 \documentclass[12pt,a4paper,reqno]{article}
 
-% all the other required packages
-% geometry, babel, Times New Roman as main fonts -- compare to work output
+% for each sub file in the same folder
+% \documentclass[../main.tex]{subfiles}
 
-%\usepackage[english]{babel}
-
-\usepackage[
-    left=3cm,
-    right=1.5cm,
-    top=2cm,
-    bottom=2cm
-    ]{geometry}
-
-\usepackage[no-math]{fontspec}
-\setmainfont
-    [Path=/home/moritz/Documents/thesis.git/fonts/]
-    {times.ttf}[
-    BoldFont       = timesbd.ttf,
-    ItalicFont     = timesi.ttf,
-    BoldItalicFont = timesbi.ttf
-    ]
-\usepackage{unicode-math}
-\setmathfont[Path=/home/moritz/Documents/thesis.git/fonts/]{cambriam.ttf}
-
-\setlength{\parindent}{1.25cm}
-\setlength{\parskip}{0pt}
-\renewcommand{\baselinestretch}{1.43}
+\usepackage{../thesis}
 
 \begin{document}
+\pagestyle{plain}
+
+\renewcommand{\contentsname}{Table of Contents}
+\tableofcontents
+
+\section{Introduction}
 
 \textbf{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lacinia ante leo,
 id tristique turpis semper nec.} Phasellus at feugiat libero. Fusce sed porta quam.
@@ -40,6 +24,9 @@ mattis convallis tortor lacus a augue. Phasellus euismod aliquet iaculis. Aenean
 euismod lectus sit amet mollis. Proin erat erat, pharetra vel diam in, consectetur hendrerit
 odio. Praesent lacinia tellus tempor est consectetur, eget eleifend est
 sollicitudin.\par
+
+\subsection{Hello there}
+
 \textit{Nulla pulvinar lectus ac velit suscipit interdum quis at ipsum. Suspendisse in
 tincidunt nibh, id facilisis leo. Praesent bibendum, nibh aliquet interdum dapibus, tortor
 lorem pellentesque} est, et eleifend velit arcu at eros. Nunc porttitor dui sit amet mollis
@@ -50,11 +37,15 @@ ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam
 semper volutpat dolor in, ornare congue enim. Fusce purus mi, feugiat ut nulla in, cursus
 facilisis velit.\par
 
+\subsubsection{Methods}
+
 \textbf{\textit{Donec tempor sodales tortor a facilisis. Duis neque est, hendrerit ac lobortis ac,
 fermentum non augue. Proin commodo quis nisi at congue. Mauris congue ante non
 purus hendrerit aliquet. Sed neque odio, dignissim et maximus interdum, vehicula quis
 metus. Praesent}} sagittis tincidunt est, eu tempor dui pharetra vitae. Pellentesque
 maximus euismod tellus sed blandit.\par
+
+\section{Method 1}
 
 Vivamus at blandit ligula, vitae aliquam risus. Aliquam a lectus lacinia, ornare dui
 vel, ultricies ex. Nulla facilisi. Etiam eu scelerisque ipsum. Class aptent taciti sociosqu ad
@@ -67,20 +58,47 @@ pellentesque non magna sit amet efficitur. Duis efficitur lectus in placerat eui
 eu diam odio. Maecenas vehicula dapibus erat, ac vehicula tellus tempus non. Vestibulum
 pharetra varius leo, a posuere ante posuere ut. Donec sit amet bibendum nulla, sed
 ultricies libero.
-\newpage
 
 Here are some mathematics examples using the standard word font for times new
 roman. This shall be used for comparison as well. I will hope that I can replicate this
 exactly using LuaLaTex. I hope so.
-\begin{equation}\nonumber
+\begin{equation}\label{eq:test}
     (x+a)^n = \sum_{k=0}^n \binom{n}{k}x^k a^{n-k}
 \end{equation}
 \begin{equation}\nonumber
-    f(x) = a_0 + \sum_{n=1}^\infty \left( a_n \cos \frac{n \pi x}{L} + b_n \sin \frac{n \pi x}{L}\right)
+    f(x) = a_0 + \sum_{n=1}^\infty 
+        \left( a_n \cos \frac{n \pi x}{L} + b_n \sin \frac{n \pi x}{L}\right)
 \end{equation}
 \begin{equation}\nonumber
     \cos \alpha + \cos \beta = 2 \cos \frac{1}{2} (\alpha + \beta)
         \cos \frac{1}{2} (\alpha - \beta)
 \end{equation}
+
+\noindent
+In \figref{fig:test} we can see what was indicated by \eqref{eq:test}
+
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.8\textwidth]{example-image-a}
+    \caption{This is a test caption}
+    \label{fig:test}
+\end{figure}
+
+\noindent
+\tabref{tab:test} may illustrate why \figref{fig:test} looks the way it looks.
+
+\begin{table}[H]
+    \center
+    \begin{tabular}{| l | l | r |}\hline
+        \rowcolor{Gray}
+        A & B & C \\\hline
+        231123.2134234 & 30491234 & 02341029348 \\\hline
+        231123.2134234 & 30491234 & 02341029348 \\\hline
+        231123.2134234 & 30491234 & 02341029348 \\\hline
+        231123.2134234 & 30491234 & 02341029348 \\\hline
+    \end{tabular}
+    \caption{This is a test caption for the table}
+    \label{tab:test}
+\end{table}
 
 \end{document}
