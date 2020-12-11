@@ -1,3 +1,7 @@
+% LATEX THESIS PACKAGE
+% AMERICAN UNIVERSITY OF CENTRAL ASIA, 2020-12
+% Moritz Konarski, konarski_m@auca.kg
+
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{thesis}
     [2020/12/10 v0.01 LaTeX package for my own purposes]
@@ -14,8 +18,10 @@
     right=1.5cm,
     top=2cm,
     bottom=2cm,
-    showframe
+    %showframe
 ]{geometry}
+
+%\RequirePackage[firstpageonly]{draftwatermark}
 
 \RequirePackage{hyperref}
 \hypersetup{
@@ -44,11 +50,14 @@
 \RequirePackage{titlesec}
 \newcommand{\sectionbreak}{\clearpage}
 \titleformat{\section}
-    {\normalfont\Large\bfseries\uppercase}{\thesection}{1em}{}
+    {\normalfont\Large\bfseries\uppercase}{\thesection}{1em}
+    {\phantomsection\centering}
 \titleformat{\subsection}
-    {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+    {\normalfont\large\bfseries}{\thesubsection}{1em}
+    {\phantomsection\centering}
 \titleformat{\subsubsection}
-    {\normalfont\normalsize}{\thesubsubsection}{1em}{}
+    {\normalfont\normalsize}{\thesubsubsection}{1em}
+    {\phantomsection\centering}
 \titlespacing*{\section}
     {0pt}{5pt}{12pt}
 \titlespacing*{\subsection}
@@ -59,7 +68,7 @@
 \RequirePackage{fancyhdr}
 \fancypagestyle{plain}{%
     \fancyhf{}
-    \fancyfoot[RO,RE]{\thepage}
+    \fancyfoot[R]{\thepage}
     \renewcommand{\headrulewidth}{0pt}
     \renewcommand{\footrulewidth}{0pt}
 }
@@ -78,20 +87,24 @@
 \setlength{\cftbeforesecskip}{0pt}
 \renewcommand{\cftsecdotsep}{\cftdotsep}
 
-\RequirePackage{epstopdf}
-\epstopdfsetup{outdir=./output/}
+\RequirePackage{setspace}
+
+\RequirePackage[
+    backend=biber,
+    style=ieee,
+    citestyle=numeric
+]{biblatex}
+\addbibresource{../bibliography/bibliography.bib}
 
 \RequirePackage{subfiles}
 
 \setlength{\parindent}{1.25cm}
 \setlength{\parskip}{0pt}
-\renewcommand{\baselinestretch}{1.43}
 
 \newcommand{\figref}[1]{\figurename~\ref{#1}}
 \newcommand{\tabref}[1]{\tablename~\ref{#1}}
 
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{0.8}
+\renewcommand{\arraystretch}{1.1}
 \setlength\arrayrulewidth{0.8pt}
 
 \numberwithin{equation}{section}
