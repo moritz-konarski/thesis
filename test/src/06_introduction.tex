@@ -1,0 +1,167 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Introduction}
+
+\subsection{Important Points}
+
+\subsubsection{background and purpose}
+
+\begin{itemize}
+    \item ischemia and similar diseases are some of the most deadly and common
+        diseases
+    \item when it comes to ischemic heart disease (IHD), rapid decision making
+        is important
+    \item ECG is one of the most widely used diagnostic tools
+    \item reading an ECG is very difficult, which leads to different results
+        among different physicians
+    \item to develop software that analyzes 12--lead ECG to detect IHD
+    \item this could reduce the time it takes to diagnose IHD, which is crucial
+    \item detect changes during myocardial ischemia, some of those remain
+        invisible to physicians
+\end{itemize}
+
+\subsubsection{goals}
+
+\begin{itemize}
+    \item create a 12--lead ECG analysis tool to diagnose IHD
+    \item we will mathematically model the changes of the ECG compared to
+        at--rest, nominal ECGs
+\end{itemize}
+
+\subsubsection{questions, problematic, rationale}
+
+\begin{itemize}
+    \item the ECG is the most widely used method to assess heart
+        conditions
+    \item the QRST--wave complex changes when ischemia is present, enabling its
+        detection
+    \item a mathematical model could make the analysis of ECGs easier for
+        doctors and speed up their diagnosis
+    \item the model needs to work well for this to be possible
+    \item such a tool would remove some of the problems that normally exist
+        (mentioned above)
+\end{itemize}
+
+\subsubsection{background, literature review}
+
+\begin{itemize}
+    \item heart disease is a significant medical issue
+    \item one of the most deadly ones
+    \item middle income countries like KG are hit harder
+    \item health expenditure in KG is also one of the lowest
+    \item IHD is the main killing disease
+    \item for most treatment methods, the longer the treatment is delayed, the
+        lower the chances of survival become
+    \item if the necessary infrastructure is nonexistent, treatment times
+        cannot be reduced to acceptable levels
+    \item basically, in Kyrgyzstan most modern and good methods do not work
+        because of the missing infrastructure and economic limits
+    \item computers can help to analyze an ECG, which makes diagnosis easier
+\end{itemize}
+
+\subsubsection{methods}
+
+\begin{itemize}
+    \item get 100 digitized ECGs from healthy volunteers
+    \item from this a good model of healthy and stressed ECGs should be created
+    \item maybe use FFT for the analysis
+    \item use a Maplesoft Signal Processing Tool for wave analysis
+\end{itemize}
+
+\subsection{Reference list}
+
+\begin{enumerate}
+    \item European Society of Cardiology: Cardiovascular Disease Statistics 
+        2019. On behalf of the Atlas Writing Group European Heart Journal 
+        (2020) 41, 12\_85.
+    \item Gruntzig, A. Transluminal dilatation of coronary-artery stenosis. 
+        Lancet 1978, 311, 1093.
+    \item Sigwart, U.; Puel, J.; Mirkovitch, V.; Joffre, F.; Kappenberger, L. 
+        Intravascular stents to prevent occlusion and restenosis after 
+        transluminal angioplasty. N. Engl. J.Med. 1987, 316, 701–706.
+    \item Stefanini,G.G.;Holmes,D.R.,Jr. Drug-eluting coronary artery stents. 
+        N. Engl. J.Med. 2013, 368, 254–265.
+    \item Pinto DS, Frederick PD, Chakrabarti AK, Kirtane AJ, Ullman E, Dejam 
+        A, Miller DP, Henry TD, Gibson CM, National Registry of Myocardial 
+        Infarction Investigators. Benefit of transferring ST-segment-elevation 
+        myocardial infarction patients for percutaneous coronary intervention 
+        compared with administration of onsite fibrinolytic declines as delays 
+        increase. Circulation 2011;124(23):2512–2521.
+    \item Armstrong PW, Gershlick AH, Goldstein P, Wilcox R, Danays T, Lambert 
+        Y, Sulimov V, Rosell Ortiz F, Ostojic M, Welsh RC, Carvalho AC, Nanas 
+        J, ArntzHR, Halvorsen S, Huber K, Grajek S, Fresco C, Bluhmki E, 
+        Regelin A, Vandenberghe K, Bogaerts K, Van de Werf F, STREAM 
+        Investigative Team. Fibrinolysis or primary PCI in ST-segment elevation 
+        myocardial infarction. N Engl J Med 2013;368(15):1379–1387.
+    \item Barbarash OL, Kashtalap VV. The place of pharmacoinvasive management
+        in patients with ST-elevation acute coronary syndrome in Russia. 
+        Kardiologiia. 2014;54(9):79-85. (In Russ).
+    \item 2017 ESC Guidelines for the management of acute myocardial infarction 
+        in patients presenting with ST-segment elevation. The Task Force for 
+        the management of acute myocardial infarction in patients presenting 
+        with ST-segment elevation of the European Society of Cardiology (ESC). 
+        European Heart Journal (2018) 39, 119–177
+    \item 2015 ESC Guidelines for the management of acute coronary syndromes in 
+        patients presenting without persistent ST-segment elevation. European 
+        Heart Journal (2016) 37, 267–315
+    \item Navarese, E. P., Gurbel, P. A., Andreotti, F., Tantry, U., Jeong, Y. 
+        H., Kozinski, M., et al. (2013). Optimal timing of coronary invasive 
+        strategy in non-ST-segment elevation acute coronary syndromes: a 
+        systematic review and meta-analysis. Ann. Intern. Med. 158, 261–270.
+    \item Milasinovic, D., Milosevic, A., Marinkovic, J., Vukcevic, V., Ristic, 
+        A., Asanin, M., et al. (2015). Timing of invasive strategy in NSTE-ACS 
+        patients and effect on clinical outcomes: a systematic review and 
+        metaanalysis of randomized controlled trials. Atherosclerosis 241, 
+        48–54.
+    \item Neumann FJ, Sousa-Uva M, Ahlsson A, Alfonso F, Banning AP, Benedetto 
+        U, Byrne RA, Collet JP, Falk V, Head SJ, Juni P, Kastrati A, Koller A, 
+        Kristensen SD, Niebauer J, Richter DJ, Seferovic PM, Sibbing D, 
+        Stefanini GG, Windecker S, Yadav R, Zembala MO. 2018 ESC/EACTS 
+        Guidelines on myocardial revascularization. Eur Heart J 2019;40:87\_165.
+    \item A Validated Prediction Model for All Forms of Acute Coronary 
+        Syndrome: Estimating the Risk of 6-Month Postdischarge Death in an 
+        International Registry. Kim A. Eagle, MD; Michael J. Lim, MD; Omar H. 
+        Dabbous, MD, MPH; et al. JAMA. 2004;291(22):2727-2733.
+    \item TIMI Risk Score for ST-Elevation Myocardial Infarction: A Convenient, 
+        Bedside, Clinical Score for Risk Assessment at Presentation. An 
+        Intravenous tPA for Treatment of Infarcting Myocardium Early II Trial 
+        Substudy. David A. Morrow, MD; Elliott M. Antman, MD; Andrew 
+        Charlesworth, BSc; Richard Cairns, BSc; Sabina A. Murphy, MPH; James A. 
+        de Lemos, MD; Robert P. Giugliano, MD, SM; Carolyn H. McCabe, BS; 
+        Eugene Braunwald, MD. Circulation. 2000;102:2031-2037.
+    \item 2019 ESC Guidelines for the diagnosis and management of chronic 
+        coronary syndromes. The Task Force for the diagnosis and management of 
+        chronic coronary syndromes of the European Society of Cardiology (ESC). 
+        European Heart Journal (2020) 41, 407\_477
+    \item Hakeem A, Ghosh B, Shah K, Agarwal S, Kasula S, Hacioglu Y, Bhatti S, 
+        Ahmed Z, Uretsky B. Incremental prognostic value of post-intervention 
+        Pd/Pa in patients undergoing ischemia-driven percutaneous coronary 
+        intervention. JACC Cardiovasc Interv 2019;12:2002–2014.
+    \item Jeremias A, Davies JE, Maehara A, Matsumura M, Schneider J, Tang K, 
+        Talwar S, Marques K, Shammas NW, Gruberg L, Seto A, Samady H, Sharp A, 
+        Ali ZA, Mintz G, Patel M, Stone GW. Blinded physiological assessment of 
+        residual ischemia after successful angiographic percutaneous coronary 
+        intervention: the DEFINE PCI study. JACC Cardiovasc Interv 
+        2019;12:1991–2001.
+    \item Myers, P.D., Scirica, B.M. \& Stultz, C.M. Machine Learning Improves 
+        Risk Stratification After Acute Coronary Syndrome. Sci Rep 7, 12692 
+        (2017). https://doi.org/10.1038/s41598-017-12951-x
+    \item Goto S, Kimura M, Katsumata Y, Goto S, Kamatani T, Ichihara G, et al. 
+        (2019) Artificial intelligence to predict needs for urgent 
+        revascularization from 12-leads electrocardiography in emergency 
+        patients. PLoS ONE 14(1): e0210103. https://doi.org/10.1371/
+        journal.pone.0210103
+    \item Kudenchuk PJ, Maynard C, Cobb LA, Wirkus M, Martin JS, Kennedy JW, 
+        Weaver WD. Utility of the prehospital electrocardiogram in diagnosing 
+        acute coronary syndromes: the Myocardial Infarction Triage and 
+        Intervention (MITI) Project. Journal of the American College of 
+        Cardiology.1998; 2(1):17–27.
+    \item J.Z.Hemsey, K. Dracup, K. Fleischmann, C.E. Sommargren, and B.J.Drew. 
+        Pre-hospital 12-Lead ST-Segment Monitoring Improves the Early Diagnosis 
+        of Acute Coronary Syndrome. Electrocardiol. 2012 May ; 45(3): 266–271. 
+        doi:10.1016/j.jelectrocard.2011.10.004
+\end{enumerate}
+
+\end{document}
