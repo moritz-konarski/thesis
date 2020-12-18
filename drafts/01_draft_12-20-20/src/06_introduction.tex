@@ -4,6 +4,181 @@
 
 \section{Introduction}
 
+\subsection{\textcite{xie2020}}
+
+\subsubsection{Introduction}
+
+\begin{itemize}
+    \item cvd is the leading cause of death worldwide
+    \item 30\% of deaths and 130 million cases a year [1]
+    \item ECG is good, non-invasive and real-time: heartbeat recognition, blood
+        pressure detection, disease detection
+    \item discovery of ECG [4]
+    \item electronic analysis can give suggestions
+    \item common ECG formats are 1-lead, 3-lead, 6-lead, 12-lead
+    \item 12-lead is the standard and more detailed
+    \item ECG is also future proof and becoming more readily available
+    \item a doctor's reading of an ECG is heavily dependent on their
+        experience, training, certs
+    \item automatic analysis is becoming more and more common
+    \item ECG features are unique information extracted that represent the
+        state of the heart
+    \item source [17] is a list of common feature classifiers
+    \item instead of feature extraction and later classification, just using
+        one neural network to do all the work is becoming more and more common
+    \item ECD -- time-varying signal with small amplitude
+    \item the signal needs to be significantly de-noised for approaches to work
+    \item normally though, signals are disturbed by baseline drift, electrode
+        contact noise, power-line interference
+    \item severe baseline wandering can lead to misdiagnosis
+    \item methods of denoising
+        \begin{itemize}
+            \item finding the QRS complex is usually hard because PLI and EMG
+                mask it
+            \item digital filtering, wavelet transform, empirical mode
+                decomposition [25]
+            \item digital filters are widely used for this, wavelet too
+                [18,16,27]
+            \item src [29] is a really good method apparently
+            \item src [30] is also great
+            \item src [32] is favorable
+            \item src [33] is a different approach
+            \item Butterworth filter
+        \end{itemize}
+    \item feature engineering
+        \begin{itemize}
+            \item Fourier transform for investigating a signal in the frequency
+                domain
+            \item FFT is useful and fast for feature extraction
+            \item QRS is the most striking, can be used for heart rate
+            \item FFT does not provide any information on the time of any of
+                the components
+            \item short-time FT gives time and frequency information -- we can
+                either have good time and bad frequency or vice versa
+            \item the wavelet transform has a time scale resolution scheme that
+                makes this simpler
+            \item wavelets are good for all frequencies because they are
+                adaptive
+            \item their high resolution can give them the edge
+            \item there are many different options of wavelets that are good
+                for different things
+            \item src [71] is myocardial infarction
+            \item DWT is a good computational tool to assess ECG changes
+            \item for statistical and morphological features 
+            \item higher-order statistics have proven to be good at ECG
+                analysis
+        \end{itemize}
+    \item dimensionality reduction is important because while more feature mean
+        more accuracy, they also increase the computational cost
+    \item most data has correlated variables, meaning they can be ignored
+    \item feature selection tries to select a subset of the original features
+        and only select the best ones -- options are filters, wrappers, and
+        embedded
+    \item filters are the most simple version, they simply remove the redundant
+        data and then return the relevant data
+    \item filters use algorithms to assign scores to individual features
+    \item filters are fast and independent of the classification, but they may
+        not be super good or precise
+    \item feature extraction reduces the dimension of the information but does
+        not throw out information, which makes it more efficient and precise
+    \item this includes primary component analysis and other types of analysis
+    \item some features of an ECG appear randomly, also entropy, energy, and
+        fractal dimension cannot be easily spotted with the naked eye
+    \item kernels can be used for locally linear embedding
+    \item some machine learning decision making algorithms are k nearest
+        neighbors KNN, support vector machine SVM
+    \item KNN is pretty simple and divides points into multiple group using
+        distance; data imbalance is hard to overcome and they are expensive for
+        high-dimensional data
+    \item SVM has good training ability on small data sets and it is a good
+        all-rounder
+    \item there is no standard about the construction of a NN for ECG analysis
+    \item a general end-to-end model seems to be the best solution, removing
+        the need for optimization at each and every step -- feature extraction
+        is shifted to the learning body, which is a nice solution
+    \item a list of all the databases and what they are good at
+    \item good list of applications of the whole thing
+\end{itemize}
+
+\subsection{Plan}
+
+\begin{itemize}
+    \item use the Butterworth filter in the Julia DSP.jl package
+    \item use FFT, SFFT, Wavelet for feature extraction
+    \item find some simple type of filter to do feature selection
+    \item classification could be done using the NearestNeighbors.jl package
+\end{itemize}
+
+\subsection{Outline}
+
+\subsubsection{Problem Statement}
+
+\begin{itemize}
+    \item ischemia and similar diseases are some of the most deadly and common
+        diseases
+    \item IHD -- what is it? how can it be diagnosed (ECG)? how can it be
+        treated(Stents)?
+    \item what is the research problem that people are facing?
+    \item the QRST–wave complex changes when ischemia is present, enabling its 
+        detection
+    \item heat disease is a significant and deadly medical issue
+    \item poorer countries like Kyrgyzstan are disproportionately affected
+        because many of the newer and better methods cannot be afforded
+        / implemented
+    \item health expenditure in KG is low, the lower it is the worse these
+        conditions are 
+    \item 
+\end{itemize}
+
+\subsubsection{Rationale -- Justification -- Why}
+
+\begin{itemize}
+    \item when it comes to ischemic heart disease (IHD), rapid decision making
+        is important -- why
+    \item ECG is one of the most widely used diagnostic tools -- why
+    \item reading an ECG is very difficult, which leads to different results
+        among different physicians -- relevance
+    \item this could reduce the time it takes to diagnose IHD, which is
+        crucial --
+    \item detect changes during myocardial ischemia, some of those remain
+        invisible to physicians
+    \item promising method because other people are doing this
+    \item what are the applications in practice?
+    \item freely available ECGs on the internet -- MIT-BIH, European ST-T 
+        database and the others
+\end{itemize}
+
+\subsubsection{Goals and Objectives}
+
+\begin{itemize}
+    \item to develop software that analyzes 12–lead ECG to detect IHD -- how
+        will we do that?
+    \item create a 12–lead ECG analysis tool to diagnose IHD
+    \item mathematically model the changes in the ECG compared to at-rest and
+        normal ECGs
+    \item mathematical model and implementation that can speed up diagnosis
+        (which is critical)
+    \item get 100 digitized ECGs from healthy volunteers
+    \item use FFT for analysis
+    \item Fourier Transform, Fast Fourier Transform, Discrete Fourier Transform
+    \item compare the different transforms for this specific problem
+\end{itemize}
+
+\section{Literature Review}
+
+\subsection{Outline}
+
+\subsubsection{Current State of the Problem}
+
+\begin{itemize}
+    \item advances in IHD treatment (see research proposal)
+    \item current methods for ECG modeling
+    \item what is the progress in using FFT and DFT to model ECGs
+    \item 
+\end{itemize}
+
+\newpage
+
 \subsection{Important Points}
 
 \subsubsection{background and purpose}
