@@ -17,7 +17,7 @@
 }
 \newcommand{\thesissubject}{Mathematical modeling of acute cardiac ischemia}
 
-\RequirePackage[english]{babel}
+\RequirePackage[american]{babel}
 \RequirePackage[
     left=3cm,
     right=1.5cm,
@@ -45,7 +45,7 @@
 
 \RequirePackage[no-math]{fontspec}
 \setmainfont
-    [Path=/home/moritz/Documents/thesis.git/fonts/]
+    [Path={/home/moritz/Documents/thesis.git/drafts/00_fonts/}]
     {times.ttf}[
     BoldFont       = timesbd.ttf,
     ItalicFont     = timesi.ttf,
@@ -53,7 +53,7 @@
     ]
 \RequirePackage{unicode-math}
 \setmathfont
-    [Path=/home/moritz/Documents/thesis.git/fonts/]
+    [Path={/home/moritz/Documents/thesis.git/drafts/00_fonts/}]
     {cambriam.ttf}
 
 \RequirePackage[normalem]{ulem}
@@ -87,6 +87,7 @@
 }
 
 \RequirePackage{graphicx}
+\graphicspath{{../graphics/}}
 
 \RequirePackage{float}
 
@@ -102,12 +103,14 @@
 
 \RequirePackage{setspace}
 
+\RequirePackage{csquotes}
+
 \RequirePackage[
     backend=biber,
     style=ieee,
     citestyle=numeric
 ]{biblatex}
-\addbibresource{../bibliography/bibliography.bib}
+\addbibresource{../bib/bibliography.bib}
 
 \RequirePackage{enumitem}
 \setlist{nosep}
