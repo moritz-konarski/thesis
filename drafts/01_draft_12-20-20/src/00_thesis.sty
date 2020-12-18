@@ -32,8 +32,8 @@
 
 \RequirePackage{hyperref}
 \hypersetup{
-    colorlinks=true,
-    allcolors=black,
+    %colorlinks=true,
+    %allcolors=black,
     urlcolor=blue,
     urlbordercolor=blue,
     final,
@@ -108,12 +108,15 @@
 \RequirePackage[
     backend=biber,
     style=ieee,
-    citestyle=numeric
+    citestyle=numeric,
+    maxnames=4
 ]{biblatex}
 \addbibresource{../bib/bibliography.bib}
 
 \RequirePackage{enumitem}
 \setlist{nosep}
+
+\RequirePackage{showkeys}
 
 \RequirePackage{subfiles}
 
