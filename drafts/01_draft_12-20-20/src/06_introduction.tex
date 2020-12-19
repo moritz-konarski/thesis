@@ -103,9 +103,24 @@
 \subsection{Plan}
 
 \begin{itemize}
-    \item use the Butterworth filter in the Julia DSP.jl package
-    \item use FFT, SFFT, Wavelet for feature extraction
-    \item find some simple type of filter to do feature selection
+    \item databases:
+        \begin{itemize}
+            \item MIT-BIH Normal Sinus Rhythm Database for normal ECGs
+            \item European ST-T Database for ST and T wave changes -- patients
+                with ischemia
+            \item INCART database for ischemia, arrhythmias, coronary artery
+                disease
+            \item Lobachevsky University Electrocardiography Database for
+                12-lead stuff for different cardiological diseases
+            \item long therm ST database -- for st segment detection
+            \item suggestions why only 5 minutes are used/necessary to detect
+                stuff
+        \end{itemize}
+    \item use the Butterworth filter in the Julia DSP.jl package to filter the
+        noise out
+    \item use FFT, SFFT, Wavelet for feature extraction, also in julia if
+        possible
+    \item find some simple type of filter to do feature selection -- 
     \item classification could be done using the NearestNeighbors.jl package
 \end{itemize}
 
