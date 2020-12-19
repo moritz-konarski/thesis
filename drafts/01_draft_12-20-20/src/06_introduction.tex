@@ -4,6 +4,216 @@
 
 \section{Introduction}
 
+In the year 2016, approximately 9.4 million people worldwide died of ischemic 
+heart disease (IHD). With over 16.6\% of deaths attributed to it, is is the most 
+common cause of death. All forms of cardiovascular diseases make up 31.4\% or
+17.9 million deaths globally. Death from IHD disproportionally
+affect people over 50 years of age, with 91\% and 95\% of deaths for men and
+women respectively occurring in that age range, globally. In Kyrgyzstan, 13\% 
+of all deaths in 2016 were caused by IHD. In Kazakhstan it was 47.7\% of all 
+    deaths.\par
+% cite https://www.who.int/healthinfo/global_burden_disease/estimates/en/
+A 2019 report found that while IHD is the leading cause of death, the mortality
+trends are slowly but steadily decreasing. 
+% cite https://www.ahajournals.org/doi/full/10.1161/CIRCOUTCOMES.118.005375
+The authors explain the decrease with better treatment of cardiovascular risk
+factors and improved healthcare systems. The improvement of healthcare systems
+tends to be connected to economic growth in a country. 
+% cite https://academic.oup.com/bmb/article/121/1/47/2871224
+"To treat heart disease the availability of advanced diagnostic and therapeutic
+treatment technologies, such as cardiac catheterization laboratories for
+coronary angiograms and angioplasties, as well as easy access to drugs are
+crucial to patients’ management."
+Risk factor prevention is generally a thing rich countries do.
+"Uncontrolled high blood pressure has been described as the leading cause of
+high IHD burden in former Soviet Union countries. Low adherence to
+antihypertensive treatments in these countries has been reported. This seems
+to be because of an insufficient health expenditure that forces patients to
+out-of-pocket payments to access medications."
+% cite https://www.ahajournals.org/doi/full/10.1161/CIRCOUTCOMES.118.005375
+globally IHD mortality rate is falling, but it remains the highest death rate
+and it remains especially high in middle- to low-income countries.\par
+
+IHD is the condition of inadequate blood supply to an area of the heart. It is
+caused by a blockage in a blood vessel supplying blood to the heart. IHD is
+also known as coronary heart disease or coronary artery disease. A artery can
+be blocked by an obstruction, a blood clock, or most commonly by plaque
+buildup, called atherosclerosis.
+% cite https://www.ncbi.nlm.nih.gov/books/NBK209964/
+A complete blockage of the blood flow to the heart leads to the death of heart
+muscle cells and is called a heart attack or myocardial infarction.
+The diagnosis of IHD is possible using an exercise stress test, generally with 
+a treadmill. During an increasingly demanding stress test, the patient is
+connected to an electrocardiograph which generates an electrocardiogram (ECG).
+\par
+% cite history and introduction 
+%   https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714093/
+The ECG is a diagnostic tool that is an essential part of the initial
+evaluation of patients presenting with cardiac complaints. It provides
+a non-invasive, cost-effective to evaluate arrhythmias and IHD. See [2] of the
+first paper. 
+
+- Since the 1910s people have been using the ECG to diagnose IHD.
+
+- Since 1954, the American Heart Association has recommended a standardized
+12-lead ECG, 6 leads on the chest, 
+
+- They have a high rate of misinterpretation among non-specialized physicians and
+especially trainees. 
+% --------------------------------
+% cite https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7400524/
+%   future applications and current standing
+- Augustus D. Waller made first recording of human heartbeat in 1873
+- Willem Einthoven in 1924 got the nobel prize for his discovery of the
+electrocardiogram
+- future of cardiography might be in wearable devices, meaning that ECG and
+applications related to it have a future and might become even more widespread
+
+% AHA recommendations and basics
+%   https://www.ahajournals.org/doi/10.1161/circulationaha.106.180200
+- ECG is the most common and fundamental cardiovascular diagnostic procedure
+- it can be used to recognize arrhythmias, electrolyte anomalies, 
+- because of its wide use, reading and using it well is very important
+- most recent advance is the use of computerized methods for storage and
+analysis
+- in the US, most ECGs are recorded and interpreted digitally; their
+implementations might be different and thus not necessarily comparable
+- the ECG processing pipeline is the following:
+    1. signal acquisition and filtering
+    2. data transformation, finding the complexes, classification of the
+       complexes 
+    3. waveform recognition -- finding the onset and offset of the waves
+    4. feature extractoin -- measurement of amplitudes and intervals
+    5. diagnostic classification
+- the 12-lead ecg signal: records potential differences between spots on the
+body during each hearbeat (depolarization and repolarization and voltage of the
+heart cells)
+- the main frequency of the QRS complex on the bodies surface is about 10Hz,
+most information for adults in found below 100Hz; fundamental frequency of
+T waves is about 1-2 Hz
+- the signal processing can easily obscure the important information in an ECG,
+even though a range of 1-30 Hz yields a perfectly good-looking ECG free of
+artifacts
+- ECG sampling
+    - until the 70s, direct writing ECGs were the norm, those were continuous
+    in nature
+    - initial analog to digital sampling is often performed at 10-15 kHz
+    - oversampling is used primarily because pacemaker pulses are too short to
+    be picked up in 500 to 1000 Hz sampling rates
+- low-frequency filtering
+    - heart rate is generally above 0.5 Hz (30 bpm), below 40 bpm is uncommon
+    - we cannot cut of here because that would distort the signal, particularly
+    to the ST segment
+    - digital filtering can be used as a way around this [23]
+    - bidirectional filter that passes once with time, once against time [41]
+    - this approach is not possible in real-time, but in post-processing it
+    would work
+    - a flat step response filter can used in real-time [42]
+- high-frequency filtering
+    - data at 500 samples per second is recommended to reach the required 150
+    Hz cutoff to reduce frequency errors to about 1\%
+- single lead complex
+    - by using templates, variability caused by breathing or other irrelevant
+    disturbances can be removed
+- ecg compression techniques
+    - to make storage more efficient, FFT, discrete cosine transform, wavelet
+    transforms can be used
+- ECG standard leads: 3 limb leads, 3 augmented limb leads, 3 exploring
+electrodes, 6 leads on the chest
+- computerized interpretation: first preprocessing (filtering, sampling,
+template formation, feature extraction), then diagnosis or classification
+- heuristic used to be the norm (decision trees, etc), but statistical methods
+are better because they can form better judgements (one must make sure that
+these methods have enough data of varying kinds to create diagnoses that are
+reliable)
+- they find that computer programs perform with 91.3\% accuracy, while human
+readers are at 96\% -- they may work as supporting data and input to less
+experience users though
+
+% ecg diagnosis of ischemia: past, present, and future
+%   cite https://academic.oup.com/qjmed/article/99/4/219/2261114
+- since 1910 people have been suspecting that artery occlusion can be a cause
+of chest pain
+- since 1920 we know of the most common symptoms of myocardial ischemia
+- in the first few minutes the T wave becomes tall and upright, then the whole
+ST segment becomes elevated relative to the end of the PR segment
+- after a couple hours the T wave may invert
+- the development of Q waves can be an indicator of myocardial infarction
+- there are certain problems in ischemia detection using ECG, some types are
+hard to spot, depending on where in the heart the ischemic tissue is, the
+symptoms can look different on the ECG
+- apparently the exercise stress test is about 63\% sensitive and 77\% specific
+- ischemia is delineated by: "ST elevation is based on ST/junctional ST 
+elevation of 50.1 mV elevation in 51 inferior/lateral leads, or 50.2 mV in 51
+anterior leads. Trials performed by the GUSTO group looking at the benefit of 
+thrombolysis have used more strict definitions such as 50.1 mV in 52 contiguous 
+limb leads or 50.2 mV in 52 contiguous precordial leads." this had 56\%
+sensitivity and 94\% specificity
+- ECG is the main tool to select patients that would benefit from thrombolysis,
+there is a 12h window for effective treatment
+- a stent may be even more effective
+- continuous ST segment monitoring is important while T wave inversion is
+controversial, while it is a marker of severe coronary artery disease
+- thrombolysis when the ECG data is there is only really effective at up to 3h,
+there is little benefit after 9-12h
+- ischemia diagnosis can be improved by correlating heart rate and ST segment
+depression or elevation
+- while ECG is not the most accurate at first, it is real-time and thus does
+not cause disadvantageous delays in treatment -- it is also continuously being
+improved with better diagnostic methods.
+
+% ST, T, U segments
+%   cite https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.108.191096?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed
+- ST and TP segments are normally nearly flat
+- changes in the ST segment and T wave are normally associated with well
+defined anatomic, pathological, physiological, and pharmacological events
+- abnormalities in the ST segment and T wave are primary repolatization
+abnormalities -- caused by ischemia, myocarditis, drugs, toxins, electrolyte
+abnormalities
+- the changes that are direct results of changes in the ventricular 
+depolarization show up in the QRS shape
+- primary and secondary repolarization abnormalities may occur concurrently
+- displacement of the ST segment is usually measured at the junction (J point)
+with the QRS complex
+- the 98th percentile of ST segment voltages seems to be around 0.15 to 0.20 mV
+- elevation of ST is of particular concern in connection to ischemia
+- leads V1, V2, V3 are the main leads where elevation is detected
+- ST segment changes are associated with ischemia are due to current flow
+across the boundary of healthy and ischemic tissue -- injury current
+
+% specific ECG ischemia text
+%   cite https://www.ahajournals.org/doi/full/10.1161/CIRCULATIONAHA.108.191098
+- ECG is the single most important clinical test for diagnosing myocardial
+ischemia and infarction
+- ECG interpretation in emergency situations is generally the basis for
+immediate therapeutic intervention or further diagnostic tests
+- main ECG changes are: peaking T waves, ST-segment elevation or depression,
+changes in the QRS complex, and inverted T waves
+- ST segment changes are caused by injury currents
+- current guidelines say that if the ST segment shifts more than 
+a predetermined amount in more than 2 leads, ischemia is present
+- if the ST segment is elevated, we talk of ST segment elevation myocardial
+infarction (STEMI) and non-STEMI (NSTEMI)
+- the changes to the QRS complex depend on where the lead is and where and how
+severe the ischemic area is 
+- current research is moving towards identifying where and how big areas of
+ischemia are based on ECG readings
+- has section about how exactly ECG leads change during ST segment elevation
+
+\par
+An abnormal exercise ECG is defined by ST-segment displacement, generally
+a depression by more than 1mm, measured 0.08 seconds after the J point, that is
+horizontal and downsloping. 
+% cite Gibbons et al., 2002b
+These types of results are generally reported as normal or abnormal, and
+ischemia as positive or negative. Less severe abnormalities can include
+false-positive or false-negative results, but more severe abnormalities are
+pretty certainly bad. 
+Other tests are pharmacologic stress tests (stress induced by pharmacologic
+agents), or computed tomography of the heart.
+
+\newpage
+
 \subsection{\textcite{xie2020}}
 
 \subsubsection{Introduction}
