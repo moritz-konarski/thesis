@@ -6,8 +6,8 @@
 \ProvidesPackage{thesis}
     [2020/12/10 v0.01 LaTeX package for my own purposes]
 
-\newcommand{\thesistitle}{Mathematical Model \\
-    in Acute Cardiac Ischemia Evaluation}
+\newcommand{\thesistitle}{Mathematical Models \\
+    for Acute Cardiac Ischemia Evaluation}
 \newcommand{\thesisauthor}{Moritz M. Konarski}
 \newcommand{\thesissupervisor}{Professor Taalaibek Imanaliev}
 \newcommand{\thesiskeywords}{
@@ -26,12 +26,11 @@
     %showframe
 ]{geometry}
 
-%\RequirePackage[firstpageonly]{draftwatermark}
+\RequirePackage[firstpageonly]{draftwatermark}
 
 %\RequirePackage{showkeys}
 
 \RequirePackage{xcolor}
-
 \RequirePackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -116,7 +115,7 @@
 ]{biblatex}
 \addbibresource{../bib/bibliography.bib}
 
-\RequirePackage{enumitem}
+\RequirePackage[inline]{enumitem}
 \setlist{nosep}
 
 \RequirePackage{subfiles}

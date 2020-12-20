@@ -2,62 +2,112 @@
 
 \begin{document}
 
-\section{Methods and Algorithms in Electrocardiography}
+\section{State of Computerized ECG Analysis}
 
-Recent advances in computer technology have enabled the widespread use of
+Recent advances in computer technology have enabled the use of
 computers in every aspect of ECG acquisition, processing, analysis, and
 storage. In light of these developments, the American Heart Association
-published a series of 6 papers with recommendations
-for the interpretation and standardization of the ECG. They address issues of
-ECG sampling, signal filtering to remove distortions, and detection of the relevant
-features and complexes. For each of the points they provide recommendations to
-maximize the usefulness and accuracy of the ECG \cite{kligfield2007}.\par
+published recommendations for the interpretation and standardization of the 
+ECG. They recommend that the low-frequency cutoff for low-frequency filtering
+of an ECG should be 0.05 Hz or 0.67 Hz for filters that do not exhibit phase
+distortion. For high-frequency filtering they recommend a cutoff of at least
+150 Hz. For the storage of digital ECG samples (at 500 samples per second), it is
+recommended use use compression with an error of less than 10 microvolt 
+\cite{kligfield2007}.\par
 
-The standard approach to using computerized methods in ECG analysis is to
-select a filtering algorithm to remove distortions, choose a method for feature
-recognition and extraction, reducing the number of irrelevant features, and a 
-method for classification. Common methods for
-signal filtering and noise removal are digital filtering, application of the
-wavelet transform, and empirical mode decomposition. Feature recognition
-methods include the Fourier Transform, Fast Fourier Transform, short-time
-Fourier Transform, wavelet analysis, and statistical methods. Methods for
-feature extraction include principal component analysis, linear discriminant
-analysis, independent component analysis, and generalized component analysis.
-Where before decision trees and boolean conditions were used for
-classification, learning algorithms are now becoming more popular. These
-algorithms have the advantage that they are adaptive and can react to changes
-in the input data and they do not need to manually preselected or
-preconfigured to the same extend. The newest trend takes a different approach.
-Instead of splitting the ECG analysis into denoising, feature extraction and
-selection, and classification, it proposes to apply a single, large artificial
-neural network to the raw data. This end-to-end model will then complete all
-the steps that had to be individually tuned before. It will denoise the data,
-select the appropriate features, and classify the result \cite{xie2020}.\par
+\textcite{xie2020} provide an overview of the current approaches to
+computerized ECG analysis. The standard approach to using computerized methods 
+in ECG analysis is comprised of four steps
+\begin{enumerate*}[label=(\arabic*)]
+    \item denoising of the raw ECG signal(s),
+    \item feature engineering,
+    \item dimensionality reduction, and
+    \item classification.
+\end{enumerate*}
+To denoise an ECG, digital filters are often used. Their drawbacks are that
+they only filter out very specific frequencies. Because noisy ECGs contain
+different types of contaminations, digital filters can be inaccurate. Using wavelet 
+transforms for denoising has the advantage that noise can be more precisely
+targeted and the clean signal reconstructed afterwards. Choosing appropriate
+wavelet parameters can be challenging and methods to optimize this process have
+been proposed. Empirical mode decomposition is the third option generally
+employed to denoise an ECG. It does not require the user to set parameters but
+it can lead to a mixing of oscillations of different time scales.\par
 
-\textcite{myers2017} utilized an artificial neural network based on ST-segment
-features to create a risk model that can augment other clinical risk scores.
-Their model uses machine learning to extract more information from an ECG than
-is generally available to a human analyst.\par
+After the signal has been appropriately denoised, feature engineering is
+performed. Feature engineering is the process of extracting features that are 
+relevant for
+diagnosis from the many points the ECG signal contains. The main features
+targeted for extraction are the PQRST features mentioned in the introduction.
+The fast Fourier Transform provides a way of analysing the frequency domain of
+the ECG signal, enabling the detection of the QRS complex and other features.
+The missing time information in the fast Fourier Transform can lead to
+difficulties in detecting time-dependent features. The short-time Fourier 
+Transform adds time information to the fast Fourier Transforms data. This can
+increase the accuracy of the feature extraction. This transform has the
+drawback that there is a tradeoff between the time and frequency resolutions.
+Wavelet transforms can also be used for feature extraction. They have the
+advantage that they are suitable for all frequency ranges. Choosing the right
+wavelet base for the desired application can be a challenge. The discrete
+wavelet transform is the most widely used wavelet transform, thanks to its
+computational efficiency. Statistical methods are also used to extract features
+from ECGs; those methods are generally less affected by noise in the
+signal.\par
 
-\textcite{prasad2018} use a median filter to denoise the ECG, then the fast 
-Fourier Transform to extract features and finally a multi-objective genetic
-algorithm to detect abnormal ECG signals with 98.7\%.\par
+After the features of the ECG have been extracted, it is often necessary to
+reduce the number of features. The reason for this is that a large number of
+features, despite their high accuracy, require a high amount of computation to 
+classify. This lengthy computation can negate the advantages gained by high
+accuracy.
+This process 
+sacrifices a certain amount of information and sometimes
+precision, but significantly speeds up the classification. Feature selection is a process that attempts to select a subset of
+the original data that adequately describes the whole data. Feature selection
+can be performed by a filter that filters out unnecessary attributes based on
+some metric. This methods is relatively simple, but the filtering process
+removes data and thus negatively impacts the precision of further steps. 
+Feature extraction on the other hand uses dimensionality reduction methods to
+keep as much of the original information as possible. Principal component
+analysis preserves as much of the variance in the original data as it can.
+Other algorithms focus on separating classes of data, pattern recognition, or
+retaining the structure of the original data.\par
 
-\textcite{goto2019} trained an artificial intelligence model to recognize the
-need for urgent revascularization. Their model achieved high accuracy based on
-their training data set.\par
+The final stage of the ECG processing is the classification stage. In this
+stage judgements are made based on the prepared input data and the result
+should be a disease diagnosis. In the early stages of computerized ECG
+analysis classification was performed by algorithms based on human actions when
+reading an ECG. Those algorithms were basic and not particularly accurate. 
+Currently, the classification at the end of the preparation process is 
+performed by a machine learning algorithm. Such models include the 
+k-nearest-neighbors model which classifies points into groups but which is very expensive
+to calculate for high-dimensional data. Support vector machines are used for
+pattern recognition and are able to work with small samples. Artificial neural
+networks are robust and can work with complex problems, they are generally more
+accurate than support vector machines. The newest approach is to forego the
+stages discussed here and use a single neural network to perform all the
+required tasks "end-to-end". These networks are fed raw data and the denoising, 
+feature extraction, selection, and classification is performed internally by
+the model \cite{xie2020}.\par
 
+The end-to-end approach to ECG analysis is a relatively new development and is
+being actively researched. The more traditional method using denoising,
+features engineering, and classification as separate steps is also still 
+relevant. The combination of denoising and feature extraction with a machine
+learning classifier can lead to very good results. \textcite{prasad2018} use
+the fast Fourier Transform to extract features from an ECG and then employ a 
+multi-objective genetic algorithm to detect abnormal ECG signals with high accuracy.
 \textcite{vaneghi2012} compare 6 common feature extraction techniques with
-respect to their detection of ventricular late potential. The compared methods
+respect to their detection of ventricular late potentials. The compared methods
 are the autoregressive method, wavelet transform, eigenvector, fast Fourier
-Transform, linear prediction, and independent component analysis. They conclude
-that the eigenvector method is the most effective method.\par
-
-\textcite{marsanova2017} compare the most frequently used classification
-functions for ischemic heart beats. The functions are discriminant function 
-analysis, naive Bayes classifier, support vector machine, and k-nearest 
-neighbours. They found that k-NN and RBF SVM are the most suitable. This
-coincides with existing literature.
+Transform, linear prediction, and independent component analysis.
+\textcite{valupadasu2012} use the fast Fourier Transform to analyze the energy
+level in different frequencies in the ECG of patients with IHD. They find that
+the energy is distributed differently, allowing the distinction of ECGs with
+IHD from those without IHD. \textcite{kaur2016} analyzed ECG signals with both
+the wavelet transform and principal component analysis. They found that the
+wavelet transform outperformed principal component analysis for the detection
+of heart beats in an ECG. Their model achieved an error rate of 0.221\% of 
+incorrectly classified heart beats .
 
 \end{document}
 
