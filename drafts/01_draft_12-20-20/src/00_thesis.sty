@@ -26,7 +26,9 @@
     %showframe
 ]{geometry}
 
-\RequirePackage[firstpageonly]{draftwatermark}
+%\RequirePackage[firstpageonly]{draftwatermark}
+
+%\RequirePackage{showkeys}
 
 \RequirePackage{xcolor}
 
@@ -109,14 +111,13 @@
     backend=biber,
     style=ieee,
     citestyle=numeric,
-    maxnames=4
+    maxnames=4,
+    sortcites
 ]{biblatex}
 \addbibresource{../bib/bibliography.bib}
 
 \RequirePackage{enumitem}
 \setlist{nosep}
-
-%\RequirePackage{showkeys}
 
 \RequirePackage{subfiles}
 

@@ -1,130 +1,77 @@
-% TODO:
-% - fix the capitalization in the references
-% - add page numbers to references where applicable
-% - fix the mit-bih reference
-% - add a section about the different sections of the ECG to the introduction
-% - add a picture of the ECG waveform with annotations, maybe from olvera
 \documentclass[../01_main.tex]{subfiles}
 
 \begin{document}
 
-\section{Introduction}
+\section{Methods and Algorithms in Electrocardiography}
 
-In the year 2016, over 9.4 million people worldwide died of ischemic 
-heart disease (IHD). IHD is responsible for 16.6\% of all deaths, making
-it the most common cause of death globally. Considering all forms of 
-cardiovascular disease, the percentage of deaths attributed to it is 31.4\% 
-(17.9 million deaths). Death caused by IHD disproportionally affects people 
-over 50 years of age, with 91\% of deaths for men and 95\% of deaths for women 
-occurring in that age range. In Kyrgyzstan, 13\% of all deaths in 2016 were 
-caused by IHD \cite{who2018}.\par
+Recent advances in computer technology have enabled the widespread use of
+computers in every aspect of ECG acquisition, processing, analysis, and
+storage. In light of these developments, the American Heart Association
+published a series of 6 papers with recommendations
+for the interpretation and standardization of the ECG. They address issues of
+ECG sampling, signal filtering to remove distortions, and detection of the relevant
+features and complexes. For each of the points they provide recommendations to
+maximize the usefulness and accuracy of the ECG \cite{kligfield2007}.\par
 
-Ischemic heart disease is characterized by restricted blood flow to an area 
-of the heart, causing it to not receive enough blood and oxygen. Blood flow
-restriction is caused by a blockage (or narrowing) in a blood vessel supplying the heart
-muscle. An artery can be blocked by a blood clot, but the most common cause is 
-plaque buildup, which is called atherosclerosis. If the circulation to the
-heart is completely blocked, the cells in the heart muscle begin to die. This
-is called myocardial infarction, more commonly known as a heart attack. The
-deprivation of oxygen the heart experiences leads to the characteristic chest
-pain commonly associated with heart attacks \cite{iom2010}.\par
+The standard approach to using computerized methods in ECG analysis is to
+select a filtering algorithm to remove distortions, choose a method for feature
+recognition and extraction, reducing the number of irrelevant features, and a 
+method for classification. Common methods for
+signal filtering and noise removal are digital filtering, application of the
+wavelet transform, and empirical mode decomposition. Feature recognition
+methods include the Fourier Transform, Fast Fourier Transform, short-time
+Fourier Transform, wavelet analysis, and statistical methods. Methods for
+feature extraction include principal component analysis, linear discriminant
+analysis, independent component analysis, and generalized component analysis.
+Where before decision trees and boolean conditions were used for
+classification, learning algorithms are now becoming more popular. These
+algorithms have the advantage that they are adaptive and can react to changes
+in the input data and they do not need to manually preselected or
+preconfigured to the same extend. The newest trend takes a different approach.
+Instead of splitting the ECG analysis into denoising, feature extraction and
+selection, and classification, it proposes to apply a single, large artificial
+neural network to the raw data. This end-to-end model will then complete all
+the steps that had to be individually tuned before. It will denoise the data,
+select the appropriate features, and classify the result \cite{xie2020}.\par
 
-IHD can be diagnosed before it leads to a heart attack.
-The diagnosis can be performed based on a patient's medical history,
-pharmacologically induced stress, or stress induced by physical exercise.
-During an exercise stress test, an electrocardiograph (sometimes combined with
-other methods) records the patient's heart activity, resulting in an electrocardiogram
-(ECG) \cite{iom2010}. The ECG is a diagnostic tool used to evaluate patients 
-with (suspected) heart problems. It is a non-invasive, real-time, and 
-cost-effective method
-that may be used to diagnose IHD. It is the most common tool used for cardiac
-analysis and diagnosis \cite{alghatrif2012, kligfield2007, xie2020}. The most 
-common form of
-the ECG is the 12-lead variant. The 12-lead ECG consists of 6 leads connected to
-the limbs and of 6 leads connected to the torso of the patient. 
-The leads record the differences in electrical potential
-between the places on the body that they are attached to. This reflects
-the differences in voltage that the heart experiences with each heart beat
-because those voltage differences are conducted by the body. In a way, the ECG
-represents the state of the heart over time. A recorded ECG has the shape of
-a wave over time \cite{kligfield2007, xie2020}. 
-If the nature of the heart beat changes  as the result of 
-a disease like IHD (changing the measurable potentials or their occurrence over 
-time), the ECG is able to record these changes.\par
+\textcite{myers2017} utilized an artificial neural network based on ST-segment
+features to create a risk model that can augment other clinical risk scores.
+Their model uses machine learning to extract more information from an ECG than
+is generally available to a human analyst.\par
 
-The characteristic shape of an ECG for a single heart beat is shown in
-\figref{fig:ecg-waveform}, quoting \cite{wasilewski2012}. The figure has been
-annotated to show the significant features of an ECG. The peaks (or waves) P, 
-Q, R, S, T, and U, as well as the segments between them, are the focus of ECG
-analysis. Multiple of these points taken together form what is called
-a complex; the QRS complex is a good example of this. Using these waves, the
-heart activity can be described and analyzed. In an ECG, the P-wave is the result
-of the atria depolarizing -- the process of blood entering the heart as the
-first step in a heart beat. The QRS complex represents ventricular 
-depolarization, the contraction of the heart causing it to pump blood.
-The T-wave is the return of the ventricle to its polarized state. The U-wave is
-only present in roughly 25\% of the population and may be caused by
-mechanical-electric feedback. The RR interval can be used to
-calculate the heart rate because it represents one complete heart beat
-\cite{wasilewski2012}. The shape of the P, Q, R, S, T, and U waves as well as 
-the duration of various intervals between them are used as indicators of 
-cardiac diseases.
+\textcite{prasad2018} use a median filter to denoise the ECG, then the fast 
+Fourier Transform to extract features and finally a multi-objective genetic
+algorithm to detect abnormal ECG signals with 98.7\%.\par
 
-\begin{figure}[h]
-    \center
-    \fbox{\includegraphics[width=0.9\textwidth]{wasilewski2012}}
-    \caption{A schematic of an ECG waveform, annotated; from \cite{wasilewski2012}}
-    \label{fig:ecg-waveform}
-    \vspace{-10pt}
-\end{figure}
+\textcite{goto2019} trained an artificial intelligence model to recognize the
+need for urgent revascularization. Their model achieved high accuracy based on
+their training data set.\par
 
-Using an ECG to diagnose a cardiac condition is difficult in practice. Small changes
-in the components of the ECG can be indicators of diseases and those changes
-can be overlooked, even by
-trained and specialized physicians. The error chance is even higher for
-non-specialized physicians and trainees \cite{alghatrif2012, xie2020}. 
-For the diagnosis of IHD, changes in the ST-segment and T-wave are of 
-particular interest. An elevation of the ST-segment compared to a normal heart
-beat is one of the main indications of IHD and myocardial infarction.
-A downward depression of the ST-segment, especially in combination with chest
-pain, is another indication of IHD. The changes in the ST-segment are thought
-to be caused by current flow between healthy heart muscle and ischemic heart
-muscle \cite{rautaharju2009, wasilewski2012}.\par
+\textcite{vaneghi2012} compare 6 common feature extraction techniques with
+respect to their detection of ventricular late potential. The compared methods
+are the autoregressive method, wavelet transform, eigenvector, fast Fourier
+Transform, linear prediction, and independent component analysis. They conclude
+that the eigenvector method is the most effective method.\par
 
-The diagnosis of IHD on the basis of an ECG is time sensitive. If
-a patient has IHD or suffers from a heart attack, treatment has to be started
-as soon as possible. Some forms of treatment are most effective in the first
-3 hours after symptom onset and lose most of their effectiveness after 9 to 12
-hours. The diagnosis required for treatment to begin should thus be as quick as 
-possible. The real-time nature of the ECG is an advantage here, even though
-there are more time consuming methods that can deliver more accurate results
-than an ECG \cite{herring2006}.\par
-
-The widespread use of ECGs and the time-sensitive nature of their application 
-as diagnostic tools makes errors, delays, or inconsistencies in their
-interpretation unacceptable. A recent approach to minimizing this problem
-is the application of computer technology in ECG recording, storage, and
-analysis. The main steps of computerized ECG analysis are
-\cite{kligfield2007}
-\begin{enumerate}[label=\arabic*.]
-    \item signal acquisition and filtering,
-    \item data transformation or preparation for processing,
-    \item \label{enum:3} waveform recognition,
-    \item \label{enum:4}feature extraction, and
-    \item classification or diagnosis.
-\end{enumerate}
-
-This research will investigate steps \ref{enum:3} and \ref{enum:4} through
-the use of different feature extraction algorithms. The ECG data will be
-retrieved from the European ST-T Database. This database provides ECG 
-recordings that can be used as trial data to test feature extraction algorithms. 
-The European ST-T Database contains annotations made by cardiologists 
-indicating the ST-segment, T-wave, and their changes. They also include
-information about the suspected disease \cite{physionet, taddei1992}. This 
-information can be used to determine the effectiveness of the feature 
-extraction algorithms.
+\textcite{marsanova2017} compare the most frequently used classification
+functions for ischemic heart beats. The functions are discriminant function 
+analysis, naive Bayes classifier, support vector machine, and k-nearest 
+neighbours. They found that k-NN and RBF SVM are the most suitable. This
+coincides with existing literature.
 
 \end{document}
+
+- Since the 1910s people have been using the ECG to diagnose IHD.
+- Since 1954, the American Heart Association has recommended a standardized
+12-lead ECG, 6 leads on the chest, 
+
+- They have a high rate of misinterpretation among non-specialized physicians and
+especially trainees. 
+
+% cite https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7400524/
+%   future applications and current standing
+- future of cardiography might be in wearable devices, meaning that ECG and
+applications related to it have a future and might become even more widespread
 
 % AHA recommendations and basics
 %   https://www.ahajournals.org/doi/10.1161/circulationaha.106.180200
