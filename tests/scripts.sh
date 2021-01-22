@@ -2,7 +2,7 @@
 
 # to download an ecg record, save with header as csv
 
-rdsamp -r mitdb/100 -p -v -c > 100.txt
+rdsamp -r mitdb/100 -p -v -c > 100.mitbih
 
 # to download the annotations
 
