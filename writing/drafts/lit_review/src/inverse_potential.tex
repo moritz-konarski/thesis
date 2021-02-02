@@ -34,7 +34,26 @@
     \item for experiment description read the paper
     \item tank surface is $\Gamma_1$, epicardial frame surface is $\Gamma_0$,
         and $\Omega$ the volume bounded by $\Gamma_0$, $\Gamma_1$
-    \item p. 6 / 358
+    \item we have electrodes on the gammas and can approximate omega
+    \item the electric cardiac potential $V(x,t)$ is the solution to
+        \begin{equation}\nonumber
+            \begin{gathered}
+                \Delta V(x, t) = V_{xx} + V_{yy} + V_{zz} = 0 \qquad
+                \text{in}\, \Omega,\\
+                V(x,t) = u(x,t) \qquad \text{on}\, \Gamma_0,\\
+                \frac{\partial V(x,t)}{\partial n} = 0 \qquad \text{on}\,
+                \Gamma_1
+            \end{gathered}
+        \end{equation}
+    \item $u(x,t)$ is the epicardial potential distribution at $t$, $n$ is the
+        normal vector to $\Gamma_1$ (from the insulating layer around the whole
+        thing, nothing gets out)
+    \item trace of $V$ on $\Gamma_1$ is the thorax potential distribution,
+        denoted by $z(x,t)$
+    \item we have a linear operator $A$ transforming $u$ to $z$
+    \item direct problem of electrocardiography is solving the above system of
+        equations
+    \item problem is discretized using finite-element methods 
 \end{itemize}
 
 \end{document}
