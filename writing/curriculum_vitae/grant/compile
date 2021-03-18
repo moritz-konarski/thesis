@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd build
-latexmk ../main.tex -pdf
-cd ..
-cp ./build/main.pdf ./_main.pdf
