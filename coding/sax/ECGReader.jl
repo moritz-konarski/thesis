@@ -8,6 +8,20 @@ Email: konarski_m@auca.kg
 GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 
+"""
+Module of the ECGReader
+"""
+module ECGReader
+
+export get_ECGChannel
+export ECGLead
+export ECG
+export ECGChannel
+export list_ECG_channels
+export get_ECGChannel
+
+# TODO: use keyword arguments whereever appropriate
+
 using CSV, Tables
 
 """
@@ -49,7 +63,35 @@ struct ECG
     start_index::UInt64
     end_index::UInt64
     data::Array{Float64,2}
-    channels::Array{ECGLead}
+    channels::Vector{ECGLead}
+end
+
+"""
+Struct for an ECG channel
+"""
+struct ECGChannel
+    name::ECGLead
+    sampling_frequency::UInt64
+    start_index::UInt64
+    end_index::UInt64
+    data::Vector{Float64}
+end
+
+function list_ECG_channels(ecg::ECG)::Vector{ECGLead}
+    return ecg.channels
+end
+
+function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
+    if channel in ecg.channels
+        index = findall(x -> (x == channel), ecg.channels)
+        if length(index) == 1
+            return ECGChannel(channel, ecg.sampling_frequency, ecg.start_index, ecg.end_index, ecg.data[:, index[1]])
+        else
+            # TODO: fix this case
+        end
+    else
+        # TODO: error out
+    end
 end
 
 """
@@ -123,8 +165,8 @@ function get_ECG(
     ecg_pointer::ECGPointer,
     start_index::UInt64,
     end_index::UInt64,
-    channels::Array{ECGLead,1},
-    extract_channels::Array{Bool,1},
+    channels::Vector{ECGLead},
+    extract_channels::Vector{Bool},
 )::ECG
     if start_index >= end_index ||
        start_index < 1 ||
@@ -159,8 +201,8 @@ function get_ECG(
     ecg_pointer::ECGPointer,
     start_index::Int64,
     end_index::Int64,
-    channels::Array{ECGLead,1},
-    extract_channels::Array{Bool,1},
+    channels::Vector{ECGLead},
+    extract_channels::Vector{Bool},
 )::ECG
     return get_ECG(
         ecg_pointer,
@@ -170,3 +212,5 @@ function get_ECG(
         extract_channels,
     )
 end
+
+end #module
