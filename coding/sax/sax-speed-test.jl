@@ -8,7 +8,6 @@ Email: konarski_m@auca.kg
 GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 
-
 include("Constants.jl")
 include("ECGReader.jl")
 include("PAA.jl")

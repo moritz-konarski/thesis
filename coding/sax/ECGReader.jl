@@ -40,8 +40,6 @@ function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
                 ecg.start_index,
                 ecg.end_index,
                 ecg.data[:, index[1]],
-                0.0,
-                0.0,
             )
         else
             # TODO: fix this case
@@ -178,8 +176,6 @@ function read_full_ECGChannel(filename::String, sampling_frequency::Int64, extra
         1,
         end_index,
         data[1:end_index, list[1]],
-        0.0,
-        0.0,
     ), w
 end
 

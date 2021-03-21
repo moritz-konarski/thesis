@@ -13,30 +13,44 @@ include("Constants.jl")
 include("ECGReader.jl")
 include("PAA.jl")
 include("SAX.jl")
+include("Distance.jl")
 
 using Plots
 
 fs = 360
 filepath = "../mitbih/100.mitbih"
-start_index = 1
+start_index = 78
+start_index2 = 371
+# start_index2 = 340
 end_index = 720
 c = I
 channels = [None, I, II]
 extract_channels = [false, true, false]
-w = unsigned(12)
+# w = unsigned(12)
+w = unsigned(48)
 n = unsigned(8)
 
-p = read_csv_file(filepath, fs)
+function get_channel_sax(start_index::UInt64, length::UInt64)::Tuple{ECGChannel,SAX}
 
-ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
+    end_index::UInt64 = start_index + length
+    p = read_csv_file(filepath, fs)
 
-channel = get_ECGChannel(ecg, c)
+    ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
 
-normalized = normalize_ECGChannel(channel)
+    channel = get_ECGChannel(ecg, c)
 
-paa = calculate_paa(normalized, w)
+    normalized = normalize_ECGChannel(channel)
 
-println(compute_breakpoints(w))
-println(compute_alphabet(w))
+    paa = calculate_paa(normalized, w)
 
-calculate_sax(paa, n)
+    sax = calculate_sax(paa, n)
+    return channel, sax
+end
+
+c1, s1 = get_channel_sax(unsigned(start_index), unsigned(719))
+
+c2, s2 = get_channel_sax(unsigned(start_index2), unsigned(719))
+
+println("E = $(euclidean_distance(c1, c2))")
+println("m = $(mindist(s1, s2))")
+println("tolb = $(tightness_of_lower_bound(c1 ,c2, s1, s2))")

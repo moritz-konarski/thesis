@@ -15,7 +15,7 @@ include("SAX.jl")
 
 using Plots
 
-factor = 3
+factor = 1
 fs = 360
 filepath = "../mitbih/100.mitbih"
 start_index = 1
@@ -23,8 +23,9 @@ end_index = factor*720
 c = I
 channels = [None, I, II]
 extract_channels = [false, true, false]
-w = unsigned(factor*40)
-n = unsigned(9)
+# w = unsigned(factor*40)
+w = unsigned(factor*16)
+n = unsigned(7)
 
 p = read_csv_file(filepath, fs)
 
@@ -63,7 +64,7 @@ for (i, y) in enumerate(ys)
     xs[i] = (i-0.5) * (paa.end_index - paa.start_index) / paa.w
 end
 
-plot!(p1, xs, ys, seriestype = :scatter, series_annotations = text.(calculate_sax(paa, n), :bottom))
-ylims!(-2, 3)
+plot!(p1, xs, ys, seriestype = :scatter, series_annotations = text.(calculate_sax(paa, n).data, :bottom))
+# ylims!(-2, 3)
 
 # savefig("./test.png")

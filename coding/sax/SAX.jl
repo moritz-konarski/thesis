@@ -39,7 +39,7 @@ function compute_alphabet(n::UInt64)::Vector{Char}
     return alphabet
 end
 
-function calculate_sax(paa::PAA, n::UInt64)#::SAX
+function calculate_sax(paa::PAA, n::UInt64)::SAX
 
     β = compute_breakpoints(n)
     alphabet = compute_alphabet(n)
@@ -61,6 +61,5 @@ function calculate_sax(paa::PAA, n::UInt64)#::SAX
         end
     end
 
-    # println(sax)
-    return sax
+    return SAX(paa.name, paa.sampling_frequency, paa.start_index, paa.end_index, paa.w, sax, alphabet, β)
 end
