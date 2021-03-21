@@ -11,71 +11,20 @@ GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 Module of the ECGReader
 """
-module ECGReader
+# module ECGReader
 
-export get_ECGChannel
-export ECGLead
-export ECG
-export ECGChannel
-export list_ECG_channels
-export get_ECGChannel
+# export get_ECGChannel
+# export ECGLead
+# export ECG
+# export ECGChannel
+# export list_ECG_channels
+# export get_ECGChannel
 
-# TODO: use keyword arguments whereever appropriate
 
 using CSV, Tables
 
-"""
-Enum for different types of ECG leads
-"None" is for all array elements that are not ECG leads, but other data
-(indices, timestamps, ...)
-"""
-@enum ECGLead begin
-    None
-    I
-    II
-    III
-    aVR
-    aVL
-    aVF
-    V1
-    V2
-    V3
-    V4
-    V5
-    V6
-end
-
-"""
-Struct for the basic properties of an ECG file
-"""
-struct ECGPointer
-    filename::String
-    sampling_frequency::UInt64
-    length::UInt64
-    channels::UInt64
-end
-
-"""
-Struct for the ECG
-"""
-struct ECG
-    sampling_frequency::UInt64
-    start_index::UInt64
-    end_index::UInt64
-    data::Array{Float64,2}
-    channels::Vector{ECGLead}
-end
-
-"""
-Struct for an ECG channel
-"""
-struct ECGChannel
-    name::ECGLead
-    sampling_frequency::UInt64
-    start_index::UInt64
-    end_index::UInt64
-    data::Vector{Float64}
-end
+# include("./Constants.jl")
+# using .Constants
 
 function list_ECG_channels(ecg::ECG)::Vector{ECGLead}
     return ecg.channels
@@ -85,7 +34,13 @@ function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
     if channel in ecg.channels
         index = findall(x -> (x == channel), ecg.channels)
         if length(index) == 1
-            return ECGChannel(channel, ecg.sampling_frequency, ecg.start_index, ecg.end_index, ecg.data[:, index[1]])
+            return ECGChannel(
+                channel,
+                ecg.sampling_frequency,
+                ecg.start_index,
+                ecg.end_index,
+                ecg.data[:, index[1]],
+            )
         else
             # TODO: fix this case
         end
@@ -97,35 +52,24 @@ end
 """
 Returns the index of the ecg array for a specific time stamp
 """
-function get_index_from_timestamp(
-    ecg_pointer::ECGPointer,
-    timestamp::Float64,
-)::UInt64
+function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Float64)::UInt64
     if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
         # TODO: error out
     end
 
-    return convert(
-        UInt64,
-        round(timestamp * ecg_pointer.sampling_frequency, digits = 0),
-    ) + 1
+    return convert(UInt64, round(timestamp * ecg_pointer.sampling_frequency, digits = 0)) +
+           1
 end
 
 """
 Returns the index of the ecg array for a specific time stamp
 """
-function get_index_from_timestamp(
-    ecg_pointer::ECGPointer,
-    timestamp::Int64,
-)::UInt64
+function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Int64)::UInt64
     if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
         # TODO: error out
     end
 
-    return convert(
-        UInt64,
-        timestamp * ecg_pointer.sampling_frequency
-    ) + 1
+    return convert(UInt64, timestamp * ecg_pointer.sampling_frequency) + 1
 end
 
 """
@@ -149,12 +93,7 @@ to it
 """
 function read_csv_file(filename::String, sampling_frequency::Int64)::ECGPointer
     data::Array{Float64,2} = CSV.File(filename) |> Tables.matrix
-    ECGPointer(
-        filename,
-        unsigned(sampling_frequency),
-        size(data)[1],
-        size(data)[2],
-    )
+    ECGPointer(filename, unsigned(sampling_frequency), size(data)[1], size(data)[2])
 end
 
 """
@@ -213,4 +152,4 @@ function get_ECG(
     )
 end
 
-end #module
+# end #module
