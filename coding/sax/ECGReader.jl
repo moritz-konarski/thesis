@@ -40,6 +40,8 @@ function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
                 ecg.start_index,
                 ecg.end_index,
                 ecg.data[:, index[1]],
+                0.0,
+                0.0,
             )
         else
             # TODO: fix this case
@@ -150,6 +152,35 @@ function get_ECG(
         channels,
         extract_channels,
     )
+end
+
+function read_full_ECGChannel(filename::String, sampling_frequency::Int64, extract_channels::Vector{Bool}, name::ECGLead, n::Int64)::Tuple{ECGChannel,UInt64}
+    data::Array{Float64,2} = CSV.File(filename) |> Tables.matrix
+
+    list = Vector{UInt64}()
+    for (i, bool) in enumerate(extract_channels)
+        if bool
+            push!(list, unsigned(i))
+        end
+    end
+
+    if length(list) == 0
+        # TODO: exit out
+    end
+    
+    end_index::UInt64 = length(data[:, 1]) - (length(data[:, 1]) % n)
+
+    w::UInt64 = unsigned((length(data[:, 1]) - (length(data[:, 1]) % speed_ppi)) ÷ speed_ppi)
+
+    return ECGChannel(
+        name,
+        sampling_frequency,
+        1,
+        end_index,
+        data[1:end_index, list[1]],
+        0.0,
+        0.0,
+    ), w
 end
 
 # end #module

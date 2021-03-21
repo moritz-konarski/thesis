@@ -69,6 +69,8 @@ struct ECGChannel
     start_index::UInt64
     end_index::UInt64
     data::Vector{Float64}
+    μ::Float64
+    σ::Float64
 end
 
 struct PAA
@@ -78,6 +80,8 @@ struct PAA
     end_index::UInt64
     w::UInt64
     data::Vector{Float64}
+    μ::Float64
+    σ::Float64
 end
 
 

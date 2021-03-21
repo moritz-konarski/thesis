@@ -13,29 +13,25 @@ Module to perform PAA
 """
 # module PAA
 
-using Statistics
+using StatsBase
 
 function normalize_ECGChannel(ecg_channel::ECGChannel)::ECGChannel
-    μ::Float64 = mean(ecg_channel.data)
-    σ::Float64 = stdm(ecg_channel.data, μ)
-    data::Vector{Float64} = (ecg_channel.data .- μ) ./ σ
+    μ::Float64, σ::Float64 = mean_and_std(ecg_channel.data)
     return ECGChannel(
         ecg_channel.name,
         ecg_channel.sampling_frequency,
         ecg_channel.start_index,
         ecg_channel.end_index,
-        data,
+        standardize(ZScoreTransform, ecg_channel.data),
+        μ,
+        σ,
     )
 end
-
-# we have ecg of length n
-# can be represented in w dimensions
-# vector c_bar
-# ith element of c bar is
 
 function calculate_paa(ecg_channel::ECGChannel, w::UInt64)::PAA
     n = length(ecg_channel.data)
     if n % w != 0
+        println("N cannot be evenly divided by w")
         exit(-1)
     end
     sum::Float64 = 0.0
@@ -47,7 +43,7 @@ function calculate_paa(ecg_channel::ECGChannel, w::UInt64)::PAA
         end
         c_bar[i] = w / n * sum
     end
-    return PAA(ecg_channel.name, ecg_channel.sampling_frequency, ecg_channel.start_index, ecg_channel.end_index, w, c_bar)
+    return PAA(ecg_channel.name, ecg_channel.sampling_frequency, ecg_channel.start_index, ecg_channel.end_index, w, c_bar, ecg_channel.μ, ecg_channel.σ)
 end
 
 # end #module
