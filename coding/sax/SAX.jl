@@ -10,7 +10,7 @@ GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 
 using StatsFuns
 
-function compute_breakpoints(n::UInt64)::Vector{Float64}
+function compute_sax_breakpoints(n::UInt64)::Vector{Float64}
     if n < 3
         # TODO: error out
     end
@@ -41,7 +41,7 @@ end
 
 function calculate_sax(paa::PAA, n::UInt64)::SAX
 
-    β = compute_breakpoints(n)
+    β = compute_sax_breakpoints(n)
     alphabet = compute_alphabet(n)
     alphabet_max::UInt64 = length(alphabet)
     sax = Vector{Char}()

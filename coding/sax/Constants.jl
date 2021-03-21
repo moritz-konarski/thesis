@@ -91,5 +91,46 @@ struct SAX
     breakpoints::Vector{Float64}
 end
 
+struct EPAA
+    name::ECGLead
+    sampling_frequency::UInt64
+    start_index::UInt64
+    end_index::UInt64
+    w::UInt64
+    data::Vector{Tuple{Float64, Float64,Float64 }}
+end
+
+struct ESAX
+    name::ECGLead
+    sampling_frequency::UInt64
+    start_index::UInt64
+    end_index::UInt64
+    w::UInt64
+    data::Vector{Tuple{Char,Char,Char}}
+    alphabet::Vector{Char}
+    breakpoints::Vector{Float64}
+end
+
+struct TPAA
+    name::ECGLead
+    sampling_frequency::UInt64
+    start_index::UInt64
+    end_index::UInt64
+    w::UInt64
+    data::Vector{Float64}
+    bits::Vector{Bool}
+end
+
+struct TSAX
+    name::ECGLead
+    sampling_frequency::UInt64
+    start_index::UInt64
+    end_index::UInt64
+    w::UInt64
+    data::Vector{Char}
+    bits::Vector{Bool}
+    alphabet::Vector{Char}
+    breakpoints::Vector{Float64}
+end
 
 # end # module
