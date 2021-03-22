@@ -16,18 +16,23 @@ include("SAX.jl")
 
 using Plots
 
-factor = 5
+factor = 2
 fs = 360
-filepath = "../mitbih/113.mitbih"
+filepath = "../mitbih/103.mitbih"
+# filepath = "../mitbih/113.mitbih"
 # filepath = "../mitbih/100.mitbih"
-offset  = 10*720
+# offset  = 11*720
+# offset  = 83
+offset = 602_000
 start_index = 1 + offset
 end_index = factor*720 + offset
 c = I
+d = II
 channels = [None, I, II]
-extract_channels = [false, true, false]
+extract_channels = [false, true, true]
 # w = unsigned(factor*40)
 w = unsigned(factor*18)
+# w = unsigned(factor*50)
 n = unsigned(7)
 
 println("read csv file")
@@ -37,33 +42,44 @@ println("extract ECG data")
 ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
 
 println("extract single channel data")
-channel = get_ECGChannel(ecg, c)
+channel1 = get_ECGChannel(ecg, c)
 
 println("normalize ECG channel")
-normalized = normalize_ECGChannel(channel)
+normalized1 = normalize_ECGChannel(channel1)
 
 println("calulate PAA")
-paa = calculate_paa(normalized, w)
+paa1 = calculate_paa(normalized1, w)
 
-sax = calculate_sax(paa, n)
+sax1 = calculate_sax(paa1, n)
+
+println("extract single channel data")
+channel2 = get_ECGChannel(ecg, d)
+
+println("normalize ECG channel")
+normalized2 = normalize_ECGChannel(channel2)
+
+println("calulate PAA")
+paa2 = calculate_paa(normalized2, w)
+
+sax2 = calculate_sax(paa2, n)
 
 # p1 = plot(channel.data)
 # xlabel!(p1, "raw")
 
 println("plot normalized data")
 xs = start_index:end_index
-p1 = plot(xs, normalized.data)
+p1 = plot(xs, normalized1.data)
 # xlabel!(p2, "normalized")
 
 println("plot segments data")
-ys = repeat(paa.data, inner=2)
+ys = repeat(paa1.data, inner=2)
 
 xs = zeros(Float64, length(ys))
 for (i, y) in enumerate(ys)
     if i % 2 == 1
-        xs[i] = (i-1) * (paa.end_index - paa.start_index) / paa.w / 2 + offset
+        xs[i] = (i-1) * (paa1.end_index - paa1.start_index) / paa1.w / 2 + offset
     else
-        xs[i] = (i) * (paa.end_index - paa.start_index) / paa.w / 2 + offset
+        xs[i] = (i) * (paa1.end_index - paa1.start_index) / paa1.w / 2 + offset
     end
 end
 
@@ -72,14 +88,14 @@ plot!(p1, xs, ys)
 
 
 println("plot and calculate sax")
-ys = paa.data
+ys = paa1.data
 
 xs = zeros(Float64, length(ys))
 for (i, y) in enumerate(ys)
-    xs[i] = (i-0.5) * (paa.end_index - paa.start_index) / paa.w + offset
+    xs[i] = (i-0.5) * (paa1.end_index - paa1.start_index) / paa1.w + offset
 end
 
-plot!(p1, xs, ys, seriestype = :scatter, series_annotations = text.(sax.data, :bottom))
+plot!(p1, xs, ys, seriestype = :scatter, series_annotations = text.(sax1.data, :bottom))
 
 # plot!(p1, [1400; 1400], [6; -2.5], color="black", label="sax and tsax")
 # plot!(p1, [1400+8*40; 1400+8*40], [6; -2.5], color="black")
@@ -93,6 +109,42 @@ plot!(p1, xs, ys, seriestype = :scatter, series_annotations = text.(sax.data, :b
 
 
 # xlims!(start_index, end_index)
-ylims!(-2, 6)
+# ylims!(-3.5, 6)
 
 # savefig("./test.png")
+
+println("plot normalized data")
+xs = start_index:end_index
+p2 = plot(xs, normalized2.data)
+# xlabel!(p2, "normalized")
+
+println("plot segments data")
+ys = repeat(paa2.data, inner=2)
+
+xs = zeros(Float64, length(ys))
+for (i, y) in enumerate(ys)
+    if i % 2 == 1
+        xs[i] = (i-1) * (paa2.end_index - paa2.start_index) / paa2.w / 2 + offset
+    else
+        xs[i] = (i) * (paa2.end_index - paa2.start_index) / paa2.w / 2 + offset
+    end
+end
+
+plot!(p2, xs, ys)
+# plot!(p1, xs, ys, seriestype = :scatter)
+
+
+println("plot and calculate sax")
+ys = paa2.data
+
+xs = zeros(Float64, length(ys))
+for (i, y) in enumerate(ys)
+    xs[i] = (i-0.5) * (paa2.end_index - paa2.start_index) / paa2.w + offset
+end
+
+plot!(p2, xs, ys, seriestype = :scatter, series_annotations = text.(sax2.data, :bottom))
+# ylims!(-3.05, 6))
+
+plot(p1)
+
+# plot(p1, p2, layout = (2, 1), labels = ["ECG" "PAA" "SAX"], title = ["MLII" "V1"])
