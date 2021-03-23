@@ -1,123 +1,185 @@
 """
-Main Function
+SUMMARY
+Program that finds the top 1 most different segment of an ECG by brute force
+using SAX, ESAX, TSAX, and Euclidean Distance
 
+SOURCE
+brute force algorithm adapted from:
+E. Keogh, J. Lin, A. W. Fu, and H. Van Herle, “Finding Unusual Medical Time-Series Subsequences: Algorithms and Applications,” IEEE Trans. Inform. Technol. Biomed., vol. 10, no. 3, pp. 429–439, Jul. 2006, doi: 10.1109/TITB.2005.863870.
+
+META-INFO
+Date: 23.03.2021
 Author: Moritz M. Konarski
-Date: 20.03.2021
-
 Email: konarski_m@auca.kg
 GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 
-include("Constants.jl")
-include("Statistics.jl")
+# include files
+# ORDER MATTERS
+include("Header.jl")
+include("Helpers.jl")
 include("ECGReader.jl")
-include("PAA.jl")
 include("SAX.jl")
 include("ESAX.jl")
 include("TSAX.jl")
 include("Distance.jl")
 
+# sampling frequency of the ECG
 fs = 360
+# location of the ECG file (MITBIH file in csv form, command is "rdsamp -r mitdb/113 -p -v -c > 113.mitbih")
 filepath = "../mitbih/113.mitbih"
-# filepath = "../mitbih/100.mitbih"
-start_index = 83
-# start_index2 = 371
-# start_index2 = 340
-# end_index = 720
-c = I
+# types of channels in the ECG
 channels = [None, I, II]
+# which ECG channels to extract
 extract_channels = [false, true, false]
-# w = unsigned(12)
-# w = unsigned(48)
-# n = unsigned(8)
+# ECG channel to be selected
+c = I
 
-function get_channel_tsax(start_index::UInt64, end_index::UInt64, w::UInt64, n::UInt64)::Tuple{ECGChannel,TSAX}
+"""
+Function returning the desired ECG channel and it's TSAX representation
+Inputs:
+    - start index of the ECG segment
+    - end index of the ECG segment
+Outputs:
+    - normalized ECG Channel
+"""
+function get_normalized_ECGChannel(start_index::UInt64, end_index::UInt64)::ECGChannel
 
+    # read in the ECG, get a "pointer" to it back
     println("read csv")
-    # end_index::UInt64 = start_index + length
     p = read_csv_file(filepath, fs)
-    # w = (length + 1) ÷ n
 
+    # extract the desired ECG from the csv file
     println("read ECG")
     ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
 
+    # get the desired channel from the ECG
     println("get channel")
     channel = get_ECGChannel(ecg, c)
 
-    println("normalize channel")
-    normalized = normalize_ECGChannel(channel)
-
-    println("calculate tpaa")
-    tpaa = calculate_tpaa(normalized, w)
-    # println(length(tpaa.data))
-
-    println("calculate tsax")
-    tsax = calculate_tsax(tpaa, n)
-    return channel, tsax
+    # z normalize the ECG channel
+    println("z normalize channel")
+    return normalize_ECGChannel(channel)
 end
 
-function get_channel_esax(start_index::UInt64, end_index::UInt64, w::UInt64, n::UInt64)::Tuple{ECGChannel,ESAX}
+"""
+Function returning the desired ECG channel and it's TSAX representation
+Inputs:
+    - start index of the ECG segment
+    - end index of the ECG segment
+    - w (number of segments for PAA)
+    - n (number of letters in TSAX - alphabet size)
+Outputs:
+    - Tuple of
+        - ECG channel
+        - TSAX representation of ECG channel
+"""
+function get_channel_tsax(
+    start_index::UInt64,
+    end_index::UInt64,
+    w::UInt64,
+    n::UInt64,
+)::Tuple{ECGChannel,TSAX}
 
-    println("read csv")
-    # end_index::UInt64 = start_index + length
-    p = read_csv_file(filepath, fs)
-    # w = (length + 1) ÷ n
+    # get a normalized ECG channel
+    normalized = get_normalized_ECGChannel(start_index, end_index)
 
-    println("read ECG")
-    ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
+    # calculate the pieacewise aggregate approximation for TSAX
+    println("calculate tpaa")
+    tpaa = calculate_tpaa(normalized, w)
 
-    println("get channel")
-    channel = get_ECGChannel(ecg, c)
+    # turn tpaa into TSAX representation
+    println("calculate tsax")
+    tsax = calculate_tsax(tpaa, n)
 
-    println("normalize channel")
-    normalized = normalize_ECGChannel(channel)
+    return normalized, tsax
+end
 
+"""
+Function returning the desired ECG channel and it's ESAX representation
+Inputs:
+    - start index of the ECG segment
+    - end index of the ECG segment
+    - w (number of segments for PAA)
+    - n (number of letters in ESAX - alphabet size)
+Outputs:
+    - Tuple of
+        - ECG channel
+        - ESAX representation of ECG channel
+"""
+function get_channel_esax(
+    start_index::UInt64,
+    end_index::UInt64,
+    w::UInt64,
+    n::UInt64,
+)::Tuple{ECGChannel,ESAX}
+
+    # get a normalized ECG channel
+    normalized = get_normalized_ECGChannel(start_index, end_index)
+
+    # calculate the pieacewise aggregate approximation for ESAX
     println("calculate epaa")
     epaa = calculate_epaa(normalized, w)
 
+    # turn tpaa into ESAX representation
     println("calculate esax")
     esax = calculate_esax(epaa, n)
-    return channel, esax
+
+    return normalized, esax
 end
 
-function get_channel_sax(start_index::UInt64, end_index::UInt64, w::UInt64, n::UInt64)::Tuple{ECGChannel,SAX}
+"""
+Function returning the desired ECG channel and it's SAX representation
+Inputs:
+    - start index of the ECG segment
+    - end index of the ECG segment
+    - w (number of segments for PAA)
+    - n (number of letters in SAX - alphabet size)
+Outputs:
+    - Tuple of
+        - ECG channel
+        - SAX representation of ECG channel
+"""
+function get_channel_sax(
+    start_index::UInt64,
+    end_index::UInt64,
+    w::UInt64,
+    n::UInt64,
+)::Tuple{ECGChannel,SAX}
 
-    println("read csv")
-    # end_index::UInt64 = start_index + length
-    p = read_csv_file(filepath, fs)
-    # w = (length + 1) ÷ n
-
-    println("read ECG")
-    ecg = get_ECG(p, start_index, end_index, channels, extract_channels)
-
-    println("get channel")
-    channel = get_ECGChannel(ecg, c)
-
-    println("normalize channel")
-    normalized = normalize_ECGChannel(channel)
+    # get a normalized ECG channel
+    normalized = get_normalized_ECGChannel(start_index, end_index)
 
     println("calculate PAA")
     paa = calculate_paa(normalized, w)
 
     println("calculate SAX")
     sax = calculate_sax(paa, n)
-    return channel, sax
+
+    return normalized, sax
 end
 
+"""
+Function returning the location of most different segment of a SAX representation
+Inputs:
+    - SAX representation
+    - n (length of the sequence to be found)
+Outputs:
+    - Tuple of
+        - highest found distance
+        - index of where the highest distance is
+"""
 function brute_force(sax::SAX, n::Int64)::Tuple{Float64,Int64}
     best_dist::Float64 = typemin(Float64)
     best_location::Int64 = typemax(Int64)
     l = (length(sax.data) - n + 1)
-    
-    for p in 1:l
-        # println("$p / $l")
+
+    for p = 1:l
         nearest_dist = typemax(Float64)
 
-        for q in 1:l
-            # println("   $q / $l")
+        for q = 1:l
             if abs(p - q) >= n
-                d = mindist(sub_SAX(sax, p, p+n-1), sub_SAX(sax, q, q+n-1))
-                # println(nearest_dist)
+                d = mindist(subsequence(sax, p, p + n - 1), subsequence(sax, q, q + n - 1))
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -133,20 +195,30 @@ function brute_force(sax::SAX, n::Int64)::Tuple{Float64,Int64}
     return best_dist, best_location
 end
 
+"""
+Function returning the location of most different segment of a ESAX representation
+Inputs:
+    - ESAX representation
+    - n (length of the sequence to be found)
+Outputs:
+    - Tuple of
+        - highest found distance
+        - index of where the highest distance is
+"""
 function brute_force(esax::ESAX, n::Int64)::Tuple{Float64,Int64}
     best_dist::Float64 = typemin(Float64)
     best_location::Int64 = typemax(Int64)
     l = (length(esax.data) - n + 1)
-    
-    for p in 1:l
-        # println("$p / $l")
+
+    for p = 1:l
         nearest_dist = typemax(Float64)
 
-        for q in 1:l
-            # println("   $q / $l")
+        for q = 1:l
             if abs(p - q) >= n
-                d = mindist(sub_ESAX(esax, p, p+n-1), sub_ESAX(esax, q, q+n-1))
-                # println(nearest_dist)
+                d = mindist(
+                    subsequence(esax, p, p + n - 1),
+                    subsequence(esax, q, q + n - 1),
+                )
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -162,21 +234,30 @@ function brute_force(esax::ESAX, n::Int64)::Tuple{Float64,Int64}
     return best_dist, best_location
 end
 
+"""
+Function returning the location of most different segment of a TSAX representation
+Inputs:
+    - TSAX representation
+    - n (length of the sequence to be found)
+Outputs:
+    - Tuple of
+        - highest found distance
+        - index of where the highest distance is
+"""
 function brute_force(tsax::TSAX, n::Int64)::Tuple{Float64,Int64}
     best_dist::Float64 = typemin(Float64)
     best_location::Int64 = typemax(Int64)
     l = (length(tsax.data) - n + 1)
-    
-    for p in 1:l
-        # println("$p / $l")
+
+    for p = 1:l
         nearest_dist = typemax(Float64)
 
-        for q in 1:l
-            # println("   $q / $l")
+        for q = 1:l
             if abs(p - q) >= n
-                # println("$p $q")
-                d = tsax_dist(sub_TSAX(tsax, p, p+n-1), sub_TSAX(tsax, q, q+n-1))
-                # println(nearest_dist)
+                d = tsax_dist(
+                    subsequence(tsax, p, p + n - 1),
+                    subsequence(tsax, q, q + n - 1),
+                )
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -192,18 +273,30 @@ function brute_force(tsax::TSAX, n::Int64)::Tuple{Float64,Int64}
     return best_dist, best_location
 end
 
+"""
+Function returning the location of most different segment of a ECG Channel
+Inputs:
+    - ECG Channel
+    - n (length of the sequence to be found)
+Outputs:
+    - Tuple of
+        - highest found distance
+        - index of where the highest distance is
+"""
 function brute_force(channel::ECGChannel, n::Int64)::Tuple{Float64,Int64}
     best_dist::Float64 = 0
     best_location::Int64 = typemax(Int64)
     l = (length(channel.data) - n + 1)
-    
-    for p in 1:l
-        # println("$p / $l")
+
+    for p = 1:l
         nearest_dist = typemax(Float64)
 
-        for q in 1:l
+        for q = 1:l
             if abs(p - q) >= n
-                d = euclidean_distance(sub_ECGChannel(channel, p, p+n-1), sub_ECGChannel(channel, q, q+n-1))
+                d = euclidean_distance(
+                    subsequence(channel, p, p + n - 1),
+                    subsequence(channel, q, q + n - 1),
+                )
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -219,64 +312,117 @@ function brute_force(channel::ECGChannel, n::Int64)::Tuple{Float64,Int64}
     return best_dist, best_location
 end
 
-function sub_SAX(s::SAX, start::Int64, stop::Int64)::SAX
+"""
+Function returning the subsequence of SAX representation s
+starting at start until stop
+"""
+function subsequence(s::SAX, start::Int64, stop::Int64)::SAX
     # TODO: add safety checks
-    return SAX(s.name, s.sampling_frequency, start, stop, s.w, s.data[start:stop], s.alphabet, s.breakpoints)
+    return SAX(
+        s.name,
+        s.sampling_frequency,
+        start,
+        stop,
+        s.w,
+        s.data[start:stop],
+        s.alphabet,
+        s.breakpoints,
+    )
 end
 
-function sub_ESAX(s::ESAX, start::Int64, stop::Int64)::ESAX
+"""
+Function returning the subsequence of ESAX representation s
+starting at start until stop
+"""
+function subsequence(s::ESAX, start::Int64, stop::Int64)::ESAX
     # TODO: add safety checks
-    return ESAX(s.name, s.sampling_frequency, start, stop, s.w, s.data[start:stop], s.alphabet, s.breakpoints)
+    return ESAX(
+        s.name,
+        s.sampling_frequency,
+        start,
+        stop,
+        s.w,
+        s.data[start:stop],
+        s.alphabet,
+        s.breakpoints,
+    )
 end
 
-function sub_TSAX(s::TSAX, start::Int64, stop::Int64)::TSAX
+"""
+Function returning the subsequence of TSAX representation s
+starting at start until stop
+"""
+function subsequence(s::TSAX, start::Int64, stop::Int64)::TSAX
     # TODO: add safety checks
-    # println(start)
-    # println(stop)
-    return TSAX(s.name, s.sampling_frequency, start, stop, s.w, s.data[start:stop], s.bits[((start-1)*length(s.data) ÷ s.w+1):(stop*length(s.data) ÷ s.w)] , s.alphabet, s.breakpoints)
+    return TSAX(
+        s.name,
+        s.sampling_frequency,
+        start,
+        stop,
+        s.w,
+        s.data[start:stop],
+        s.bits[((start-1)*length(s.data)÷s.w+1):(stop*length(s.data)÷s.w)],
+        s.alphabet,
+        s.breakpoints,
+    )
 end
 
-function sub_ECGChannel(c::ECGChannel, start::Int64, stop::Int64)::ECGChannel
+"""
+Function returning the subsequence of ECGChannel s
+starting at start until stop
+"""
+function subsequence(c::ECGChannel, start::Int64, stop::Int64)::ECGChannel
     # TODO: add safety checks
     return ECGChannel(c.name, c.sampling_frequency, start, stop, c.data[start:stop])
 end
 
+# standart length to be checked in one go
+standard_length = 2 * fs
+# is multiplied with standard_length for actual length
 length_factor = 15
-end_index = unsigned(length_factor*720+start_index-1)
-# w = unsigned(length_factor * 36)
-w = unsigned(length_factor * 18)
-# n = unsigned(9)
+# starting point of the extracted ECG segment (approx at first R peak)
+start_index = 83
+# end index of the ECG 
+end_index = unsigned(length_factor * standard_length + start_index - 1)
+# number of PAA segments per standard_length points (standard_length % w_per_segment == 0)
+w_per_segment = 18
+# calculating w from w_per_segment
+w = unsigned(length_factor * w_per_segment)
+# alphabet size, should be <= 26
 n = unsigned(7)
+# number of PAA segments per heartbeat (approx)
+sequence_length = 8
 
-c1, s1 = get_channel_sax(unsigned(start_index), end_index, w, n)
+# get the ECG channel and its SAX representation
+channel, sax = get_channel_sax(unsigned(start_index), end_index, w, n)
 
-_, s2 = get_channel_esax(unsigned(start_index), end_index, w, n)
+# ignore the ECG channel and get its ESAX representation
+_, esax = get_channel_esax(unsigned(start_index), end_index, w, n)
 
-_, s3 = get_channel_tsax(unsigned(start_index), end_index, w, n)
+# ignore the ECG channel and get its TSAX representation
+_, tsax = get_channel_tsax(unsigned(start_index), end_index, w, n)
 
+# find most different segment by brute force for SAX representation
 println("brute force sax")
-a, b = brute_force(s1, 8)
-println((a, b, b * 320/8))
+a, b = brute_force(sax, sequence_length)
+println("Max Dist: $a, Segment: $b, Approx Index: $(b * standard_length / w)")
 
-println("brute force esax")
-c, d = brute_force(s2, 8*3)
-println((c, d, d * 320/8))
+# # find most different segment by brute force for SAX representation
+# # ESAX representation is 3 times longer, thus sequence_length is tripled
+# println("brute force esax")
+# c, d = brute_force(esax, 3 * sequence_length)
+# # print the results
+# println("Max Dist: $c, Segment: $d, Approx Index: $(d * standard_length / w)")
 
-println("brute force tsax")
-e, f = brute_force(s3, 8)
-println((e, f, f * 320/8))
+# # find most different segment by brute force for TSAX representation
+# println("brute force tsax")
+# e, f = brute_force(tsax, sequence_length)
+# println("Max Dist: $e, Segment: $f, Approx Index: $(f * standard_length / w)")
 
+# find most different segment by brute force for SAX representation
 println("brute force euclid")
-println(brute_force(c1, 320))
-
-# (2.5607469613376486, 1726)
-# (10.037811016352121, 8372)
-
-# brute force sax
-# (5.582262406533327, 35, 1400.0)
-# brute force esax
-# (38.286588601218014, 31, 1240.0)
-# brute force tsax
-# (6.2851159496436555, 35, 1400.0)
-# brute force euclid
-# (5.650161502116553, 1340)
+g, h = brute_force(
+    channel,
+    convert(Int64, round(sequence_length / w_per_segment * standard_length, digits = 0)),
+)
+println("Max Dist: $g, Index: $h")

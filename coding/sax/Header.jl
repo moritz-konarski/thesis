@@ -91,6 +91,10 @@ struct SAX
     breakpoints::Vector{Float64}
 end
 
+function SAX(paa::PAA, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
+    return SAX(paa.name, paa.sampling_frequency, paa.start_index, paa.end_index, paa.w, data, α, β)
+end
+
 struct EPAA
     name::ECGLead
     sampling_frequency::UInt64
