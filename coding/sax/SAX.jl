@@ -38,7 +38,7 @@ function SAX(ecg::ECGChannel, n_segments::UInt64, α_size::UInt64, seq_len::UInt
     β::Vector{Float64} = compute_breakpoints(α_size)
     α::Vector{Char} = compute_alphabet(α_size)
     sax::Array{Char,2} = fill(last(α), (seq_len, n_segments))
-    paa::Array{Float64,2} = calculate_paa(ecg.data, n_segments = n_segments, seq_len = seq_len)
+    paa::Array{Float64,2} = calculate_paa(normalize_vector(ecg.data), n_segments = n_segments, seq_len = seq_len)
 
     for i in 1:n_sequences
         for j in 1:seq_len

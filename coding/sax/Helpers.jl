@@ -81,7 +81,7 @@ function calculate_paa(data::Vector{Float64}; n_segments::UInt64, seq_len::UInt6
     len = length(data)
     if len % n_segments != 0
         println("data (length $len) cannot be evenly divided by n_segments $(signed(n_segments))")
-        return Vector{Float64}()
+        return Array{Float64,2}()
     end
 
     if len % seq_len != 0

@@ -90,13 +90,13 @@ struct SAX
     data::Array{Char,2}
 end
 
-function SAX(paa::PAA, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
-    return SAX(paa.name, paa.sampling_frequency, paa.start_index, paa.end_index, paa.w, data, α, β)
-end
+# function SAX(paa::PAA, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
+#     return SAX(paa.name, paa.sampling_frequency, paa.start_index, paa.end_index, paa.w, data, α, β)
+# end
 
-function SAX(ecg::ECGChannel, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
-    return SAX(ecg.name, ecg.sampling_frequency, ecg.start_index, ecg.end_index, length(data), data, α, β)
-end
+# function SAX(ecg::ECGChannel, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
+#     return SAX(ecg.name, ecg.sampling_frequency, ecg.start_index, ecg.end_index, length(data), data, α, β)
+# end
 
 struct EPAA
     name::ECGLead

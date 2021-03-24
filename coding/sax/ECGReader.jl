@@ -14,9 +14,9 @@ Module of the ECGReader
 
 using CSV, Tables
 
-function list_ECG_channels(ecg::ECG)::Vector{ECGLead}
-    return ecg.channels
-end
+# function list_ECG_channels(ecg::ECG)::Vector{ECGLead}
+#     return ecg.channels
+# end
 
 function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
     return ECGChannel(
@@ -28,42 +28,42 @@ function get_ECGChannel(ecg::ECG, channel::ECGLead)::ECGChannel
     )
 end
 
-"""
-Returns the index of the ecg array for a specific time stamp
-"""
-function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Float64)::UInt64
-    if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
-        # TODO: error out
-    end
+# """
+# Returns the index of the ecg array for a specific time stamp
+# """
+# function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Float64)::UInt64
+#     if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
+#         # TODO: error out
+#     end
 
-    return convert(UInt64, round(timestamp * ecg_pointer.sampling_frequency, digits = 0))
-end
+#     return convert(UInt64, round(timestamp * ecg_pointer.sampling_frequency, digits = 0))
+# end
 
-"""
-Returns the index of the ecg array for a specific time stamp
-"""
-function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Int64)::UInt64
-    if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
-        # TODO: error out
-    end
+# """
+# Returns the index of the ecg array for a specific time stamp
+# """
+# function get_index_from_timestamp(ecg_pointer::ECGPointer, timestamp::Int64)::UInt64
+#     if timestamp > get_ECG_duration(ecg_pointer) || timestamp < 0
+#         # TODO: error out
+#     end
 
-    return convert(UInt64, timestamp * ecg_pointer.sampling_frequency) + 1
-end
+#     return convert(UInt64, timestamp * ecg_pointer.sampling_frequency) + 1
+# end
 
-"""
-Function computing the length (in seconds) of the ecg
-"""
-function get_ECG_duration(ecg_pointer::ECGPointer)::Float64
-    return ecg_pointer.length / ecg_pointer.sampling_frequency
-end
+# """
+# Function computing the length (in seconds) of the ecg
+# """
+# function get_ECG_duration(ecg_pointer::ECGPointer)::Float64
+#     return ecg_pointer.length / ecg_pointer.sampling_frequency
+# end
 
-"""
-Function computing the length (in seconds) of the ecg
-"""
-function get_ECG_duration(ecg::ECG)::Float64
-    range::UInt64 = ecg.end_index - ecg.start_index
-    return range / ecg_pointer.sampling_frequency
-end
+# """
+# Function computing the length (in seconds) of the ecg
+# """
+# function get_ECG_duration(ecg::ECG)::Float64
+#     range::UInt64 = ecg.end_index - ecg.start_index
+#     return range / ecg_pointer.sampling_frequency
+# end
 
 """
 Function reading in an ECG file in ecg format and then returning a "pointer"
@@ -98,7 +98,7 @@ function get_ECG(
     data::Array{Float64,2} = CSV.File(
         p.filename, 
         skipto=start+1, 
-        limit=stop, 
+        limit=stop-start, 
         threaded=false, 
         header=false,
         select=extract_channels
