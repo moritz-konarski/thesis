@@ -24,11 +24,20 @@ end
 function mindist(s1::SAX, s2::SAX)::Float64
     @assert length(s1.data) == length(s2.data)
 
+    row, col = size(s1.data)
+
     diffs = zeros(Float64, length(s1.data))
 
-    for i in 1:length(s1.data)
-        diffs[i] = (dist(s1.data[i], s2.data[i], s1.breakpoints))^2
+
+    for i in 1:col
+        for j in 1:row
+            diffs[i] = (dist(s1.data[i,j], s2.data[i,j], s1.breakpoints))^2
+        end
     end
+
+    # for i in 1:length(s1.data)
+    #     diffs[i] = (dist(s1.data[i], s2.data[i], s1.breakpoints))^2
+    # end
 
     return sqrt((s1.end_index - s1.start_index) * length(s1.data)) * sqrt(sum(diffs))
 end

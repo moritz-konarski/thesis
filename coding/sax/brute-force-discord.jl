@@ -149,14 +149,15 @@ function get_channel_sax(
 
     # get a normalized ECG channel
     normalized = get_normalized_ECGChannel(start_index, end_index)
+    length(normalized.data)
 
-    println("calculate PAA")
-    paa = calculate_paa(normalized, w)
+    # println("calculate PAA")
+    # paa = calculate_paa(normalized, w)
 
-    println("calculate SAX")
-    sax = calculate_sax(paa, n)
+    # println("calculate SAX")
+    # sax = calculate_sax(paa, n)
 
-    return normalized, sax
+    return normalized, SAX(normalized, w, n)
 end
 
 """
@@ -379,7 +380,7 @@ end
 # standart length to be checked in one go
 standard_length = 2 * fs
 # is multiplied with standard_length for actual length
-length_factor = 15
+length_factor = 1
 # starting point of the extracted ECG segment (approx at first R peak)
 start_index = 83
 # end index of the ECG 
@@ -395,12 +396,13 @@ sequence_length = 8
 
 # get the ECG channel and its SAX representation
 channel, sax = get_channel_sax(unsigned(start_index), end_index, w, n)
+println("success")
 
-# ignore the ECG channel and get its ESAX representation
-_, esax = get_channel_esax(unsigned(start_index), end_index, w, n)
+# # ignore the ECG channel and get its ESAX representation
+# _, esax = get_channel_esax(unsigned(start_index), end_index, w, n)
 
-# ignore the ECG channel and get its TSAX representation
-_, tsax = get_channel_tsax(unsigned(start_index), end_index, w, n)
+# # ignore the ECG channel and get its TSAX representation
+# _, tsax = get_channel_tsax(unsigned(start_index), end_index, w, n)
 
 # find most different segment by brute force for SAX representation
 println("brute force sax")

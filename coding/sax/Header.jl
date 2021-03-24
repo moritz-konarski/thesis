@@ -85,14 +85,17 @@ struct SAX
     sampling_frequency::UInt64
     start_index::UInt64
     end_index::UInt64
-    w::UInt64
-    data::Vector{Char}
-    alphabet::Vector{Char}
+    α_size::UInt64
     breakpoints::Vector{Float64}
+    data::Array{Char,2}
 end
 
 function SAX(paa::PAA, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
     return SAX(paa.name, paa.sampling_frequency, paa.start_index, paa.end_index, paa.w, data, α, β)
+end
+
+function SAX(ecg::ECGChannel, data::Vector{Char}, α::Vector{Char}, β::Vector{Float64})::SAX
+    return SAX(ecg.name, ecg.sampling_frequency, ecg.start_index, ecg.end_index, length(data), data, α, β)
 end
 
 struct EPAA
