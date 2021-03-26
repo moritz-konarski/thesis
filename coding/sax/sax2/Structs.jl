@@ -177,18 +177,15 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
 
         throw(DomainError(filepath))
     else
-        file = CSV.File(path)
-        data_point_count = length(file)
-        lead_count = length(file[1])
+        lead_count = length(CSV.File(
+            path,
+            skipto = param.start_index + 1,
+            limit = param.start_index + 2,
+            select = [1],
+        ))
 
         if lead_count != length(param.type.leads)
             @error "Number of leads in ECGtype: $(length(param.type.leads)) is different from number of leads in file: $lead_count"
-
-            throw(DomainError(filepath))
-        end
-
-        if data_point_count < param.end_index
-            @error "End Index: $(param.end_index) must be less than file length $data_point_count"
 
             throw(DomainError(filepath))
         end
@@ -248,6 +245,12 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
             header = false,
             select = [lead_index],
         ) |> Tables.matrix
+
+    if size(data, 1) < param.end_index
+        @error "End Index: $(param.end_index) must be less than file length $(size(data, 1))"
+
+        throw(DomainError(param.end_index))
+    end
 
     data = reshape(
         data,
