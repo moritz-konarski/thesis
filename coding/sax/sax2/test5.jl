@@ -1,5 +1,5 @@
 # test of the brute force algorithm
-# 27.03.2021, 00:27 param
+# 26.03.2021
 
 include("Structs.jl")
 include("HelperFunctions.jl")
@@ -16,9 +16,11 @@ function sax_brute_force_discord(;
 
     z_normalize!(ecg = ecg)
 
+    # ecg = butterworth_filter(ecg = ecg, param = param)
+
     sax = SAX(param = param, ecg = ecg, paa = PAA(ecg = ecg, param = param))
 
-    @info index_sax(sax = sax)
+    # @info index_sax(sax = sax)
 
     @info "Brute Forcing Discord"
 
@@ -57,8 +59,8 @@ param = Parameters(
     start_index = 1,
     # end_index = 200 * 360,
     end_index = 1_800 * 360,
-    PAA_segment_count = 18,
-    subsequence_length = 8,
+    PAA_segment_count = 12,
+    subsequence_length = 3,
     alphabet_size = 4,
 )
 filepath = "../../ecgs/113.mit"
@@ -66,8 +68,8 @@ number = 113
 
 # [@time sax_brute_force_discord(param = param, filepath = filepath, number = number) for _ in 1:10]
 
-# d, i = sax_brute_force_discord(param = param, filepath = filepath, number = number)
+d, i = sax_brute_force_discord(param = param, filepath = filepath, number = number)
 
-# @info "\nDistance is $d\nSegment $i\nIndex $(i * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length))"
+@info "\nDistance is $d\nSegment $i\nIndex $(i * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length))"
 
 @time sax_brute_force_discord(param = param, filepath = filepath, number = number)

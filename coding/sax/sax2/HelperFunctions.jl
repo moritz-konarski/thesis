@@ -11,6 +11,8 @@ GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 
 using Statistics
 using StatsFuns
+using DataFrames
+using DSP
 
 function z_normalize(; ecg::ECG)::ECG
     if !ecg.is_normalized[1]
@@ -49,9 +51,16 @@ function z_normalize!(; ecg::ECG)
     end
 end
 
-function filter(; ecg::ECG)::ECG
-    # TODO
-    return ecg
+function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
+
+    @info "Applying Butterworth filter"
+
+    responsetype = Highpass(0.5, fs=param.type.fs)
+    designmethod = Butterworth(2)
+    f = digitalfilter(responsetype, designmethod)
+    data::Matrix{Float64} = filtfilt(f, ecg.data)
+
+    return ECG(ecg.type, ecg.number, ecg.lead, [true], ecg.is_normalized, data)
 end
 
 function compute_alphabet(; alphabet_size::UInt64)::Vector{Char}
@@ -134,12 +143,13 @@ function index_sax(; sax::SAX)
 
     counts = zeros(Int64, size(unique_values, 2))
 
-    for i in 1:size(unique_values, 2)
-        indices = findall(x -> (x == unique_values[:, i]), sax.data)
-
-        counts[i] = length(indices)
-
+    for i in 1:size(sax.data, 2)
+        for j in 1:size(unique_values, 2)
+            if sax.data[:, i] == unique_values[:, j]
+                counts[j] += 1
+            end
+        end
     end
 
-    return counts
+    return DataFrame(sequence = unique_values, count = counts)
 end

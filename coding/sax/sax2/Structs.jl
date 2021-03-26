@@ -181,9 +181,8 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
             CSV.File(
                 path,
                 skipto = param.start_index + 1,
-                limit = param.start_index + 2,
-                select = [1],
-            ),
+                limit = 1,
+            ) |> Tables.matrix
         )
 
         if lead_count != length(param.type.leads)
@@ -248,7 +247,7 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
             select = [lead_index],
         ) |> Tables.matrix
 
-    if size(data, 1) < param.end_index
+    if size(data, 1) < (param.end_index - param.start_index + 1) 
         @error "End Index: $(param.end_index) must be less than file length $(size(data, 1))"
 
         throw(DomainError(param.end_index))

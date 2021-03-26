@@ -34,7 +34,7 @@ function ecg_plot(;
         xlabel!("Data Points")
     end
 
-    if ecg.is_normalized
+    if ecg.is_normalized[1]
         ylabel!(p, "[No unit]")
         if title
             title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
@@ -76,7 +76,7 @@ function paa_plot(;
         end
     end
 
-    if plot_seconds
+    if plot_seconds[1]
         xs /= param.type.fs
         p = plot(xs, ys, label = label)
         xlabel!("Seconds")
@@ -119,7 +119,7 @@ function paa_ecg_plot(;
         xlabel!("Data Points")
     end
 
-    if ecg.is_normalized
+    if ecg.is_normalized[1]
         ylabel!(p, "[No unit]")
         if title
             title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
@@ -245,7 +245,7 @@ function ecg_paa_sax_plot(;
         xlabel!("Data Points")
     end
 
-    if ecg.is_normalized
+    if ecg.is_normalized[1]
         ylabel!(p, "[No unit]")
         if title
             title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
