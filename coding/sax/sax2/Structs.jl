@@ -280,8 +280,8 @@ function PAA(; ecg::ECG, param::Parameters)::PAA
 
     @info "Calculating PAA"
 
-    rows::UInt64 = size(ecg.data)[1]
-    cols::UInt64 = size(ecg.data)[2]
+    rows::UInt64 = size(ecg.data, 1)
+    cols::UInt64 = size(ecg.data, 2)
     len::UInt64 = rows * cols
     points_per_segment::UInt64 = rows ÷ param.subsequence_length
 
@@ -318,8 +318,8 @@ function SAX(; paa::PAA, param::Parameters, ecg::ECG)::SAX
 
     sax::Matrix{Char} = fill(last(α), size(paa.data))
 
-    for i = 1:rows
-        for j = 1:cols
+    for j = 1:cols
+        for i = 1:rows
             for (k, βk) in enumerate(β)
                 if paa.data[i, j] < βk
                     sax[i, j] = α[k]
