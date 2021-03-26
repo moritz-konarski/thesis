@@ -13,30 +13,40 @@ using Statistics
 using StatsFuns
 
 function z_normalize(; ecg::ECG)::ECG
+    if !ecg.is_normalized[1]
+        @info "Z-normalizing ECG"
 
-    @info "Z-normalizing ECG"
+        μ::Float64 = mean(ecg.data)
+        σ::Float64 = std(ecg.data)
 
-    data::Matrix{Float64} = (ecg.data .- mean(ecg.data)) / std(ecg.data)
+        data::Matrix{Float64} = zeros(Float64, size(ecg.data))
 
-    return ECG(ecg.type, ecg.number, ecg.lead, ecg.is_filtered, true, data)
+        for i = 1:size(data, 2)
+            for j = 1:size(data, 1)
+                data[j, i] = (ecg.data[j, i] - μ) / σ
+            end
+        end
+
+        return ECG(ecg.type, ecg.number, ecg.lead, ecg.is_filtered, [true], data)
+    else
+        return ecg
+    end
 end
 
 function z_normalize!(; ecg::ECG)
+    if !ecg.is_normalized[1]
+        @info "Z-normalizing ECG"
 
-    @info "Z-normalizing ECG"
+        μ::Float64 = mean(ecg.data)
+        σ::Float64 = std(ecg.data)
 
-    μ::Float64 = mean(ecg.data)
-    σ::Float64 = std(ecg.data)
-
-    for i in 1:size(ecg.data, 2)
-        for j in 1:size(ecg.data, 1)
-            ecg.data[j, i] = (ecg.data[j, i] - μ) / σ
+        for i = 1:size(ecg.data, 2)
+            for j = 1:size(ecg.data, 1)
+                ecg.data[j, i] = (ecg.data[j, i] - μ) / σ
+            end
         end
+        ecg.is_normalized[1] = true
     end
-
-    # data::Matrix{Float64} = (ecg.data .- mean(ecg.data)) / std(ecg.data)
-
-    # return ECG(ecg.type, ecg.number, ecg.lead, ecg.is_filtered, true, data)
 end
 
 function filter(; ecg::ECG)::ECG
@@ -70,27 +80,17 @@ function mindist(; sax1::SAX, sax2::SAX, param::Parameters)::Float64
 
     s::Float64 = 0.0
 
-    # OPT
-    # a = 4
-    # 0.140041 seconds (170.55 k allocations: 43.164 MiB, 3.25% gc time)
-    #  362.39198812678205
-
-    # OLD
-    # a = 4
-    # 0.150664 seconds (230.55 k allocations: 49.877 MiB, 6.63% gc time)
-    #  362.39198812678205
-
     for i = 1:cols
         s += dist(
-                chars1 = sax1.data[:, i],
-                chars2 = sax2.data[:, i],
-                difference_matrix = sax1.difference_matrix,
-            )
+            chars1 = sax1.data[:, i],
+            chars2 = sax2.data[:, i],
+            difference_matrix = sax1.difference_matrix,
+        )
     end
 
-    s =
-        √((param.end_index - param.start_index + 1) / (param.subsequence_length * cols)) *
-        √(s)
+    return √(
+        (param.end_index - param.start_index + 1) / (param.subsequence_length * cols),
+    ) * √(s)
 end
 
 function dist(;
@@ -98,19 +98,48 @@ function dist(;
     chars2::Vector{Char},
     difference_matrix::Matrix{Float64},
 )::Float64
-    c1::Vector{UInt64} = zeros(UInt64, length(chars1))
-    c2::Vector{UInt64} = zeros(UInt64, length(chars1))
+    s::Float64 = 0
+    c = 'a' - 1
 
-    for i in 1:length(chars1)
-        c1[i] = chars1[i] - 'a' + 1
-        c2[i] = chars2[i] - 'a' + 1
-    end
-
-    s::Float64 = 0.0
-
-    for i = 1:length(c1)
-        s += (difference_matrix[c1[i], c2[i]])^2
+    for i = 1:length(chars1)
+        s += (difference_matrix[chars1[i]-c, chars2[i]-c])^2
     end
 
     return s
+end
+
+
+function mindist(;
+    segment1::Vector{Char},
+    segment2::Vector{Char},
+    difference_matrix::Matrix{Float64},
+    param::Parameters,
+)::Float64
+
+    s = dist(chars1 = segment1, chars2 = segment2, difference_matrix = difference_matrix)
+
+    return √(
+        (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) /
+        length(segment1),
+    ) * √(s)
+end
+
+function index_sax(; sax::SAX)
+
+    @info "Indexing SAX"
+
+    unique_values = unique(sax.data, dims=2)
+
+    @info "Counting sequences"
+
+    counts = zeros(Int64, size(unique_values, 2))
+
+    for i in 1:size(unique_values, 2)
+        indices = findall(x -> (x == unique_values[:, i]), sax.data)
+
+        counts[i] = length(indices)
+
+    end
+
+    return counts
 end

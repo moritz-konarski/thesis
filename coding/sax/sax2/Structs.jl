@@ -177,12 +177,14 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
 
         throw(DomainError(filepath))
     else
-        lead_count = length(CSV.File(
-            path,
-            skipto = param.start_index + 1,
-            limit = param.start_index + 2,
-            select = [1],
-        ))
+        lead_count = length(
+            CSV.File(
+                path,
+                skipto = param.start_index + 1,
+                limit = param.start_index + 2,
+                select = [1],
+            ),
+        )
 
         if lead_count != length(param.type.leads)
             @error "Number of leads in ECGtype: $(length(param.type.leads)) is different from number of leads in file: $lead_count"
@@ -207,8 +209,8 @@ struct ECG
     type::ECGType
     number::UInt64
     lead::ECGLead
-    is_filtered::Bool
-    is_normalized::Bool
+    is_filtered::Vector{Bool}
+    is_normalized::Vector{Bool}
     data::Matrix{Float64}
 end
 
@@ -263,7 +265,7 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
 
     @info "Data matrix has the dimensions $(size(data))"
 
-    return ECG(pointer.type, pointer.number, lead, false, false, data)
+    return ECG(pointer.type, pointer.number, lead, [false], [false], data)
 end
 
 

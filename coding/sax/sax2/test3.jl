@@ -11,7 +11,7 @@ function get_ecg()
         end_index = 1_800 * 360,
         PAA_segment_count = 72,
         subsequence_length = 6,
-        alphabet_size = 4
+        alphabet_size = 4,
     )
 
     ecg_pointer = ECGPointer(param = param, filepath = "../../ecgs/113.mit", number = 113)
@@ -37,4 +37,4 @@ function get_ecg()
     return ecg
 end
 
-[@time get_ecg() for _ in 1:15];
+[@time get_ecg() for _ = 1:15];

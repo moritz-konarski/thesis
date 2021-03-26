@@ -16,13 +16,13 @@ function get_ecg()
 
     ecg_pointer = ECGPointer(param = param, filepath = "../../ecgs/113.mit", number = 113)
 
-    ecg = ECG(pointer = ecg_pointer, param = param, lead = II);
+    ecg = ECG(pointer = ecg_pointer, param = param, lead = II)
 
     return ""
     # return ecg
 end
 
-[@time get_ecg() for _ in 1:10];
+[@time get_ecg() for _ = 1:10];
 
 # OG == VER 1
 # OG == VER 2
