@@ -42,4 +42,11 @@
     - was it worth it?
     - 
 
-6. 
+# Findings
+
+## 28.03.2021
+
+- for 108.mit, anomalies from Keogh presentation 2 are found in II, the other
+two are found in V1
+- this lends credibility to the idea that incorporating two leads will give
+better results

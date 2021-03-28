@@ -8,14 +8,16 @@ include("Plotting.jl")
 function get_ecg()
     param = Parameters(
         type = MITBIH,
-        start_index = 2*720 + 1,
-        end_index = 30 * 720,
-        PAA_segment_count = 12,
-        subsequence_length = 4,
-        alphabet_size = 4,
+        start_index = 11*360+ 1,
+        # start_index = 22*360+ 1,
+        # end_index = 30 * 360,
+        end_index = 39 * 360,
+        PAA_segment_count = 18,
+        subsequence_length = 6,
+        alphabet_size = 6,
     )
 
-    ecg_pointer = ECGPointer(param = param, filepath = "../../ecgs/113.mit", number = 113)
+    ecg_pointer = ECGPointer(param = param, filepath = "../../ecgs/108.mit", number = 108)
 
     ecg = ECG(pointer = ecg_pointer, param = param, lead = II)
     ecg2 = ECG(pointer = ecg_pointer, param = param, lead = V1)
@@ -24,7 +26,7 @@ function get_ecg()
     z_normalize!(ecg = ecg2)
 
     # https://www.hindawi.com/journals/cmmm/2017/9295029/
-    ecg2 = butterworth_filter(ecg = ecg2, param = param)
+    # ecg2 = butterworth_filter(ecg = ecg2, param = param)
 
     paa = PAA(ecg = ecg, param = param)
     paa2 = PAA(ecg = ecg2, param = param)

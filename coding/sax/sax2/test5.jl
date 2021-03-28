@@ -8,11 +8,13 @@ function sax_brute_force_discord(;
     param::Parameters,
     filepath::String,
     number::Int64,
-)::Tuple{Float64,Int64}
+# )::Tuple{Float64,Int64}
+)
 
     ecg_pointer = ECGPointer(param = param, filepath = filepath, number = number)
 
-    ecg = ECG(pointer = ecg_pointer, param = param, lead = II)
+    ecg = ECG(pointer = ecg_pointer, param = param, lead = V1)
+    # ecg = ECG(pointer = ecg_pointer, param = param, lead = II)
 
     z_normalize!(ecg = ecg)
 
@@ -27,6 +29,9 @@ function sax_brute_force_discord(;
     best_dist::Float64 = typemin(Float64)
     best_location::Int64 = typemax(Int64)
     s = size(sax.data, 2)
+
+    maxs = zeros(Float64, 3)
+    inds = zeros(Int64, 3)
 
     for i = 1:s
         nearest_dist = typemax(Float64)
@@ -45,31 +50,64 @@ function sax_brute_force_discord(;
             end
         end
 
-        if nearest_dist > best_dist
-            best_dist = nearest_dist
-            best_location = i
-        end
+        set_d(maxs, nearest_dist, inds, i)
+
+        # if nearest_dist > best_dist
+        #     best_dist = nearest_dist
+        #     best_location = i
+        # end
     end
 
-    return best_dist, best_location
+    # return best_dist, best_location
+    return maxs, inds
 end
+
+function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, i::Int64)
+    if v > a[1]
+        a[2] = a[1]
+        is[2] = is[1]
+        a[1] = v
+        is[1] = i
+    elseif v > a[2]
+        a[3] = a[2]
+        is[3] = is[2]
+        a[2] = v
+        is[2] = i
+    elseif v > a[3]
+        a[3] = v
+        is[3] = i
+    end
+end
+
+# GOOD FOR 108
+# PAA_segment_count = 18,
+# subsequence_length = 12,
+# alphabet_size = 6,
 
 param = Parameters(
     type = MITBIH,
+    # start_index = 11 * 360 + 1,
     start_index = 1,
+    # start_index = 22 * 360 + 1,
     # end_index = 200 * 360,
+    # end_index = 30 * 360,
+    # end_index = 39 * 360,
     end_index = 1_800 * 360,
-    PAA_segment_count = 12,
-    subsequence_length = 3,
-    alphabet_size = 4,
+    PAA_segment_count = 18,
+    subsequence_length = 12,
+    alphabet_size = 6,
 )
-filepath = "../../ecgs/113.mit"
-number = 113
+filepath = "../../ecgs/108.mit"
+number = 108
 
 # [@time sax_brute_force_discord(param = param, filepath = filepath, number = number) for _ in 1:10]
 
 d, i = sax_brute_force_discord(param = param, filepath = filepath, number = number)
 
-@info "\nDistance is $d\nSegment $i\nIndex $(i * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length))"
+@info "\nDistance is $(d[1])\nSegment $(i[1])\nIndex $((i[1]-1) * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index) to $(i[1] * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index)"
+
+@info "\nDistance is $(d[2])\nSegment $(i[2])\nIndex $((i[2]-1) * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index) to $(i[2] * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index)"
+
+@info "\nDistance is $(d[3])\nSegment $(i[3])\nIndex $((i[3]-1) * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index) to $(i[3] * (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) + param.start_index)"
 
 @time sax_brute_force_discord(param = param, filepath = filepath, number = number)
