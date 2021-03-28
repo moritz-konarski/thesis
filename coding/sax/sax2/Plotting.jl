@@ -37,12 +37,20 @@ function ecg_plot(;
     if ecg.is_normalized[1]
         ylabel!(p, "[No unit]")
         if title
-            title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
+            if ecg.is_filtered[1]
+                title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized, filtered")
+            else
+                title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
+            end
         end
     else
         ylabel!(p, "milli Volt")
         if title
-            title!(p, "$(ecg.type.name)/$(ecg.number)")
+            if ecg.is_filtered[1]
+                title!(p, "$(ecg.type.name)/$(ecg.number) filtered")
+            else
+                title!(p, "$(ecg.type.name)/$(ecg.number)")
+            end
         end
     end
 
@@ -87,7 +95,11 @@ function paa_plot(;
 
     ylabel!(p, "[No unit]")
     if title
-        title!(p, "PAA of $(ecg.type.name)/$(ecg.number)")
+        if ecg.is_filtered[1]
+            title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized, filtered")
+        else
+            title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
+        end
     end
 
     return p
@@ -122,12 +134,20 @@ function paa_ecg_plot(;
     if ecg.is_normalized[1]
         ylabel!(p, "[No unit]")
         if title
-            title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
+            if ecg.is_filtered[1]
+                title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized, filtered")
+            else
+                title!(p, "$(ecg.type.name)/$(ecg.number) z-normalized")
+            end
         end
     else
         ylabel!(p, "milli Volt")
         if title
-            title!(p, "$(ecg.type.name)/$(ecg.number)")
+            if ecg.is_filtered[1]
+                title!(p, "$(ecg.type.name)/$(ecg.number) filtered")
+            else
+                title!(p, "$(ecg.type.name)/$(ecg.number)")
+            end
         end
     end
 

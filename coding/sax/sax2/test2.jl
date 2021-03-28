@@ -8,31 +8,41 @@ include("Plotting.jl")
 function get_ecg()
     param = Parameters(
         type = MITBIH,
-        start_index = 720 + 1,
-        end_index = 2 * 720,
+        start_index = 2*720 + 1,
+        end_index = 30 * 720,
         PAA_segment_count = 12,
-        subsequence_length = 3,
+        subsequence_length = 4,
         alphabet_size = 4,
     )
 
     ecg_pointer = ECGPointer(param = param, filepath = "../../ecgs/113.mit", number = 113)
 
     ecg = ECG(pointer = ecg_pointer, param = param, lead = II)
+    ecg2 = ECG(pointer = ecg_pointer, param = param, lead = V1)
+
+    z_normalize!(ecg = ecg)
+    z_normalize!(ecg = ecg2)
 
     # https://www.hindawi.com/journals/cmmm/2017/9295029/
-    z_normalize!(ecg = ecg)
-    ecg = butterworth_filter(ecg = ecg, param = param)
-
+    ecg2 = butterworth_filter(ecg = ecg2, param = param)
 
     paa = PAA(ecg = ecg, param = param)
+    paa2 = PAA(ecg = ecg2, param = param)
 
-    sax = SAX(ecg = ecg, paa = paa, param = param)
+    # sax = SAX(ecg = ecg, paa = paa, param = param)
     # @info size(paa)
     # @info size(normalized_ecg)
 
     # return paa_ecg_plot(ecg = normalized_ecg, paa = paa, param=param)
-    return ecg_paa_sax_plot(ecg = ecg, paa = paa, sax = sax, param = param)
-    # return ecg_plot(ecg = ecg, param = param)
+    # return ecg_paa_sax_plot(ecg = ecg, paa = paa, sax = sax, param = param)
+
+    # p1 = ecg_plot(ecg = ecg, param = param)
+    # p2 = ecg_plot(ecg = ecg2, param = param)
+
+    p1 = paa_ecg_plot(ecg = ecg, paa = paa, param = param)
+    p2 = paa_ecg_plot(ecg = ecg2, paa = paa2, param = param)
+
+    return plot(p1, p2, layout = (2, 1))
 end
 
 get_ecg()

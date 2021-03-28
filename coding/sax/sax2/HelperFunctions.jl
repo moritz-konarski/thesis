@@ -51,6 +51,9 @@ function z_normalize!(; ecg::ECG)
     end
 end
 
+"""
+figure out why this does not work?
+"""
 function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
 
     @info "Applying Butterworth filter"
