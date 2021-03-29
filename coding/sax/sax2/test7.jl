@@ -12,7 +12,7 @@ param = Parameters(
     subsequence_length = 12,
     alphabet_size = 6,
 )
-filepath = "../../ecgs/ann_108.mit"
+filepath = "../../ecgs/ann_108-1.mit"
 number = 108
 
 ann_p = AnnotationPointer(filepath = filepath, param = param, number = number)

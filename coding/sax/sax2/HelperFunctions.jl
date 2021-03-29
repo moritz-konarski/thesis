@@ -240,3 +240,43 @@ function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
 
     return ECG(ecg.type, ecg.number, ecg.lead, [true], ecg.is_normalized, data)
 end
+
+function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::UInt64)
+    for i in 1:k
+        if v > a[i]
+            a[i+1:end] = a[i:end-1]
+            a[i] = v
+
+            is[i+1:end] = is[i:end-1]
+            is[i] = j
+            break
+        end
+    end
+end
+
+function get_beat_annotation_indices(;ann::Annotation)::Vector{UInt64}
+    subset::Vector{UInt64} = zeros(size(ann.data, 1))
+    index::UInt64 = 0
+
+    for i in 1:size(ann.data, 1)
+        if ann.data[i, "Type"] != "N"
+            index += 1
+            subset[index] = i
+        end
+    end
+
+    indices::Vector{UInt64} = zeros(index)
+    index = 0
+
+    for i in subset
+        if i == 0
+            break
+        end
+        if ann.data[i, "Type"] in ["V", "x", "|", "F", "A", "j"]
+            index += 1
+            indices[index] = ann.data[i, "Sample#"]
+        end
+    end
+
+    return indices
+end

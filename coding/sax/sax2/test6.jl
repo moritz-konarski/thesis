@@ -105,19 +105,6 @@ function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, i::UInt64, k::
 end
 
 function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::UInt64)
-
-    # if v > last(a)
-    #     for (i, x) in enumerate(reverse(a))
-    #         if v < x
-    #             insert!(a, i-1, v)
-    #             a = a[1:l]
-    #             insert!(is, i-1, j)
-    #             is = is[1:l]
-    #             break
-    #         end
-    #     end
-    # end
-
     for i in 1:k
         if v > a[i]
             # @info length(a)
@@ -133,25 +120,6 @@ function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::U
             break
         end
     end
-
-    # l = length(a)
-    # println(l)
-
-
-    # if v > a[1]
-    #     a[2] = a[1]
-    #     is[2] = is[1]
-    #     a[1] = v
-    #     is[1] = i
-    # elseif v > a[2]
-    #     a[3] = a[2]
-    #     is[3] = is[2]
-    #     a[2] = v
-    #     is[2] = i
-    # elseif v > a[3]
-    #     a[3] = v
-    #     is[3] = i
-    # end
 end
 
 function print_results(dist, ind, param)
@@ -163,7 +131,7 @@ function print_results(dist, ind, param)
 end
 
 function i2s(s, param)
-    return s / param.type.fs
+    return s #/ param.type.fs
 end
 
 # GOOD FOR 108
@@ -175,13 +143,13 @@ param = Parameters(
     type = MITBIH,
     start_index = 1,
     end_index = 1800 * 360,
-    PAA_segment_count = 18,
+    PAA_segment_count = 12,
     subsequence_length = 12,
-    alphabet_size = 6,
+    alphabet_size = 9,
 )
 filepath = "../../ecgs/108.mit"
 number = 108
-k = unsigned(5)
+k = unsigned(85)
 lead = II
 # lead = V1
 
