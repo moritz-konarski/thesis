@@ -11,6 +11,8 @@ GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 using CSV
 # for converting read ECG files to matrices
 using Tables
+# provides dataframes
+using DataFrames
 
 """
 Enumeration of different types of ECG leads contained in ECG files
@@ -370,4 +372,83 @@ function SAX(; paa::PAA, param::Parameters)::SAX
     end
 
     return SAX(paa.number, paa.lead, difference_matrix, sax)
+end
+
+"""
+Struct for the Annotation Pointer, a reference to the ECG annotation file on the computer 
+Fields:
+    - filepath: the path from the current Julia environment to the annotation file
+    - data_point_count: number of data points in the file
+    - number: number of leads in the file
+"""
+struct AnnotationPointer
+    data_point_count::UInt64
+    number::UInt64
+    filepath::String
+end
+
+"""
+Function for the correct instantiation of an AnnotationPointer
+keyword arguments:
+    - filepath: the path from the current Julia environment to the ECG file
+    - number: number of the ECG from the database
+    - param: the parameters of the program
+Return Type:
+    - AnnotationPointer
+"""
+function AnnotationPointer(; filepath::String, param::Parameters, number::Int64)::AnnotationPointer
+    data_point_count::UInt64 = 0
+
+    if param.type.file_extension !=
+       SubString(filepath, length(filepath) - 3, length(filepath))
+        @error "File extension does not match $(param.type.file_extension)"
+
+        throw(DomainError(filepath))
+    end
+
+    path = joinpath(@__DIR__, filepath)
+
+    if filesize(path) == 0
+        @error "File size is 0, check filepath"
+
+        throw(DomainError(filepath))
+    end
+
+    @info "File path: $path"
+
+    return AnnotationPointer(data_point_count, unsigned(number), path)
+end
+
+"""
+Struct for the Annotation data
+Fields:
+    - number: number of the annotation in it's collection
+    - data: a matrix holding the data values
+"""
+struct Annotation
+    number::UInt64
+    data::DataFrame
+end
+
+"""
+Function for the instantiation of the annotation struct
+keyword arguments:
+    - param: parameters of the program
+    - pointer: pointer to the ECG file
+Return type:
+    - Annotation
+"""
+function Annotation(; param::Parameters, pointer::AnnotationPointer)::Annotation
+
+    @info "Extracting Annotations"
+
+    data::DataFrame =
+        CSV.File(
+            pointer.filepath,
+            types = [String, Int64, String, Int64, Int64, Int64, String],
+        ) |> DataFrame
+
+    @info "Data matrix has the dimensions $(size(data))"
+
+    return Annotation(pointer.number, data)
 end

@@ -25,7 +25,7 @@ keyword arguments:
 return type:
     - ECG
 
-THIS CREATES A NEW INSTANCE OF ECG. FOR THE IN-PLACE OPERATION, SEE z-normalize!
+This creates a new instance of ECG. for the in-place operation, see z-normalize!
 """
 function z_normalize(; ecg::ECG)::ECG
     if !ecg.is_normalized[1]
@@ -119,9 +119,9 @@ function mindist(; sax1::SAX, sax2::SAX, param::Parameters)::Float64
 
     for i = 1:cols
         s += dist(
-            chars1 = sax1.data[:, i],
-            chars2 = sax2.data[:, i],
-            difference_matrix = sax1.difference_matrix,
+            sax1.data[:, i],
+            sax2.data[:, i],
+            sax1.difference_matrix,
         )
     end
 
@@ -139,7 +139,7 @@ keyword arguments:
 return type:
     - difference between the two representations
 """
-function dist(;
+function dist(
     chars1::Vector{Char},
     chars2::Vector{Char},
     difference_matrix::Matrix{Float64},
@@ -164,53 +164,66 @@ keyword arguments:
 return type:
     - distance between the segments
 """
-function mindist(;
+function mindist(
     segment1::Vector{Char},
     segment2::Vector{Char},
     difference_matrix::Matrix{Float64},
-    param::Parameters,
+    len::UInt64,
 )::Float64
 
-    s = dist(chars1 = segment1, chars2 = segment2, difference_matrix = difference_matrix)
+    s = dist(segment1, segment2, difference_matrix)
 
-    return √(
-        (param.type.fs ÷ param.PAA_segment_count * param.subsequence_length) /
-        length(segment1),
-    ) * √(s)
+    return √(len / length(segment1)) * √(s)
 end
 
 """
 Function meant to index SAX representations
 """
-function index_sax(; sax::SAX)
+function index_sax(; sax::SAX)::Vector{UInt64}
 
     @info "Indexing SAX"
 
-    unique_values = unique(sax.data, dims=2)
+    unique_sequences::Matrix{Char} = fill('_', size(sax.data))
+    counts::Vector{UInt64} = zeros(UInt64, size(sax.data, 2))
+    trie = Trie{Char, Vector{UInt64}}()
+    last_index::UInt64 = 0
 
-    @info "Counting sequences and building trie"
-
-    counts = zeros(Int64, size(unique_values, 2))
-    trie = Trie{Char, Vector{Int64}}()
-
-    for i in 1:size(sax.data, 2)
-        for j in 1:size(unique_values, 2)
-            if sax.data[:, i] == unique_values[:, j]
+    for i::UInt64 in 1:size(sax.data, 2)
+        for j in 1:size(unique_sequences, 2)
+            if sax.data[:, i] == unique_sequences[:, j]
                 counts[j] += 1
                 try 
                     push!(get(trie[sax.data[:, i]...]), i)
                 catch KeyError
                     trie[sax.data[:, i]...] = [i]
                 end
+                break
+            end
+            if unique_sequences[1, j] == '_'
+                last_index += 1
+                unique_sequences[:, last_index] = sax.data[:, i]
+
+                counts[last_index] += 1
+
+                trie[sax.data[:, i]...] = [i]
+                break
             end
         end
     end
 
-    show(trie)
+    unique_sequences = unique_sequences[:, 1:last_index]
+    sorter = sortperm(counts[1:last_index])
 
-    return unique_values, counts, trie
+    unique_sequences = unique_sequences[:, sortperm(counts[1:last_index])]
+
+    order = Vector{UInt64}()
+
+    for i in 1:last_index
+        order = vcat(order, get(trie[unique_sequences[:, i]...]))
+    end
+
+    return order
 end
-
 
 """
 Function meant to remove baseline wander from the ECG
