@@ -2,14 +2,15 @@
 SUMMARY
 Structs and their instantiations functions
 
-META-INFO
-Date: 25.03.2021
 Author: Moritz M. Konarski
 Email: konarski_m@auca.kg
 GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 
-using CSV, Tables
+# for reading the ECG files
+using CSV
+# for converting read ECG files to matrices
+using Tables
 
 """
 Enumeration of different types of ECG leads contained in ECG files
@@ -60,6 +61,7 @@ Fields:
     - PAA segment count, number of PAA segments per sampling frequency points
     - length of each PAA subsequence, number of PAA segments per subsequence
     - alphabet size, size of the alphabet used for SAX calculation
+    - type of the ECG
 """
 struct Parameters
     start_index::UInt64
@@ -72,13 +74,13 @@ end
 
 """
 Function to correctly instantiate the Parameters struct
-Arguments:
-    - ECGType, type of the ECG to be used
-    - start index from where the ecg file is read
-    - end index to where the ecg file is read
-    - PAA segment count, number of PAA segments per sampling frequency points
-    - length of each PAA subsequence, number of PAA segments per subsequence
-    - alphabet size, size of the alphabet used for SAX calculation
+keyword arguments:
+    - type: ECGType, type of the ECG to be used
+    - start_index: start index from where the ecg file is read
+    - end_index: end index to where the ecg file is read
+    - paa_segment_length: PAA segment count, number of PAA segments per sampling frequency points
+    - subsequence_length: length of each PAA subsequence, number of PAA segments per subsequence
+    - alphabet_size: alphabet size, size of the alphabet used for SAX calculation
 Return Type:
     - Parameters struct
 """
@@ -121,7 +123,7 @@ function Parameters(;
         throw(DomainError(alphabet_size))
     end
 
-    @info "ECG Type: $(type.name)\nParameters:\n  start index: $start_index\n  end index: $end_index\n  PAA segment count: $PAA_segment_count\n  subsequence length: $subsequence_length\n  alphabe size: $alphabet_size"
+    @info "Parameters\n  ECG Type: $(type.name)\n  start index: $start_index\n  end index: $end_index\n  PAA segment count: $PAA_segment_count\n  subsequence length: $subsequence_length\n  alphabe size: $alphabet_size"
 
     return Parameters(
         unsigned(start_index),
@@ -136,24 +138,22 @@ end
 """
 Struct for the ECG Pointer, a reference to the ECG file on the computer 
 Fields:
-    - type, the type of the ECG
-    - filepath, the path from the current Julia environment to the ECG file
-    - number of data points in the file
-    - number of leads in the file
+    - filepath: the path from the current Julia environment to the ECG file
+    - data_point_count: number of data points in the file
+    - number: number of leads in the file
 """
 struct ECGPointer
-    type::ECGType
-    filepath::String
     data_point_count::UInt64
     number::UInt64
+    filepath::String
 end
 
 """
 Function for the correct instantiation of an ECGPointer
-Arguments:
-    - type, the type of the ECG
-    - filepath, the path from the current Julia environment to the ECG file
-    - number of the ECG from the database
+keyword arguments:
+    - filepath: the path from the current Julia environment to the ECG file
+    - number: number of the ECG from the database
+    - param: the parameters of the program
 Return Type:
     - ECGPointer
 """
@@ -170,7 +170,6 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
 
     path = joinpath(@__DIR__, filepath)
 
-    @info "File path: $path"
 
     if filesize(path) == 0
         @error "File size is 0, check filepath"
@@ -178,11 +177,7 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
         throw(DomainError(filepath))
     else
         lead_count = length(
-            CSV.File(
-                path,
-                skipto = param.start_index + 1,
-                limit = 1,
-            ) |> Tables.matrix
+            CSV.File(path, skipto = param.start_index + 1, limit = 1) |> Tables.matrix,
         )
 
         if lead_count != length(param.type.leads)
@@ -192,20 +187,21 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
         end
     end
 
-    return ECGPointer(param.type, path, data_point_count, unsigned(number))
+    @info "File path: $path"
+
+    return ECGPointer(data_point_count, unsigned(number), path)
 end
 
 """
 Struct for the ECG data
 Fields:
-    - lead, the lead of the ECG
-    - number, the number of the ECG in the database
-    - a boolean variable indicating if the ECG is filered
-    - a boolean variable indicating if the ECG is normalized 
-    - data, a matrix holding the data values
+    - number: number of the ECG in it's collection
+    - lead: the lead of the ECG
+    - is_filtered: a boolean variable indicating if the ECG is filered
+    - is_normalized: a boolean variable indicating if the ECG is normalized 
+    - data: a matrix holding the data values
 """
 struct ECG
-    type::ECGType
     number::UInt64
     lead::ECGLead
     is_filtered::Vector{Bool}
@@ -215,15 +211,18 @@ end
 
 """
 Function for the instantiation of the ECG struct
-Arguments:
-    - type of the ECG
-    - parameters of the program
-    - lead of the ECG file to be extracted
-    - pointer to the ECG file
+keyword arguments:
+    - param: parameters of the program
+    - lead: lead of the ECG file to be extracted
+    - pointer: pointer to the ECG file
+Return type:
+    - ECG
 """
 function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
 
-    lead_index = findall(x -> (x == lead), pointer.type.leads)
+    @info "Extracting ECG"
+
+    lead_index = findall(x -> (x == lead), param.type.leads)
 
     if length(lead_index) == 0
         @error "Lead is invalid for ECGType $(pointer.type.name)"
@@ -247,7 +246,7 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
             select = [lead_index],
         ) |> Tables.matrix
 
-    if size(data, 1) < (param.end_index - param.start_index + 1) 
+    if size(data, 1) < (param.end_index - param.start_index + 1)
         @error "End Index: $(param.end_index) must be less than file length $(size(data, 1))"
 
         throw(DomainError(param.end_index))
@@ -258,25 +257,36 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
         :,
         signed(
             param.PAA_segment_count * (param.end_index - param.start_index + 1) ÷
-            pointer.type.fs ÷ param.subsequence_length,
+            param.type.fs ÷ param.subsequence_length,
         ),
     )
 
     @info "Data matrix has the dimensions $(size(data))"
 
-    return ECG(pointer.type, pointer.number, lead, [false], [false], data)
+    return ECG(pointer.number, lead, [false], [false], data)
 end
-
 
 """
 Struct for PAA data 
 Fields:
+    - number, the number of the ECG
+    - lead, lead of the ECG
     - data, a matrix holding the data values
 """
 struct PAA
+    number::UInt64
+    lead::ECGLead
     data::Matrix{Float64}
 end
 
+"""
+Function for the calulcation of PAA
+keyword arguments:
+    - ecg: ECG that PAA to be applied throw
+    - param: parameters of the ECG
+Return type:
+    - PAA (wrapper around Matrix{Float64})
+"""
 function PAA(; ecg::ECG, param::Parameters)::PAA
 
     @info "Calculating PAA"
@@ -297,18 +307,33 @@ function PAA(; ecg::ECG, param::Parameters)::PAA
 
     paa *= (cols * param.subsequence_length / len)
 
-    return PAA(paa)
+    return PAA(ecg.number, ecg.lead, paa)
 end
 
+"""
+Struct for SAX data 
+Fields:
+    - number: number of the ECG
+    - lead: lead that the ECG is from
+    - difference_matrix: matrix used for the computation of distances between two segments
+    - data, a matrix holding the data values
+"""
 struct SAX
-    type::ECGType
     number::UInt64
     lead::ECGLead
     difference_matrix::Matrix{Float64}
     data::Matrix{Char}
 end
 
-function SAX(; paa::PAA, param::Parameters, ecg::ECG)::SAX
+"""
+Function for the calulcation of SAX
+keyword arguments:
+    - paa: the PAA representation of the ECG
+    - param: parameters of the ECG
+Return type:
+    - SAX representation
+"""
+function SAX(; paa::PAA, param::Parameters)::SAX
 
     @info "Calculating SAX"
 
@@ -317,7 +342,7 @@ function SAX(; paa::PAA, param::Parameters, ecg::ECG)::SAX
 
     rows, cols = size(paa.data)
 
-    sax::Matrix{Char} = fill(last(α), size(paa.data))
+    sax::Matrix{Char} = fill(last(α), rows, cols)
 
     for j = 1:cols
         for i = 1:rows
@@ -344,5 +369,5 @@ function SAX(; paa::PAA, param::Parameters, ecg::ECG)::SAX
         end
     end
 
-    return SAX(ecg.type, ecg.number, ecg.lead, difference_matrix, sax)
+    return SAX(paa.number, paa.lead, difference_matrix, sax)
 end

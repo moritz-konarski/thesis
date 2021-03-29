@@ -2,24 +2,37 @@
 SUMMARY
 Collection of helper functions 
 
-META-INFO
-Date: 25.03.2021
 Author: Moritz M. Konarski
 Email: konarski_m@auca.kg
 GitHub: @moritz-konarski (https://github.com/moritz-konarski)
 """
 
+# provides mean and standard deviation functions
 using Statistics
+# provides inverse gaussian distribution area function
 using StatsFuns
+# to be able to create a data structure out of heterogeneous data types
 using DataFrames
+# provides digital signal processing functions
 using DSP
+# provides the trie type
+using Tries
 
+"""
+Function to z-normalize the ECG data (standard deviation = 1, mean = 0)
+keyword arguments:
+    - ecg: the ecg to be normalized
+return type:
+    - ECG
+
+THIS CREATES A NEW INSTANCE OF ECG. FOR THE IN-PLACE OPERATION, SEE z-normalize!
+"""
 function z_normalize(; ecg::ECG)::ECG
     if !ecg.is_normalized[1]
         @info "Z-normalizing ECG"
 
-        μ::Float64 = mean(ecg.data)
-        σ::Float64 = std(ecg.data)
+        μ::Float64 = Statistics.mean(ecg.data)
+        σ::Float64 = Statistics.std(ecg.data)
 
         data::Matrix{Float64} = zeros(Float64, size(ecg.data))
 
@@ -35,12 +48,19 @@ function z_normalize(; ecg::ECG)::ECG
     end
 end
 
+"""
+Function to z-normalize the ECG data in-place (standard deviation = 1, mean = 0)
+keyword arguments:
+    - ecg: the ecg to be normalized
+
+See also z-normalize
+"""
 function z_normalize!(; ecg::ECG)
     if !ecg.is_normalized[1]
         @info "Z-normalizing ECG"
 
-        μ::Float64 = mean(ecg.data)
-        σ::Float64 = std(ecg.data)
+        μ::Float64 = Statistics.mean(ecg.data)
+        σ::Float64 = Statistics.std(ecg.data)
 
         for i = 1:size(ecg.data, 2)
             for j = 1:size(ecg.data, 1)
@@ -52,32 +72,37 @@ function z_normalize!(; ecg::ECG)
 end
 
 """
-figure out why this does not work?
+Function to compute a list of characters of length n in alphabetical order
+keyword arguments:
+    - alphabet_size: length of the alphabet
+return type
+    - list of characters
 """
-function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
-
-    @info "Applying Butterworth filter"
-
-    responsetype = Highpass(0.5, fs=param.type.fs)
-    designmethod = Butterworth(2)
-    f = digitalfilter(responsetype, designmethod)
-    data::Matrix{Float64} = filtfilt(f, ecg.data)
-
-    return ECG(ecg.type, ecg.number, ecg.lead, [true], ecg.is_normalized, data)
-end
-
 function compute_alphabet(; alphabet_size::UInt64)::Vector{Char}
     return fill('a', alphabet_size) .+ (0:alphabet_size-1)
 end
 
+"""
+Function computing the SAX breakpoints
+keyword arguments:
+    - alphabet_size: how many characters are part of the alphabet
+return type
+    - list of break points Vector{Float64}
+"""
 function compute_breakpoints(; alphabet_size::UInt64)::Vector{Float64}
     β = zeros(Float64, alphabet_size - 1)
-
-    [β[i] = StatsFuns.norminvcdf(i / alphabet_size) for i = 1:(alphabet_size-1)]
-
-    return β
+    return [β[i] = StatsFuns.norminvcdf(i / alphabet_size) for i = 1:(alphabet_size-1)]
 end
 
+"""
+Function for finding the distance between two SAX representations
+keyword arguments:
+    - sax1: first SAX representation
+    - sax2: second SAX representation
+    - param: parameters of the program
+return type:
+    - Float64, distance between the SAX sequences
+"""
 function mindist(; sax1::SAX, sax2::SAX, param::Parameters)::Float64
 
     @info "Computing SAX Mindist"
@@ -105,6 +130,15 @@ function mindist(; sax1::SAX, sax2::SAX, param::Parameters)::Float64
     ) * √(s)
 end
 
+"""
+Function for the distance between two subsequences of characters
+keyword arguments:
+    - chars1: first sequence of characters
+    - chars2: second sequence of characters
+    - difference_matrix: difference matrix of the original SAX representation
+return type:
+    - difference between the two representations
+"""
 function dist(;
     chars1::Vector{Char},
     chars2::Vector{Char},
@@ -120,7 +154,16 @@ function dist(;
     return s
 end
 
-
+"""
+Function to find the differences between 2 individual segments of a SAX representation 
+keyword arguments:
+    - segment1: the first SAX subsequence
+    - segment2: the second SAX subsequence
+    - difference_matrix: difference matrix of the original SAX representation
+    - param: Parameters of the program
+return type:
+    - distance between the segments
+"""
 function mindist(;
     segment1::Vector{Char},
     segment2::Vector{Char},
@@ -136,23 +179,51 @@ function mindist(;
     ) * √(s)
 end
 
+"""
+Function meant to index SAX representations
+"""
 function index_sax(; sax::SAX)
 
     @info "Indexing SAX"
 
     unique_values = unique(sax.data, dims=2)
 
-    @info "Counting sequences"
+    @info "Counting sequences and building trie"
 
     counts = zeros(Int64, size(unique_values, 2))
+    trie = Trie{Char, Vector{Int64}}()
 
     for i in 1:size(sax.data, 2)
         for j in 1:size(unique_values, 2)
             if sax.data[:, i] == unique_values[:, j]
                 counts[j] += 1
+                try 
+                    push!(get(trie[sax.data[:, i]...]), i)
+                catch KeyError
+                    trie[sax.data[:, i]...] = [i]
+                end
             end
         end
     end
 
-    return DataFrame(sequence = unique_values, count = counts)
+    show(trie)
+
+    return unique_values, counts, trie
+end
+
+
+"""
+Function meant to remove baseline wander from the ECG
+figure out why this does not work?
+"""
+function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
+
+    @info "Applying Butterworth filter"
+
+    responsetype = Highpass(0.5, fs=param.type.fs)
+    designmethod = Butterworth(2)
+    f = digitalfilter(responsetype, designmethod)
+    data::Matrix{Float64} = filtfilt(f, ecg.data)
+
+    return ECG(ecg.type, ecg.number, ecg.lead, [true], ecg.is_normalized, data)
 end

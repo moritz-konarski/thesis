@@ -20,8 +20,9 @@ function sax_brute_force_discord(;
 
     # ecg = butterworth_filter(ecg = ecg, param = param)
 
-    sax = SAX(param = param, ecg = ecg, paa = PAA(ecg = ecg, param = param))
+    sax = SAX(param = param, paa = PAA(ecg = ecg, param = param))
 
+    a, b = index_sax(sax = sax)
     # @info index_sax(sax = sax)
 
     @info "Brute Forcing Discord"
@@ -92,10 +93,13 @@ param = Parameters(
     # end_index = 200 * 360,
     # end_index = 30 * 360,
     # end_index = 39 * 360,
-    end_index = 1_800 * 360,
-    PAA_segment_count = 18,
-    subsequence_length = 12,
-    alphabet_size = 6,
+    end_index = 5 * 360,
+    # PAA_segment_count = 18,
+    # subsequence_length = 12,
+    # alphabet_size = 6,
+    PAA_segment_count = 6,
+    subsequence_length = 3,
+    alphabet_size = 4,
 )
 filepath = "../../ecgs/108.mit"
 number = 108
