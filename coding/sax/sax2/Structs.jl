@@ -440,9 +440,10 @@ Return type:
 """
 function Annotation(; param::Parameters, pointer::AnnotationPointer)::Annotation
 
+    @info pointer
     @info "Extracting Annotations"
 
-    data::DataFrame =
+    data =
         CSV.File(
             pointer.filepath,
             types = [Int64, String, Int64, Int64, Int64, String],

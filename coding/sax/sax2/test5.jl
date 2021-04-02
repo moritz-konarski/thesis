@@ -178,8 +178,8 @@ param = Parameters(
     # PAA_segment_count = 18,
     # subsequence_length = 12,
     # alphabet_size = 6,
-    PAA_segment_count = 18,
-    subsequence_length = 12,
+    PAA_segment_count = 90,
+    subsequence_length = 45,
     alphabet_size = 6,
 )
 filepath = "../../ecgs/113.mit"
