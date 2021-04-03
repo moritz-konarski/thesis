@@ -449,7 +449,8 @@ function Annotation(; param::Parameters, pointer::AnnotationPointer)::Annotation
     data =
         CSV.File(
             pointer.filepath,
-            types = [String, Int64, String, Int64, Int64, Int64, String],
+            types = [Int64, String, Int64, Int64, Int64, String],
+#types = [String, Int64, String, Int64, Int64, Int64, String],
         ) |> DataFrame
 
     # @info "Data matrix has the dimensions $(size(data))"

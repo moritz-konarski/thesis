@@ -94,11 +94,15 @@ found::Int64 = 0
         for seg in [1 2 3 4 5 6 8 9 10 12 15 18 20 24 30 36 40 45 60 72 90 120 180 360]
             for subseg in
                 [1 2 3 4 5 6 8 9 10 12 15 18 20 24 30 36 40 45 60 72 90 120 180 360]
+                
+                if seg > 3 && subseg < 4
+                    continue
+                end
 
                 if subseg > seg
                     break
                 end
-                try
+                @time try
                     param = Parameters(
                         type = MITBIH,
                         start_index = 1,
