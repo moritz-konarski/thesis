@@ -125,7 +125,7 @@ function Parameters(;
         throw(DomainError(alphabet_size))
     end
 
-    @info "Parameters\n  ECG Type: $(type.name)\n  start index: $start_index\n  end index: $end_index\n  PAA segment count: $PAA_segment_count\n  subsequence length: $subsequence_length\n  alphabe size: $alphabet_size"
+    # @info "Parameters\n  ECG Type: $(type.name)\n  start index: $start_index\n  end index: $end_index\n  PAA segment count: $PAA_segment_count\n  subsequence length: $subsequence_length\n  alphabe size: $alphabet_size"
 
     return Parameters(
         unsigned(start_index),
@@ -189,7 +189,7 @@ function ECGPointer(; filepath::String, param::Parameters, number::Int64)::ECGPo
         end
     end
 
-    @info "File path: $path"
+    # @info "File path: $path"
 
     return ECGPointer(data_point_count, unsigned(number), path)
 end
@@ -222,7 +222,7 @@ Return type:
 """
 function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
 
-    @info "Extracting ECG"
+    # @info "Extracting ECG"
 
     lead_index = findall(x -> (x == lead), param.type.leads)
 
@@ -263,7 +263,7 @@ function ECG(; param::Parameters, lead::ECGLead, pointer::ECGPointer)::ECG
         ),
     )
 
-    @info "Data matrix has the dimensions $(size(data))"
+    # @info "Data matrix has the dimensions $(size(data))"
 
     return ECG(pointer.number, lead, [false], [false], data)
 end
@@ -291,7 +291,7 @@ Return type:
 """
 function PAA(; ecg::ECG, param::Parameters)::PAA
 
-    @info "Calculating PAA"
+    # @info "Calculating PAA"
 
     rows::UInt64 = size(ecg.data, 1)
     cols::UInt64 = size(ecg.data, 2)
@@ -337,10 +337,10 @@ Return type:
 """
 function SAX(; paa::PAA, param::Parameters)::SAX
 
-    @info "Calculating SAX"
+    # @info "Calculating SAX"
 
-    β::Vector{Float64} = compute_breakpoints(alphabet_size = param.alphabet_size)
-    α::Vector{Char} = compute_alphabet(alphabet_size = param.alphabet_size)
+    β::Vector{Float64} = compute_breakpoints(param.alphabet_size)
+    α::Vector{Char} = compute_alphabet(param.alphabet_size)
 
     rows, cols = size(paa.data)
 
@@ -396,7 +396,11 @@ keyword arguments:
 Return Type:
     - AnnotationPointer
 """
-function AnnotationPointer(; filepath::String, param::Parameters, number::Int64)::AnnotationPointer
+function AnnotationPointer(;
+    filepath::String,
+    param::Parameters,
+    number::Int64,
+)::AnnotationPointer
     data_point_count::UInt64 = 0
 
     if param.type.file_extension !=
@@ -414,7 +418,7 @@ function AnnotationPointer(; filepath::String, param::Parameters, number::Int64)
         throw(DomainError(filepath))
     end
 
-    @info "File path: $path"
+    # @info "File path: $path"
 
     return AnnotationPointer(data_point_count, unsigned(number), path)
 end
@@ -440,16 +444,15 @@ Return type:
 """
 function Annotation(; param::Parameters, pointer::AnnotationPointer)::Annotation
 
-    @info pointer
-    @info "Extracting Annotations"
+    # @info "Extracting Annotations"
 
     data =
         CSV.File(
             pointer.filepath,
-            types = [Int64, String, Int64, Int64, Int64, String],
+            types = [String, Int64, String, Int64, Int64, Int64, String],
         ) |> DataFrame
 
-    @info "Data matrix has the dimensions $(size(data))"
+    # @info "Data matrix has the dimensions $(size(data))"
 
     return Annotation(pointer.number, data)
 end

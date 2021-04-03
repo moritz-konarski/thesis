@@ -8,7 +8,7 @@ function hot_sax(;
     param::Parameters,
     filepath::String,
     number::Int64,
-# )::Tuple{Float64,Int64}
+    # )::Tuple{Float64,Int64}
 )
 
     ecg_pointer = ECGPointer(param = param, filepath = filepath, number = number)
@@ -16,7 +16,7 @@ function hot_sax(;
     z_normalize!(ecg = ecg)
     sax = SAX(param = param, paa = PAA(ecg = ecg, param = param))
     uniques, counts, trie = index_sax(sax = sax)
-    
+
     # show(stdout, "text/plain", signed.(counts))
     # println()
     # show(stdout, "text/plain", uniques)
@@ -44,7 +44,7 @@ function hot_sax(;
     v = Vector{UInt64}()
 
     # for i in 1:offset
-    for i in 1:size(uniques, 2)
+    for i = 1:size(uniques, 2)
         v = vcat(v, get(trie[uniques[:, i]...]))
         # println(get(trie[uniques[:, i]...]))
     end
@@ -68,12 +68,7 @@ function hot_sax(;
 
         for j in v
             if i != j
-                d = mindist(
-                    sax.data[:, i],
-                    sax.data[:, j],
-                    sax.difference_matrix,
-                    len,
-                )
+                d = mindist(sax.data[:, i], sax.data[:, j], sax.difference_matrix, len)
                 # if sax.data[:, i] != sax.data[:, j] && d < maxs[3]
                 #     break
                 # end
@@ -96,7 +91,7 @@ function sax_brute_force_discord(;
     param::Parameters,
     filepath::String,
     number::Int64,
-# )::Tuple{Float64,Int64}
+    # )::Tuple{Float64,Int64}
 )
 
     ecg_pointer = ECGPointer(param = param, filepath = filepath, number = number)
@@ -120,12 +115,7 @@ function sax_brute_force_discord(;
 
         for j = 1:s
             if i != j
-                d = mindist(
-                    sax.data[:, i],
-                    sax.data[:, j],
-                    sax.difference_matrix,
-                    len,
-                )
+                d = mindist(sax.data[:, i], sax.data[:, j], sax.difference_matrix, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end

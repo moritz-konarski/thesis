@@ -10,7 +10,7 @@ function hot_sax(;
     number::Int64,
     lead::ECGLead,
     k::UInt64,
-# )::Tuple{Float64,Int64}
+    # )::Tuple{Float64,Int64}
 )
 
     ecg_pointer = ECGPointer(param = param, filepath = filepath, number = number)
@@ -31,12 +31,7 @@ function hot_sax(;
 
         for j in ordering
             if i != j
-                d = mindist(
-                    sax.data[:, i],
-                    sax.data[:, j],
-                    sax.difference_matrix,
-                    len,
-                )
+                d = mindist(sax.data[:, i], sax.data[:, j], sax.difference_matrix, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -58,7 +53,7 @@ function sax_brute_force_discord(;
     number::Int64,
     lead::ECGLead,
     k::UInt64,
-# )::Tuple{Float64,Int64}
+    # )::Tuple{Float64,Int64}
 )
 
     ecg_pointer = ECGPointer(param = param, filepath = filepath, number = number)
@@ -82,12 +77,7 @@ function sax_brute_force_discord(;
 
         for j = 1:s
             if i != j
-                d = mindist(
-                    sax.data[:, i],
-                    sax.data[:, j],
-                    sax.difference_matrix,
-                    len,
-                )
+                d = mindist(sax.data[:, i], sax.data[:, j], sax.difference_matrix, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -105,7 +95,7 @@ function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, i::UInt64, k::
 end
 
 function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::UInt64)
-    for i in 1:k
+    for i = 1:k
         if v > a[i]
             # @info length(a)
             a[i+1:end] = a[i:end-1]
@@ -125,7 +115,7 @@ end
 function print_results(dist, ind, param)
     seg_len = param.type.fs ÷ param.PAA_segment_count * param.subsequence_length
     offset = param.start_index
-    for j in 1:length(dist)
+    for j = 1:length(dist)
         @info "d: $(round(dist[j], digits = 3)), s: $(ind[j]), i: $(i2s((ind[j]-1) * seg_len + offset, param)) - $(i2s((ind[j]) * seg_len + offset, param))"
     end
 end
@@ -153,11 +143,24 @@ k = unsigned(85)
 lead = II
 # lead = V1
 
-d, i = sax_brute_force_discord(param = param, filepath = filepath, number = number, lead = lead, k = k)
+d, i = sax_brute_force_discord(
+    param = param,
+    filepath = filepath,
+    number = number,
+    lead = lead,
+    k = k,
+)
 e, j = hot_sax(param = param, filepath = filepath, number = number, lead = lead, k = k)
 
-@time d, i = sax_brute_force_discord(param = param, filepath = filepath, number = number, lead = lead, k = k)
-@time e, j = hot_sax(param = param, filepath = filepath, number = number, lead = lead, k = k)
+@time d, i = sax_brute_force_discord(
+    param = param,
+    filepath = filepath,
+    number = number,
+    lead = lead,
+    k = k,
+)
+@time e, j =
+    hot_sax(param = param, filepath = filepath, number = number, lead = lead, k = k)
 
 @info "Brute Force"
 print_results(d, i, param)

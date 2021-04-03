@@ -8,7 +8,7 @@ include("Plotting.jl")
 function get_ecg()
     param = Parameters(
         type = MITBIH,
-        start_index = 11*360+ 1,
+        start_index = 11 * 360 + 1,
         # start_index = 22*360+ 1,
         # end_index = 30 * 360,
         end_index = 39 * 360,

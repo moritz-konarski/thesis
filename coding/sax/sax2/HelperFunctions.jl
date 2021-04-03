@@ -27,9 +27,9 @@ return type:
 
 This creates a new instance of ECG. for the in-place operation, see z-normalize!
 """
-function z_normalize(; ecg::ECG)::ECG
+function z_normalize(ecg::ECG)::ECG
     if !ecg.is_normalized[1]
-        @info "Z-normalizing ECG"
+        # @info "Z-normalizing ECG"
 
         μ::Float64 = Statistics.mean(ecg.data)
         σ::Float64 = Statistics.std(ecg.data)
@@ -55,9 +55,9 @@ keyword arguments:
 
 See also z-normalize
 """
-function z_normalize!(; ecg::ECG)
+function z_normalize!(ecg::ECG)
     if !ecg.is_normalized[1]
-        @info "Z-normalizing ECG"
+        # @info "Z-normalizing ECG"
 
         μ::Float64 = Statistics.mean(ecg.data)
         σ::Float64 = Statistics.std(ecg.data)
@@ -78,7 +78,7 @@ keyword arguments:
 return type
     - list of characters
 """
-function compute_alphabet(; alphabet_size::UInt64)::Vector{Char}
+function compute_alphabet(alphabet_size::UInt64)::Vector{Char}
     return fill('a', alphabet_size) .+ (0:alphabet_size-1)
 end
 
@@ -89,7 +89,7 @@ keyword arguments:
 return type
     - list of break points Vector{Float64}
 """
-function compute_breakpoints(; alphabet_size::UInt64)::Vector{Float64}
+function compute_breakpoints(alphabet_size::UInt64)::Vector{Float64}
     β = zeros(Float64, alphabet_size - 1)
     return [β[i] = StatsFuns.norminvcdf(i / alphabet_size) for i = 1:(alphabet_size-1)]
 end
@@ -103,32 +103,32 @@ keyword arguments:
 return type:
     - Float64, distance between the SAX sequences
 """
-function mindist(; sax1::SAX, sax2::SAX, param::Parameters)::Float64
+# function mindist(sax1::SAX, sax2::SAX; param::Parameters)::Float64
 
-    @info "Computing SAX Mindist"
+#     @info "Computing SAX Mindist"
 
-    if size(sax1.data) != size(sax2.data)
-        @error "Both SAX representation must have the same dimensions ($(size(sax1.data)) vs $(size(sax2.data)))"
+#     if size(sax1.data) != size(sax2.data)
+#         @error "Both SAX representation must have the same dimensions ($(size(sax1.data)) vs $(size(sax2.data)))"
 
-        throw(DomainError(size(sax1.data)))
-    end
+#         throw(DomainError(size(sax1.data)))
+#     end
 
-    cols::UInt64 = size(sax1.data, 2)
+#     cols::UInt64 = size(sax1.data, 2)
 
-    s::Float64 = 0.0
+#     s::Float64 = 0.0
 
-    for i = 1:cols
-        s += dist(
-            sax1.data[:, i],
-            sax2.data[:, i],
-            sax1.difference_matrix,
-        )
-    end
+#     for i = 1:cols
+#         s += dist(
+#             sax1.data[:, i],
+#             sax2.data[:, i],
+#             sax1.difference_matrix,
+#         )
+#     end
 
-    return √(
-        (param.end_index - param.start_index + 1) / (param.subsequence_length * cols),
-    ) * √(s)
-end
+#     return √(
+#         (param.end_index - param.start_index + 1) / (param.subsequence_length * cols),
+#     ) * √(s)
+# end
 
 """
 Function for the distance between two subsequences of characters
@@ -139,7 +139,7 @@ keyword arguments:
 return type:
     - difference between the two representations
 """
-function dist(
+@inline function dist(
     chars1::Vector{Char},
     chars2::Vector{Char},
     difference_matrix::Matrix{Float64},
@@ -164,7 +164,7 @@ keyword arguments:
 return type:
     - distance between the segments
 """
-function mindist(
+@inline function mindist(
     segment1::Vector{Char},
     segment2::Vector{Char},
     difference_matrix::Matrix{Float64},
@@ -179,20 +179,20 @@ end
 """
 Function meant to index SAX representations
 """
-function index_sax(; sax::SAX)::Vector{UInt64}
+function index_sax(sax::SAX)::Vector{UInt64}
 
-    @info "Indexing SAX"
+    # @info "Indexing SAX"
 
     unique_sequences::Matrix{Char} = fill('_', size(sax.data))
     counts::Vector{UInt64} = zeros(UInt64, size(sax.data, 2))
-    trie = Trie{Char, Vector{UInt64}}()
+    trie = Trie{Char,Vector{UInt64}}()
     last_index::UInt64 = 0
 
-    for i::UInt64 in 1:size(sax.data, 2)
-        for j in 1:size(unique_sequences, 2)
+    for i::UInt64 = 1:size(sax.data, 2)
+        for j = 1:size(unique_sequences, 2)
             if sax.data[:, i] == unique_sequences[:, j]
                 counts[j] += 1
-                try 
+                try
                     push!(get(trie[sax.data[:, i]...]), i)
                 catch KeyError
                     trie[sax.data[:, i]...] = [i]
@@ -218,7 +218,7 @@ function index_sax(; sax::SAX)::Vector{UInt64}
 
     order = Vector{UInt64}()
 
-    for i in 1:last_index
+    for i = 1:last_index
         order = vcat(order, get(trie[unique_sequences[:, i]...]))
     end
 
@@ -229,20 +229,26 @@ end
 Function meant to remove baseline wander from the ECG
 figure out why this does not work?
 """
-function butterworth_filter(; ecg::ECG, param::Parameters)::ECG
+function butterworth_filter(ecg::ECG; param::Parameters)::ECG
 
-    @info "Applying Butterworth filter"
+    # @info "Applying Butterworth filter"
 
-    responsetype = Highpass(0.5, fs=param.type.fs)
+    responsetype = Highpass(0.5, fs = param.type.fs)
     designmethod = Butterworth(2)
     f = digitalfilter(responsetype, designmethod)
     data::Matrix{Float64} = filtfilt(f, ecg.data)
 
-    return ECG(ecg.type, ecg.number, ecg.lead, [true], ecg.is_normalized, data)
+    return ECG(ecg.number, ecg.lead, [true], ecg.is_normalized, data)
 end
 
-function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::UInt64)
-    for i in 1:k
+@inline function set_d(
+    a::Vector{Float64},
+    v::Float64,
+    is::Vector{Int64},
+    j::Int64,
+    k::UInt64,
+)
+    for i = 1:k
         if v > a[i]
             a[i+1:end] = a[i:end-1]
             a[i] = v
@@ -254,11 +260,21 @@ function set_d(a::Vector{Float64}, v::Float64, is::Vector{Int64}, j::Int64, k::U
     end
 end
 
-function get_beat_annotation_indices(;ann::Annotation)::Vector{UInt64}
+@inline function set_d(
+    a::Vector{Float64},
+    v::Float64,
+    is::Vector{Int64},
+    j::UInt64,
+    k::UInt64,
+)
+    set_d(a, v, is, signed(j), k)
+end
+
+function get_beat_annotation_indices(ann::Annotation)::Vector{UInt64}
     subset::Vector{UInt64} = zeros(size(ann.data, 1))
     index::UInt64 = 0
 
-    for i in 1:size(ann.data, 1)
+    for i = 1:size(ann.data, 1)
         if ann.data[i, "Type"] != "N"
             index += 1
             subset[index] = i
