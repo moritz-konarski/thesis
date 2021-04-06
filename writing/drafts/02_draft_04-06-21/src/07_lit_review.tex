@@ -1,0 +1,723 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{State of Computerized ECG Analysis}
+
+Recent advances in computer technology have enabled the use of
+computers in every aspect of ECG acquisition, processing, analysis, and
+storage. In light of these developments, the American Heart Association
+published recommendations for the interpretation and standardization of the 
+ECG. They recommend that the low-frequency cutoff for low-frequency filtering
+of an ECG should be 0.05 Hz or 0.67 Hz for filters that do not exhibit phase
+distortion. For high-frequency filtering they recommend a cutoff of at least
+150 Hz. For the storage of digital ECG samples (at 500 samples per second), it is
+recommended use use compression with an error of less than 10 microvolt 
+\cite{kligfield2007}.\par
+
+\textcite{xie2020} provide an overview of the current approaches to
+computerized ECG analysis. The standard approach to using computerized methods 
+in ECG analysis is comprised of four steps
+\begin{enumerate*}[label=(\arabic*)]
+    \item denoising of the raw ECG signal(s),
+    \item feature engineering,
+    \item dimensionality reduction, and
+    \item classification.
+\end{enumerate*}
+To denoise an ECG, digital filters are often used. Their drawbacks are that
+they only filter out very specific frequencies. Because noisy ECGs contain
+different types of contaminations, digital filters can be inaccurate. Using wavelet 
+transforms for denoising has the advantage that noise can be more precisely
+targeted and the clean signal reconstructed afterwards. Choosing appropriate
+wavelet parameters can be challenging and methods to optimize this process have
+been proposed. Empirical mode decomposition is the third option generally
+employed to denoise an ECG. It does not require the user to set parameters but
+it can lead to a mixing of oscillations of different time scales.\par
+
+After the signal has been appropriately denoised, feature engineering is
+performed. Feature engineering is the process of extracting features that are 
+relevant for
+diagnosis from the many points the ECG signal contains. The main features
+targeted for extraction are the PQRST features mentioned in the introduction.
+The fast Fourier Transform provides a way of analysing the frequency domain of
+the ECG signal, enabling the detection of the QRS complex and other features.
+The missing time information in the fast Fourier Transform can lead to
+difficulties in detecting time-dependent features. The short-time Fourier 
+Transform adds time information to the fast Fourier Transforms data. This can
+increase the accuracy of the feature extraction. This transform has the
+drawback that there is a tradeoff between the time and frequency resolutions.
+Wavelet transforms can also be used for feature extraction. They have the
+advantage that they are suitable for all frequency ranges. Choosing the right
+wavelet base for the desired application can be a challenge. The discrete
+wavelet transform is the most widely used wavelet transform, thanks to its
+computational efficiency. Statistical methods are also used to extract features
+from ECGs; those methods are generally less affected by noise in the
+signal.\par
+
+After the features of the ECG have been extracted, it is often necessary to
+reduce the number of features. The reason for this is that a large number of
+features, despite their high accuracy, require a high amount of computation to 
+classify. This lengthy computation can negate the advantages gained by high
+accuracy.
+This process 
+sacrifices a certain amount of information and sometimes
+precision, but significantly speeds up the classification. Feature selection is a process that attempts to select a subset of
+the original data that adequately describes the whole data. Feature selection
+can be performed by a filter that filters out unnecessary attributes based on
+some metric. This methods is relatively simple, but the filtering process
+removes data and thus negatively impacts the precision of further steps. 
+Feature extraction on the other hand uses dimensionality reduction methods to
+keep as much of the original information as possible. Principal component
+analysis preserves as much of the variance in the original data as it can.
+Other algorithms focus on separating classes of data, pattern recognition, or
+retaining the structure of the original data.\par
+
+The final stage of the ECG processing is the classification stage. In this
+stage judgements are made based on the prepared input data and the result
+should be a disease diagnosis. In the early stages of computerized ECG
+analysis classification was performed by algorithms based on human actions when
+reading an ECG. Those algorithms were basic and not particularly accurate. 
+Currently, the classification at the end of the preparation process is 
+performed by a machine learning algorithm. Such models include the 
+k-nearest-neighbors model which classifies points into groups but which is very expensive
+to calculate for high-dimensional data. Support vector machines are used for
+pattern recognition and are able to work with small samples. Artificial neural
+networks are robust and can work with complex problems, they are generally more
+accurate than support vector machines. The newest approach is to forego the
+stages discussed here and use a single neural network to perform all the
+required tasks "end-to-end". These networks are fed raw data and the denoising, 
+feature extraction, selection, and classification is performed internally by
+the model \cite{xie2020}.\par
+
+The end-to-end approach to ECG analysis is a relatively new development and is
+being actively researched. The more traditional method using denoising,
+features engineering, and classification as separate steps is also still 
+relevant. The combination of denoising and feature extraction with a machine
+learning classifier can lead to very good results. \textcite{prasad2018} use
+the fast Fourier Transform to extract features from an ECG and then employ a 
+multi-objective genetic algorithm to detect abnormal ECG signals with high accuracy.
+\textcite{vaneghi2012} compare 6 common feature extraction techniques with
+respect to their detection of ventricular late potentials. The compared methods
+are the autoregressive method, wavelet transform, eigenvector, fast Fourier
+Transform, linear prediction, and independent component analysis.
+\textcite{valupadasu2012} use the fast Fourier Transform to analyze the energy
+level in different frequencies in the ECG of patients with IHD. They find that
+the energy is distributed differently, allowing the distinction of ECGs with
+IHD from those without IHD. \textcite{kaur2016} analyzed ECG signals with both
+the wavelet transform and principal component analysis. They found that the
+wavelet transform outperformed principal component analysis for the detection
+of heart beats in an ECG. Their model achieved an error rate of 0.221\% of 
+incorrectly classified heart beats.
+
+What are the basics of time series analysis? How does this relate to
+multivariate time series analysis? 
+
+History of SAX, ESAX, TSAX, SAX\_TD, MSAX. How are they each used, what are
+their advantages, disadvantages? What were the motivations for their creation?
+
+Review literature with respect to kNN or HOT-SAX
+
+\end{document}
+
+- Since the 1910s people have been using the ECG to diagnose IHD.
+- Since 1954, the American Heart Association has recommended a standardized
+12-lead ECG, 6 leads on the chest, 
+
+- They have a high rate of misinterpretation among non-specialized physicians and
+especially trainees. 
+
+% cite https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7400524/
+%   future applications and current standing
+- future of cardiography might be in wearable devices, meaning that ECG and
+applications related to it have a future and might become even more widespread
+
+% AHA recommendations and basics
+%   https://www.ahajournals.org/doi/10.1161/circulationaha.106.180200
+- ECG is the most common and fundamental cardiovascular diagnostic procedure
+- it can be used to recognize arrhythmias, electrolyte anomalies, 
+- because of its wide use, reading and using it well is very important
+- most recent advance is the use of computerized methods for storage and
+analysis
+- in the US, most ECGs are recorded and interpreted digitally; their
+implementations might be different and thus not necessarily comparable
+- the ECG processing pipeline is the following:
+    1. signal acquisition and filtering
+    2. data transformation, finding the complexes, classification of the
+       complexes 
+    3. waveform recognition -- finding the onset and offset of the waves
+    4. feature extractoin -- measurement of amplitudes and intervals
+    5. diagnostic classification
+- the 12-lead ecg signal: records potential differences between spots on the
+body during each hearbeat (depolarization and repolarization and voltage of the
+heart cells)
+- the main frequency of the QRS complex on the bodies surface is about 10Hz,
+most information for adults in found below 100Hz; fundamental frequency of
+T waves is about 1-2 Hz
+- the signal processing can easily obscure the important information in an ECG,
+even though a range of 1-30 Hz yields a perfectly good-looking ECG free of
+artifacts
+- ECG sampling
+    - until the 70s, direct writing ECGs were the norm, those were continuous
+    in nature
+    - initial analog to digital sampling is often performed at 10-15 kHz
+    - oversampling is used primarily because pacemaker pulses are too short to
+    be picked up in 500 to 1000 Hz sampling rates
+- low-frequency filtering
+    - heart rate is generally above 0.5 Hz (30 bpm), below 40 bpm is uncommon
+    - we cannot cut of here because that would distort the signal, particularly
+    to the ST segment
+    - digital filtering can be used as a way around this [23]
+    - bidirectional filter that passes once with time, once against time [41]
+    - this approach is not possible in real-time, but in post-processing it
+    would work
+    - a flat step response filter can used in real-time [42]
+- high-frequency filtering
+    - data at 500 samples per second is recommended to reach the required 150
+    Hz cutoff to reduce frequency errors to about 1\%
+- single lead complex
+    - by using templates, variability caused by breathing or other irrelevant
+    disturbances can be removed
+- ecg compression techniques
+    - to make storage more efficient, FFT, discrete cosine transform, wavelet
+    transforms can be used
+- ECG standard leads: 3 limb leads, 3 augmented limb leads, 3 exploring
+electrodes, 6 leads on the chest
+- computerized interpretation: first preprocessing (filtering, sampling,
+template formation, feature extraction), then diagnosis or classification
+- heuristic used to be the norm (decision trees, etc), but statistical methods
+are better because they can form better judgements (one must make sure that
+these methods have enough data of varying kinds to create diagnoses that are
+reliable)
+- they find that computer programs perform with 91.3\% accuracy, while human
+readers are at 96\% -- they may work as supporting data and input to less
+experience users though
+
+% ecg diagnosis of ischemia: past, present, and future
+%   cite https://academic.oup.com/qjmed/article/99/4/219/2261114
+- since 1910 people have been suspecting that artery occlusion can be a cause
+of chest pain
+- since 1920 we know of the most common symptoms of myocardial ischemia
+- in the first few minutes the T wave becomes tall and upright, then the whole
+ST segment becomes elevated relative to the end of the PR segment
+- after a couple hours the T wave may invert
+- the development of Q waves can be an indicator of myocardial infarction
+- there are certain problems in ischemia detection using ECG, some types are
+hard to spot, depending on where in the heart the ischemic tissue is, the
+symptoms can look different on the ECG
+- apparently the exercise stress test is about 63\% sensitive and 77\% specific
+- ischemia is delineated by: "ST elevation is based on ST/junctional ST 
+elevation of 50.1 mV elevation in 51 inferior/lateral leads, or 50.2 mV in 51
+anterior leads. Trials performed by the GUSTO group looking at the benefit of 
+thrombolysis have used more strict definitions such as 50.1 mV in 52 contiguous 
+limb leads or 50.2 mV in 52 contiguous precordial leads." this had 56\%
+sensitivity and 94\% specificity
+- ECG is the main tool to select patients that would benefit from thrombolysis,
+there is a 12h window for effective treatment
+- a stent may be even more effective
+- continuous ST segment monitoring is important while T wave inversion is
+controversial, while it is a marker of severe coronary artery disease
+- thrombolysis when the ECG data is there is only really effective at up to 3h,
+there is little benefit after 9-12h
+- ischemia diagnosis can be improved by correlating heart rate and ST segment
+depression or elevation
+- while ECG is not the most accurate at first, it is real-time and thus does
+not cause disadvantageous delays in treatment -- it is also continuously being
+improved with better diagnostic methods.
+
+% ST, T, U segments
+%   cite https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.108.191096?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed
+- ST and TP segments are normally nearly flat
+- changes in the ST segment and T wave are normally associated with well
+defined anatomic, pathological, physiological, and pharmacological events
+- abnormalities in the ST segment and T wave are primary repolatization
+abnormalities -- caused by ischemia, myocarditis, drugs, toxins, electrolyte
+abnormalities
+- the changes that are direct results of changes in the ventricular 
+depolarization show up in the QRS shape
+- primary and secondary repolarization abnormalities may occur concurrently
+- displacement of the ST segment is usually measured at the junction (J point)
+with the QRS complex
+- the 98th percentile of ST segment voltages seems to be around 0.15 to 0.20 mV
+- elevation of ST is of particular concern in connection to ischemia
+- leads V1, V2, V3 are the main leads where elevation is detected
+- ST segment changes are associated with ischemia are due to current flow
+across the boundary of healthy and ischemic tissue -- injury current
+
+% specific ECG ischemia text
+%   cite https://www.ahajournals.org/doi/full/10.1161/CIRCULATIONAHA.108.191098
+- ECG is the single most important clinical test for diagnosing myocardial
+ischemia and infarction
+- ECG interpretation in emergency situations is generally the basis for
+immediate therapeutic intervention or further diagnostic tests
+- main ECG changes are: peaking T waves, ST-segment elevation or depression,
+changes in the QRS complex, and inverted T waves
+- ST segment changes are caused by injury currents
+- current guidelines say that if the ST segment shifts more than 
+a predetermined amount in more than 2 leads, ischemia is present
+- if the ST segment is elevated, we talk of ST segment elevation myocardial
+infarction (STEMI) and non-STEMI (NSTEMI)
+- the changes to the QRS complex depend on where the lead is and where and how
+severe the ischemic area is 
+- current research is moving towards identifying where and how big areas of
+ischemia are based on ECG readings
+- has section about how exactly ECG leads change during ST segment elevation
+
+
+LIT REVIEW
+- more about how ECGs are becoming more computerized
+- big paper on what the current advances are
+- paper on the different methods of feature classification
+- a couple examples from the literature that I have read
+
+% AHA recommendations and basics
+%   https://www.ahajournals.org/doi/10.1161/circulationaha.106.180200
+- ECG is the most common and fundamental cardiovascular diagnostic procedure
+- it can be used to recognize arrhythmias, electrolyte anomalies, 
+- because of its wide use, reading and using it well is very important
+- most recent advance is the use of computerized methods for storage and
+analysis
+- in the US, most ECGs are recorded and interpreted digitally; their
+implementations might be different and thus not necessarily comparable
+- the ECG processing pipeline is the following:
+    1. signal acquisition and filtering
+    2. data transformation, finding the complexes, classification of the
+       complexes 
+    3. waveform recognition -- finding the onset and offset of the waves
+    4. feature extractoin -- measurement of amplitudes and intervals
+    5. diagnostic classification
+- the 12-lead ecg signal: records potential differences between spots on the
+body during each hearbeat (depolarization and repolarization and voltage of the
+heart cells)
+- the main frequency of the QRS complex on the bodies surface is about 10Hz,
+most information for adults in found below 100Hz; fundamental frequency of
+T waves is about 1-2 Hz
+- the signal processing can easily obscure the important information in an ECG,
+even though a range of 1-30 Hz yields a perfectly good-looking ECG free of
+artifacts
+- ECG sampling
+    - until the 70s, direct writing ECGs were the norm, those were continuous
+    in nature
+    - initial analog to digital sampling is often performed at 10-15 kHz
+    - oversampling is used primarily because pacemaker pulses are too short to
+    be picked up in 500 to 1000 Hz sampling rates
+- low-frequency filtering
+    - heart rate is generally above 0.5 Hz (30 bpm), below 40 bpm is uncommon
+    - we cannot cut of here because that would distort the signal, particularly
+    to the ST segment
+    - digital filtering can be used as a way around this [23]
+    - bidirectional filter that passes once with time, once against time [41]
+    - this approach is not possible in real-time, but in post-processing it
+    would work
+    - a flat step response filter can used in real-time [42]
+- high-frequency filtering
+    - data at 500 samples per second is recommended to reach the required 150
+    Hz cutoff to reduce frequency errors to about 1\%
+- single lead complex
+    - by using templates, variability caused by breathing or other irrelevant
+    disturbances can be removed
+- ecg compression techniques
+    - to make storage more efficient, FFT, discrete cosine transform, wavelet
+    transforms can be used
+- ECG standard leads: 3 limb leads, 3 augmented limb leads, 3 exploring
+electrodes, 6 leads on the chest
+- computerized interpretation: first preprocessing (filtering, sampling,
+template formation, feature extraction), then diagnosis or classification
+- heuristic used to be the norm (decision trees, etc), but statistical methods
+are better because they can form better judgements (one must make sure that
+these methods have enough data of varying kinds to create diagnoses that are
+reliable)
+- they find that computer programs perform with 91.3\% accuracy, while human
+readers are at 96\% -- they may work as supporting data and input to less
+experience users though
+
+% ecg diagnosis of ischemia: past, present, and future
+%   cite https://academic.oup.com/qjmed/article/99/4/219/2261114
+- since 1910 people have been suspecting that artery occlusion can be a cause
+of chest pain
+- since 1920 we know of the most common symptoms of myocardial ischemia
+- in the first few minutes the T wave becomes tall and upright, then the whole
+ST segment becomes elevated relative to the end of the PR segment
+- after a couple hours the T wave may invert
+- the development of Q waves can be an indicator of myocardial infarction
+- there are certain problems in ischemia detection using ECG, some types are
+hard to spot, depending on where in the heart the ischemic tissue is, the
+symptoms can look different on the ECG
+- apparently the exercise stress test is about 63\% sensitive and 77\% specific
+- ischemia is delineated by: "ST elevation is based on ST/junctional ST 
+elevation of 50.1 mV elevation in 51 inferior/lateral leads, or 50.2 mV in 51
+anterior leads. Trials performed by the GUSTO group looking at the benefit of 
+thrombolysis have used more strict definitions such as 50.1 mV in 52 contiguous 
+limb leads or 50.2 mV in 52 contiguous precordial leads." this had 56\%
+sensitivity and 94\% specificity
+- ECG is the main tool to select patients that would benefit from thrombolysis,
+there is a 12h window for effective treatment
+- a stent may be even more effective
+- continuous ST segment monitoring is important while T wave inversion is
+controversial, while it is a marker of severe coronary artery disease
+- thrombolysis when the ECG data is there is only really effective at up to 3h,
+there is little benefit after 9-12h
+- ischemia diagnosis can be improved by correlating heart rate and ST segment
+depression or elevation
+- while ECG is not the most accurate at first, it is real-time and thus does
+not cause disadvantageous delays in treatment -- it is also continuously being
+improved with better diagnostic methods.
+
+% ST, T, U segments
+%   cite https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.108.191096?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed
+- ST and TP segments are normally nearly flat
+- changes in the ST segment and T wave are normally associated with well
+defined anatomic, pathological, physiological, and pharmacological events
+- abnormalities in the ST segment and T wave are primary repolatization
+abnormalities -- caused by ischemia, myocarditis, drugs, toxins, electrolyte
+abnormalities
+- the changes that are direct results of changes in the ventricular 
+depolarization show up in the QRS shape
+- primary and secondary repolarization abnormalities may occur concurrently
+- displacement of the ST segment is usually measured at the junction (J point)
+with the QRS complex
+- the 98th percentile of ST segment voltages seems to be around 0.15 to 0.20 mV
+- elevation of ST is of particular concern in connection to ischemia
+- leads V1, V2, V3 are the main leads where elevation is detected
+- ST segment changes are associated with ischemia are due to current flow
+across the boundary of healthy and ischemic tissue -- injury current
+
+% specific ECG ischemia text
+%   cite https://www.ahajournals.org/doi/full/10.1161/CIRCULATIONAHA.108.191098
+- ECG is the single most important clinical test for diagnosing myocardial
+ischemia and infarction
+- ECG interpretation in emergency situations is generally the basis for
+immediate therapeutic intervention or further diagnostic tests
+- main ECG changes are: peaking T waves, ST-segment elevation or depression,
+changes in the QRS complex, and inverted T waves
+- ST segment changes are caused by injury currents
+- current guidelines say that if the ST segment shifts more than 
+a predetermined amount in more than 2 leads, ischemia is present
+- if the ST segment is elevated, we talk of ST segment elevation myocardial
+infarction (STEMI) and non-STEMI (NSTEMI)
+- the changes to the QRS complex depend on where the lead is and where and how
+severe the ischemic area is 
+- current research is moving towards identifying where and how big areas of
+ischemia are based on ECG readings
+- has section about how exactly ECG leads change during ST segment elevation
+
+\par
+An abnormal exercise ECG is defined by ST-segment displacement, generally
+a depression by more than 1mm, measured 0.08 seconds after the J point, that is
+horizontal and downsloping. 
+% cite Gibbons et al., 2002b
+These types of results are generally reported as normal or abnormal, and
+ischemia as positive or negative. Less severe abnormalities can include
+false-positive or false-negative results, but more severe abnormalities are
+pretty certainly bad. 
+Other tests are pharmacologic stress tests (stress induced by pharmacologic
+agents), or computed tomography of the heart.
+\par
+
+It has been observed that the IHD mortality rate is slowly decreasing. This
+downward trend could be explained by improved health care systems, which can be
+connected to economic growth, or advances in the treatment of cardiovascular  
+diseases. Improved treatment options are especially important for heart 
+diseases like IHD \cite{nowbar2019}.\par
+
+
+\newpage
+
+\subsection{\textcite{xie2020}}
+
+\subsubsection{Introduction}
+
+\begin{itemize}
+    \item cvd is the leading cause of death worldwide
+    \item 30\% of deaths and 130 million cases a year [1]
+    \item ECG is good, non-invasive and real-time: heartbeat recognition, blood
+        pressure detection, disease detection
+    \item discovery of ECG [4]
+    \item electronic analysis can give suggestions
+    \item common ECG formats are 1-lead, 3-lead, 6-lead, 12-lead
+    \item 12-lead is the standard and more detailed
+    \item ECG is also future proof and becoming more readily available
+    \item a doctor's reading of an ECG is heavily dependent on their
+        experience, training, certs
+    \item automatic analysis is becoming more and more common
+    \item ECG features are unique information extracted that represent the
+        state of the heart
+    \item source [17] is a list of common feature classifiers
+    \item instead of feature extraction and later classification, just using
+        one neural network to do all the work is becoming more and more common
+    \item ECD -- time-varying signal with small amplitude
+    \item the signal needs to be significantly de-noised for approaches to work
+    \item normally though, signals are disturbed by baseline drift, electrode
+        contact noise, power-line interference
+    \item severe baseline wandering can lead to misdiagnosis
+    \item methods of denoising
+        \begin{itemize}
+            \item finding the QRS complex is usually hard because PLI and EMG
+                mask it
+            \item digital filtering, wavelet transform, empirical mode
+                decomposition [25]
+            \item digital filters are widely used for this, wavelet too
+                [18,16,27]
+            \item src [29] is a really good method apparently
+            \item src [30] is also great
+            \item src [32] is favorable
+            \item src [33] is a different approach
+            \item Butterworth filter
+        \end{itemize}
+    \item feature engineering
+        \begin{itemize}
+            \item Fourier transform for investigating a signal in the frequency
+                domain
+            \item FFT is useful and fast for feature extraction
+            \item QRS is the most striking, can be used for heart rate
+            \item FFT does not provide any information on the time of any of
+                the components
+            \item short-time FT gives time and frequency information -- we can
+                either have good time and bad frequency or vice versa
+            \item the wavelet transform has a time scale resolution scheme that
+                makes this simpler
+            \item wavelets are good for all frequencies because they are
+                adaptive
+            \item their high resolution can give them the edge
+            \item there are many different options of wavelets that are good
+                for different things
+            \item src [71] is myocardial infarction
+            \item DWT is a good computational tool to assess ECG changes
+            \item for statistical and morphological features 
+            \item higher-order statistics have proven to be good at ECG
+                analysis
+        \end{itemize}
+    \item dimensionality reduction is important because while more feature mean
+        more accuracy, they also increase the computational cost
+    \item most data has correlated variables, meaning they can be ignored
+    \item feature selection tries to select a subset of the original features
+        and only select the best ones -- options are filters, wrappers, and
+        embedded
+    \item filters are the most simple version, they simply remove the redundant
+        data and then return the relevant data
+    \item filters use algorithms to assign scores to individual features
+    \item filters are fast and independent of the classification, but they may
+        not be super good or precise
+    \item feature extraction reduces the dimension of the information but does
+        not throw out information, which makes it more efficient and precise
+    \item this includes primary component analysis and other types of analysis
+    \item some features of an ECG appear randomly, also entropy, energy, and
+        fractal dimension cannot be easily spotted with the naked eye
+    \item kernels can be used for locally linear embedding
+    \item some machine learning decision making algorithms are k nearest
+        neighbors KNN, support vector machine SVM
+    \item KNN is pretty simple and divides points into multiple group using
+        distance; data imbalance is hard to overcome and they are expensive for
+        high-dimensional data
+    \item SVM has good training ability on small data sets and it is a good
+        all-rounder
+    \item there is no standard about the construction of a NN for ECG analysis
+    \item a general end-to-end model seems to be the best solution, removing
+        the need for optimization at each and every step -- feature extraction
+        is shifted to the learning body, which is a nice solution
+    \item a list of all the databases and what they are good at
+    \item good list of applications of the whole thing
+\end{itemize}
+
+\subsection{Plan}
+
+\begin{itemize}
+    \item databases:
+        \begin{itemize}
+            \item MIT-BIH Normal Sinus Rhythm Database for normal ECGs
+            \item European ST-T Database for ST and T wave changes -- patients
+                with ischemia
+            \item INCART database for ischemia, arrhythmias, coronary artery
+                disease
+            \item Lobachevsky University Electrocardiography Database for
+                12-lead stuff for different cardiological diseases
+            \item long therm ST database -- for st segment detection
+            \item suggestions why only 5 minutes are used/necessary to detect
+                stuff
+        \end{itemize}
+    \item use the Butterworth filter in the Julia DSP.jl package to filter the
+        noise out
+    \item use FFT, SFFT, Wavelet for feature extraction, also in julia if
+        possible
+    \item find some simple type of filter to do feature selection -- 
+    \item classification could be done using the NearestNeighbors.jl package
+\end{itemize}
+
+\subsection{Outline}
+
+\subsubsection{Problem Statement}
+
+\begin{itemize}
+    \item ischemia and similar diseases are some of the most deadly and common
+        diseases
+    \item IHD -- what is it? how can it be diagnosed (ECG)? how can it be
+        treated(Stents)?
+    \item what is the research problem that people are facing?
+    \item the QRST–wave complex changes when ischemia is present, enabling its 
+        detection
+    \item heat disease is a significant and deadly medical issue
+    \item poorer countries like Kyrgyzstan are disproportionately affected
+        because many of the newer and better methods cannot be afforded
+        / implemented
+    \item health expenditure in KG is low, the lower it is the worse these
+        conditions are 
+    \item 
+\end{itemize}
+
+\subsubsection{Rationale -- Justification -- Why}
+
+\begin{itemize}
+    \item when it comes to ischemic heart disease (IHD), rapid decision making
+        is important -- why
+    \item ECG is one of the most widely used diagnostic tools -- why
+    \item reading an ECG is very difficult, which leads to different results
+        among different physicians -- relevance
+    \item this could reduce the time it takes to diagnose IHD, which is
+        crucial --
+    \item detect changes during myocardial ischemia, some of those remain
+        invisible to physicians
+    \item promising method because other people are doing this
+    \item what are the applications in practice?
+    \item freely available ECGs on the internet -- MIT-BIH, European ST-T 
+        database and the others
+\end{itemize}
+
+\subsubsection{Goals and Objectives}
+
+\begin{itemize}
+    \item to develop software that analyzes 12–lead ECG to detect IHD -- how
+        will we do that?
+    \item create a 12–lead ECG analysis tool to diagnose IHD
+    \item mathematically model the changes in the ECG compared to at-rest and
+        normal ECGs
+    \item mathematical model and implementation that can speed up diagnosis
+        (which is critical)
+    \item get 100 digitized ECGs from healthy volunteers
+    \item use FFT for analysis
+    \item Fourier Transform, Fast Fourier Transform, Discrete Fourier Transform
+    \item compare the different transforms for this specific problem
+\end{itemize}
+
+\section{Literature Review}
+
+\subsection{Outline}
+
+\subsubsection{Current State of the Problem}
+
+\begin{itemize}
+    \item advances in IHD treatment (see research proposal)
+    \item current methods for ECG modeling
+    \item what is the progress in using FFT and DFT to model ECGs
+    \item 
+\end{itemize}
+
+\newpage
+
+\subsection{Important Points}
+
+\subsubsection{background and purpose}
+
+\begin{itemize}
+    \item ischemia and similar diseases are some of the most deadly and common
+        diseases
+    \item when it comes to ischemic heart disease (IHD), rapid decision making
+        is important
+    \item ECG is one of the most widely used diagnostic tools
+    \item reading an ECG is very difficult, which leads to different results
+        among different physicians
+    \item to develop software that analyzes 12--lead ECG to detect IHD
+    \item this could reduce the time it takes to diagnose IHD, which is crucial
+    \item detect changes during myocardial ischemia, some of those remain
+        invisible to physicians
+\end{itemize}
+
+\subsubsection{goals}
+
+\begin{itemize}
+    \item create a 12--lead ECG analysis tool to diagnose IHD
+    \item we will mathematically model the changes of the ECG compared to
+        at--rest, nominal ECGs
+\end{itemize}
+
+\subsubsection{questions, problematic, rationale}
+
+\begin{itemize}
+    \item the ECG is the most widely used method to assess heart
+        conditions
+    \item the QRST--wave complex changes when ischemia is present, enabling its
+        detection
+    \item a mathematical model could make the analysis of ECGs easier for
+        doctors and speed up their diagnosis
+    \item the model needs to work well for this to be possible
+    \item such a tool would remove some of the problems that normally exist
+        (mentioned above)
+\end{itemize}
+
+\subsubsection{background, literature review}
+
+\begin{itemize}
+    \item heart disease is a significant medical issue
+    \item one of the most deadly ones
+    \item middle income countries like KG are hit harder
+    \item health expenditure in KG is also one of the lowest
+    \item IHD is the main killing disease
+    \item for most treatment methods, the longer the treatment is delayed, the
+        lower the chances of survival become
+    \item if the necessary infrastructure is nonexistent, treatment times
+        cannot be reduced to acceptable levels
+    \item basically, in Kyrgyzstan most modern and good methods do not work
+        because of the missing infrastructure and economic limits
+    \item computers can help to analyze an ECG, which makes diagnosis easier
+\end{itemize}
+
+\subsubsection{methods}
+
+\begin{itemize}
+    \item get 100 digitized ECGs from healthy volunteers
+    \item from this a good model of healthy and stressed ECGs should be created
+    \item maybe use FFT for the analysis
+    \item use a Maplesoft Signal Processing Tool for wave analysis
+\end{itemize}
+
+\subsection{Advice from Imanaliev}
+
+\begin{enumerate}
+    \item Search for the recent advancements in published papers
+    \item Search for the advancements in software of the related problems
+    \item Study the Fourier Transform and Fast Fourier Transforms, and their 
+        representation on chosen software
+    \item Comparison of the different transforms for the related problem
+    \item Scan of the paper based verified cardiograms and digitalising
+    \item Comparison of the scanned graphs with the verified graphs
+    \item Adjustment of the software parameters
+    \item Error estimate
+    \item Analysis of the results with doctors
+    \item Real time method probation
+    \item Adjustment of the parameters
+    \item Thesis preparation and submission
+    \item Scientific Paper preparation and submission
+    \item Distribution of the results in media and analysis of references
+    \item Adjustment of the parameters
+\end{enumerate}
+
+\subsection{Content requirements}
+
+\subsubsection{Introduction}
+
+\begin{itemize}
+    \item short, verbal problem statement
+    \item rational relevance of the selected topic
+    \item formulates goals and objectives of the project
+    \item refer to some information
+    \item maybe a brief description of the main results
+\end{itemize}
+
+\subsubsection{Literature Review}
+
+\begin{itemize}
+    \item overview of the current state of the problem
+    \item based on analysis of literary sources
+    \item don't summarize sources, just give the important information they
+        contain
+    \item don't just call it "Literature Review", call it something like 
+        "Mathematical models and methods of magnetotelluric monitoring"
+\end{itemize}
