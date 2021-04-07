@@ -173,4 +173,4 @@ found::Int64 = 0
     @warn "Best Parameters:\n alphabet = $best_a\n segments per fs = $best_seg\n subsequences =  $best_sub"
 end
 
-test()
+# test()
