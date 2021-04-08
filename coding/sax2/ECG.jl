@@ -69,21 +69,17 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
         end
     end
 
-    lead_index = findall(x -> (x == lead), param.type.leads)
+    lead_data_1::Matrix{Float64} =
+        CSV.File(
+            pointer.filepath,
+            skipto = param.start_index + 1,
+            limit = param.end_index - param.start_index + 1,
+            threaded = false,
+            header = false,
+            select = [lead_index],
+        ) |> Tables.matrix
 
-    if length(lead_index) == 0
-        @error "Lead is invalid for ECGType $(pointer.type.name)"
-
-        throw(DomainError(lead))
-    elseif length(lead_index) == 1
-        lead_index = lead_index[1]
-    else
-        @error "Multiple leads of same type for ECGType $(pointer.type.name)"
-
-        throw(DomainError(lead))
-    end
-
-    data::Matrix{Float64} =
+    lead_data_1::Matrix{Float64} =
         CSV.File(
             pointer.filepath,
             skipto = param.start_index + 1,
