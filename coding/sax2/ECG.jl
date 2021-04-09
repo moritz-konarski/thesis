@@ -23,10 +23,9 @@ Fields:
 struct ECG
     database::String
     number::Int64
-    leads::Vector{String,2}
-    is_filtered::Vector{Bool,2}
-    is_normalized::Vector{Bool,2}
-    data::Vector{Matrix{Float64},2}
+    is_filtered::Vector{Bool}
+    is_normalized::Vector{Bool}
+    data::DataFrame
 end
 
 """
@@ -49,63 +48,29 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
     end
 
     data_point_count::UInt64 = 0
-    lead_count::Int64 = 2
 
-    path::String = joinpath(@__DIR__, filepath)
-
+    path::String = joinpath(@__DIR__, filepath, "$number$SUFFIX.$CSV_EXT")
+    
     if filesize(path) == 0
         @error "File size is 0, check filepath"
 
         throw(DomainError(filepath))
+    end
+
+    if param.end_index > index_start
+        data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String], limit = param.end_index - index_start+1), copycols = false)
+    else 
+        data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String]), copycols = false)
+    end
+
+    ECG(database, number, [false, false], [false, false], data)
+end
+
+function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG
+    if number in MIT_BIH_RECORD_LIST
+        return ECG(param = param, filepath = "$DATA_FILES$MIT_BIH", number = number, database = MIT_BIH_NAME)
     else
-        actual_lead_count = length(
-            CSV.File(path, skipto = 3, limit = 1) |> Tables.matrix,
-        )
-
-        if lead_count != actual_lead_count
-            @error "Number of leads in file: $actual_lead_count is not 2"
-
-            throw(DomainError(filepath))
-        end
+        @error "File number $number is not in the database!"
+        throw(DomainError(number))
     end
-
-    lead_data_1::Matrix{Float64} =
-        CSV.File(
-            pointer.filepath,
-            skipto = param.start_index + 1,
-            limit = param.end_index - param.start_index + 1,
-            threaded = false,
-            header = false,
-            select = [lead_index],
-        ) |> Tables.matrix
-
-    lead_data_1::Matrix{Float64} =
-        CSV.File(
-            pointer.filepath,
-            skipto = param.start_index + 1,
-            limit = param.end_index - param.start_index + 1,
-            threaded = false,
-            header = false,
-            select = [lead_index],
-        ) |> Tables.matrix
-
-    if size(data, 1) < (param.end_index - param.start_index + 1)
-        @error "End Index: $(param.end_index) must be less than file length $(size(data, 1))"
-
-        throw(DomainError(param.end_index))
-    end
-
-    data = reshape(
-        data,
-        :,
-        signed(
-            param.PAA_segment_count * (param.end_index - param.start_index + 1) ÷
-            param.type.fs ÷ param.subsequence_length,
-        ),
-    )
-
-    # @info "Data matrix has the dimensions $(size(data))"
-
-    return ECG(pointer.number, lead, [false], [false], data)
-    return ECG(database, number, leads, [false, false], [false, false], data)
 end

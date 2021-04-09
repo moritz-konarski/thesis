@@ -1,7 +1,24 @@
 # TODO: update documentation and create header
 
+using CSV
+using Tables
+using DataFrames
+
 const MIT_BIH_FS = 360
 const STT_FS = 250
+const MIT_BIH_NAME = "MIT-BIH Database"
+const STT_NAME = "European ST-T Database"
+
+const DATA_FILES = "data/"
+const MIT_BIH = "mit_bih/"
+const CSV_EXT = "csv"
+const DAT_EXT = "dat"
+const SUFFIX = "_complete"
+const RECORDS_FILE = "RECORDS"
+
+const WORKING_DIR = @__DIR__
+const MIT_BIH_FILES = joinpath(WORKING_DIR, DATA_FILES, MIT_BIH)
+const MIT_BIH_RECORD_LIST = (CSV.File(joinpath(MIT_BIH_FILES, RECORDS_FILE), header = false) |> Tables.matrix)[:] 
 
 """
 Struct for the parameters of the program
@@ -11,7 +28,6 @@ Fields:
     - PAA segment count, number of PAA segments per sampling frequency points
     - length of each PAA subsequence, number of PAA segments per subsequence
     - alphabet size, size of the alphabet used for SAX calculation
-    - type of the ECG
 """
 struct Parameters
     start_index::Int64
@@ -40,7 +56,7 @@ function Parameters(;
     alphabet_size::Int64,
     start_index::Int64 = -1,
     end_index::Int64 = -1,
-    fs::Int64 = 500,
+    fs::Int64,
 )::Parameters
 
     if start_index > 0 && end_index > 0
@@ -50,21 +66,21 @@ function Parameters(;
             throw(DomainError(start_index))
         end
 
-        if (end_index - start_index + 1) % type.fs != 0
-            @error "Length of selected ECG range [$start_index, $end_index] must be multiple of sampling frequency $(type.fs)"
+        if (end_index - start_index + 1) % fs != 0
+            @error "Length of selected ECG range [$start_index, $end_index] must be multiple of sampling frequency $(fs)"
 
             throw(DomainError(end_index - start_index + 1))
         end
     end
 
-    if type.fs % PAA_segment_count != 0
-        @error "PAA segment count $PAA_segment_count must evenly divide sampling frequency $(type.fs)"
+    if fs % PAA_segment_count != 0
+        @error "PAA segment count $PAA_segment_count must evenly divide sampling frequency $(fs)"
 
         throw(DomainError(PAA_segment_count))
     end
 
-    if type.fs % subsequence_length != 0
-        @error "Subsequence length $subsequence_length must evenly divide sampling frequency $(type.fs)"
+    if fs % subsequence_length != 0
+        @error "Subsequence length $subsequence_length must evenly divide sampling frequency $(fs)"
 
         throw(DomainError(subsequence_length))
     end
