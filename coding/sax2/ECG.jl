@@ -23,8 +23,7 @@ Fields:
 struct ECG
     database::String
     number::Int64
-    is_filtered::Vector{Bool}
-    is_normalized::Vector{Bool}
+    length::Int64
     data::DataFrame
 end
 
@@ -37,7 +36,7 @@ keyword arguments:
 Return type:
     - ECG
 """
-function ECG(; param::Parameters, filepath::String, number::Int64, database::String)::ECG
+function ECG(; param::Parameters, filepath::String, number::Int64, database::String, filelen::Int64)::ECG
 
     @info "Extracting ECG"
 
@@ -46,8 +45,6 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
     if param.start_index > 1
         index_start = param.start_index
     end
-
-    data_point_count::UInt64 = 0
 
     path::String = joinpath(@__DIR__, filepath, "$number$SUFFIX.$CSV_EXT")
     
@@ -58,17 +55,30 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
     end
 
     if param.end_index > index_start
-        data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String], limit = param.end_index - index_start+1), copycols = false)
+        if (param.end_index - index_start + 1) % param.fs == 0
+            data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String], limit = param.end_index - index_start+1), copycols = false)
+        else
+            @error "Length of selected segment must be divisible by $(param.fs)"
+
+            throw(DomainError(param.fs))
+        end
     else 
-        data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String]), copycols = false)
+        max::Int64 = filelen - filelen % param.fs
+        if (max - index_start + 1) % param.fs == 0
+            data = DataFrame(CSV.File(path, skipto = index_start+1, limit = max, threaded = false, types = [Int64, Float64, Float64, String, String]), copycols = false)
+        else
+            @error "Length of selected segment must be divisible by $(param.fs)"
+
+            throw(DomainError(param.fs))
+        end
     end
 
-    ECG(database, number, [false, false], [false, false], data)
+    ECG(database, number, size(data, 1), data)
 end
 
 function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG
     if number in MIT_BIH_RECORD_LIST
-        return ECG(param = param, filepath = "$DATA_FILES$MIT_BIH", number = number, database = MIT_BIH_NAME)
+        return ECG(param = param, filepath = "$DATA_FILES$MIT_BIH", number = number, database = MIT_BIH_NAME, filelen = MIT_BIH_FILELEN)
     else
         @error "File number $number is not in the database!"
         throw(DomainError(number))

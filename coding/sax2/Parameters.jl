@@ -3,8 +3,12 @@
 using CSV
 using Tables
 using DataFrames
+using StatsFuns
+using StatsBase
+using Statistics
 
 const MIT_BIH_FS = 360
+const MIT_BIH_FILELEN = 650_000
 const STT_FS = 250
 const MIT_BIH_NAME = "MIT-BIH Database"
 const STT_NAME = "European ST-T Database"
@@ -33,6 +37,7 @@ struct Parameters
     start_index::Int64
     end_index::Int64
     PAA_segment_count::Int64
+    points_per_segment::Int64
     subsequence_length::Int64
     alphabet_size::Int64
     fs::Int64
@@ -95,8 +100,17 @@ function Parameters(;
         start_index,
         end_index,
         PAA_segment_count,
+        fs ÷ PAA_segment_count,
         subsequence_length,
         alphabet_size,
         fs,
     )
+end
+
+function get_breakpoints(n::Int64)::Vector{Float64}
+    β = zeros(Float64, n-1)
+
+    [β[i] = StatsFuns.norminvcdf(i / n) for i in 1:(n-1)]
+
+    return β
 end
