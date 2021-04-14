@@ -2,7 +2,8 @@ using CSV, Tables, Plots, Interpolations, StatsBase, DataFrames
 
 filename1 = "./V3_97bpm"
 filename2 = "./V3_70bpm"
-path = filename2
+filename3 = "./gimp_test"
+path = filename3
 
 N_interpolation_points = 1000
 
