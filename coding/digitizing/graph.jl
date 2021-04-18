@@ -31,14 +31,12 @@ function interpol(path::String; to_plot::Bool=false)
     CSV.write("$path-int-norm.csv", df)
 
     if to_plot
-        p1 = plot(data[:, 2], title = "raw")
+        p1 = plot(data[:, 2], title = "raw $path")
         p2 = plot(interpolated, title = "interpolated")
         plot(p1, p2, layout = (2, 1))
     end
 end
 
-for file in files
-    interpol(file)
-end
+interpol(f1, to_plot = true)
 
 
