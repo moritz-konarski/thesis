@@ -1,0 +1,153 @@
+% LATEX THESIS PACKAGE
+% AMERICAN UNIVERSITY OF CENTRAL ASIA, 2020-12
+% Moritz Konarski, konarski_m@auca.kg
+
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{slides}
+    [2021/04/27 v0.01 LaTeX package for my own purposes]
+
+\newcommand{\thesistitle}{Multivariate Symbolic Aggregate Approximation for ECG 
+Analysis}
+\newcommand{\shortthesistitle}{MSAX for ECG Analysis}
+\newcommand{\thesisauthor}{Moritz M. Konarski}
+\newcommand{\shortthesisauthor}{M. Konarski}
+\newcommand{\thesissupervisor}{Prof. Taalaibek M. Imanaliev}
+\newcommand{\thesiskeywords}{
+    acute cardiac ischemia,
+    ECG,
+    mathematical modeling
+}
+\newcommand{\thesissubject}{SAX and MSAX for ECG abnormality detection}
+\newcommand{\institution}{American University of Central Asia}
+\newcommand{\shortinstitution}{AUCA}
+\newcommand{\department}{Applied Mathematics and Informatics Program}
+\newcommand{\duedate}{May 3, 2021}
+
+\title[\shortthesistitle{}]{\thesistitle{}}
+
+\author[\shortthesisauthor{}]{Student: \thesisauthor{}\\Supervisor: \thesissupervisor{}}
+
+\institute[\shortintitution{}]{\department{},\\[2pt]\institution{}\vspace{1.3em}}
+
+\date{\duedate{}\\Bishkek, Kyrgyz Republic\\[0.8em]
+    \fbox{\includegraphics[height=0.13\textheight]{auca_logo}}
+    }
+
+\hypersetup{
+    %colorlinks=true,
+    %allcolors=black,
+    urlcolor=blue,
+    urlbordercolor=blue,
+    final,
+    pdftitle={\thesistitle{}},
+    pdfauthor={\thesisauthor{}},
+    pdfkeywords={\thesiskeywords{}},
+    pdfsubject={\thesissubject{}}
+}
+
+\mode<presentation>
+{
+    \usecolortheme{whale}
+    \usetheme[left]{Goettingen}
+    \usefonttheme{serif}
+    \setbeamertemplate{navigation symbols}{}
+    \setbeamertemplate{caption}[numbered]
+} 
+
+\newcommand{\mycite}[1]{\cite{#1}}
+%\newcommand{\mycite}[1]{\nocite{#1}}
+
+\definecolor{aucablue}{RGB}{34, 80, 169}
+\makeatletter
+\setbeamertemplate{sidebar canvas \beamer@sidebarside}
+    [vertical shading][top=aucablue,bottom=aucablue]
+\makeatother
+\setbeamercolor{titlelike}
+    {fg=white,bg=aucablue,parent=structure}
+\setbeamercolor{palette sidebar secondary}
+    {fg=white,bg=aucablue!80}
+\setbeamercolor{section in sidebar shaded}
+    {fg=aucablue!40,bg=aucablue}
+\setbeamertemplate{frametitle}[default][center]
+\setbeameroption{show notes}
+%\setbeameroption{hide notes}
+
+%\setbeamercolor{palette sidebar primary}
+%    {fg=red,bg=aucablue}
+%\setbeamercolor{structure}
+%    {fg=gray,bg=aucablue}
+%\setbeamertemplate{bibliography item}{\insertbiblabel}
+
+%\RequirePackage[utf8]{inputenc}
+%\RequirePackage[T1]{fontenc}
+%\RequirePackage{textcomp}
+
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{graphicx}
+\graphicspath{{../graphics/}}
+%\RequirePackage{subfig}
+%\RequirePackage{wrapfig}
+\RequirePackage{float}
+\RequirePackage{caption}
+\RequirePackage{enumitem}
+\setlist[itemize]{itemsep=1em, label={--}}
+
+\newcommand{\makefig}[4]{
+    \begin{figure}[#1]
+        \captionsetup{justification=centering}
+        \includegraphics[width=#2]{#3}
+        \caption{#4}
+        \label{fig:#3}
+    \end{figure}
+}
+
+\AtBeginSection[]{
+    \begin{frame}
+        \vfill
+        \centering
+        \begin{beamercolorbox}[sep=8pt,center,shadow=false,rounded=false]{title}
+            \usebeamerfont{title}\insertsectionhead\par
+        \end{beamercolorbox}
+        \vfill
+    \end{frame}
+}
+
+\RequirePackage[american]{babel}
+
+\RequirePackage[no-math]{fontspec}
+\setmainfont
+    [Path={/home/moritz/Documents/thesis.git/writing/drafts/00_fonts/}]
+    {times.ttf}[
+    BoldFont       = timesbd.ttf,
+    ItalicFont     = timesi.ttf,
+    BoldItalicFont = timesbi.ttf
+    ]
+\RequirePackage{unicode-math}
+\setmathfont
+    [Path={/home/moritz/Documents/thesis.git/writing/drafts/00_fonts/}]
+    {cambriam.ttf}
+
+\RequirePackage{csquotes}
+\RequirePackage[
+    backend=biber,
+    style=ieee,
+    citestyle=numeric,
+    maxnames=4,
+    sortcites
+]{biblatex}
+\addbibresource{../bib/bibliography.bib}
+
+\RequirePackage{subfiles}
+
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\newcommand{\tabref}[1]{\tablename~\ref{#1}}
+
+\renewcommand{\arraystretch}{1.1}
+\setlength\arrayrulewidth{0.8pt}
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+\endinput

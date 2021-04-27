@@ -1,0 +1,50 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Introduction}
+
+\begin{frame}{ECG Basics}
+    \begin{itemize}
+        \item recorded electrical impulses of the heart
+        \item leads, voltages, what datasets have what leads
+            \note<1>{the leads are I, II, II, V1-V6, aVf,...\\}
+        \item time series
+            \begin{equation}\nonumber
+                \mathbf{T} = \{ x_1, x_2, \dots, x_n\}
+            \end{equation}
+            \note<1>{don't forget to mention that ECGs are time series}
+        \item widely available, used as tool to diagnose heart diseases
+        \item heart diseases are very deadly, so evaluating an ECG correctly
+            matters
+        \item concept of a discord in time series
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{ECG waveform}
+    include graph here
+\end{frame}
+
+\begin{frame}{Automated ECG Analysis}
+    \begin{itemize}
+        \item automated ECG analysis has become very important recently
+        \item methods are FFT, DFT, DWT, ANN, CNN, kNN, filters, other methods
+        \item general advantages and disadvantages
+        \item general challenges and process
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SAX and MSAX}
+    \begin{itemize}
+        \item Symbolic Aggregate Approximation (who when)
+        \item time series analysis, symbolic representation, mindist
+        \item why is symbolic representation useful?
+        \item Multivariate Symbolic Aggregate Approximation (who when)
+        \item differences and advantages to SAX
+        \item THESIS: using MSAX vs SAX on ECGs should increase the accuracy of
+            discord detection
+        \item which datasets will be used?
+    \end{itemize}
+\end{frame}
+
+\end{document}
