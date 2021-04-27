@@ -7,9 +7,9 @@ using StatsFuns
 using StatsBase
 using Statistics
 
-const MIT_BIH_FS = 360
-const MIT_BIH_FILELEN = 650_000
-const STT_FS = 250
+const MIT_BIH_FS = Int64(360)
+const MIT_BIH_FILELEN = Int64(650_000)
+const STT_FS = Int64(250)
 const MIT_BIH_NAME = "MIT-BIH Database"
 const STT_NAME = "European ST-T Database"
 
@@ -113,4 +113,50 @@ function get_breakpoints(n::Int64)::Vector{Float64}
     [β[i] = StatsFuns.norminvcdf(i / n) for i in 1:(n-1)]
 
     return β
+end
+
+function get_original_index(; paa_len::Int64, ecg_len::Int64, segment::Int64)::UnitRange{Int64}
+    range::Int64 = ecg_len ÷ paa_len
+    return (segment-1) * range + 1 : segment * range
+end
+
+function get_discrete_index(; paa_len::Int64, ecg_len::Int64, index::Int64)::Int64
+    return index ÷ (ecg_len ÷ paa_len) + 1
+end
+
+function get_difference_matrix(n::Int64)::Matrix{Float64}
+    difference_matrix::Matrix{Float64} = zeros(Float64, n, n)
+    β = get_breakpoints(n)
+
+    for i = 1:n
+        for j = 1:n
+            if abs(i - j) > 1
+                if j > i
+                    difference_matrix[i, j] = β[j-1] - β[i]
+                    difference_matrix[j, i] = difference_matrix[i, j]
+                end
+            end
+        end
+    end
+
+    return difference_matrix
+end
+
+@inline function set_d(
+    a::Vector{Float64},
+    v::Float64,
+    is::Vector{Int64},
+    j::Int64,
+    k::Int64,
+)
+    for i = 1:k
+        if v > a[i]
+            a[i+1:end] = a[i:end-1]
+            a[i] = v
+
+            is[i+1:end] = is[i:end-1]
+            is[i] = j
+            break
+        end
+    end
 end
