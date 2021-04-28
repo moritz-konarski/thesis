@@ -16,7 +16,7 @@ function MSAX(; ecg::ECG, param::Parameters)
     msax_data::Vector{Tuple{Int8,Int8}} = fill((0, 0), rows)
     paa_data = zeros(Float64, rows, cols)
 
-    normalized_ecg = MSAX_normalize(convert(Matrix{Float64}, ecg.data[:, 2:3]))
+    normalized_ecg = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))
 
     for i in 1:cols
         PAA!(src = normalized_ecg[:, i], dest = paa_data, col = i)

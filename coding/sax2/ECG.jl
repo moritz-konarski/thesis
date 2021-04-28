@@ -24,6 +24,7 @@ struct ECG
     database::String
     number::Int64
     length::Int64
+    leads::Int64
     data::DataFrame
 end
 
@@ -73,7 +74,7 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
         end
     end
 
-    ECG(database, number, size(data, 1), data)
+    ECG(database, number, size(data, 1), size(data, 2), data)
 end
 
 function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG

@@ -6,6 +6,7 @@ using DataFrames
 using StatsFuns
 using StatsBase
 using Statistics
+using Tries
 
 const MIT_BIH_FS = Int64(360)
 const MIT_BIH_FILELEN = Int64(650_000)
