@@ -1,4 +1,5 @@
 using Tries
+
 struct SAX
     database::String
     number::Int64
