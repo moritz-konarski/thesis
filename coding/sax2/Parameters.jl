@@ -7,23 +7,27 @@ using StatsFuns
 using StatsBase
 using Statistics
 using Tries
+using Plots
 
-const MIT_BIH_FS = Int64(360)
-const MIT_BIH_FILELEN = Int64(650_000)
-const STT_FS = Int64(250)
-const MIT_BIH_NAME = "MIT-BIH Database"
-const STT_NAME = "European ST-T Database"
+if !(@isdefined MIT_BIH_FS)
+    const MIT_BIH_FS = Int64(360)
+    const MIT_BIH_FILELEN = Int64(650_000)
+    const STT_FS = Int64(250)
+    const MIT_BIH_NAME = "MIT-BIH Database"
+    const STT_NAME = "European ST-T Database"
 
-const DATA_FILES = "data/"
-const MIT_BIH = "mit_bih/"
-const CSV_EXT = "csv"
-const DAT_EXT = "dat"
-const SUFFIX = "_complete"
-const RECORDS_FILE = "RECORDS"
+    const DATA_FILES = "data/"
+    const MIT_BIH = "mit_bih/"
+    const CSV_EXT = "csv"
+    const DAT_EXT = "dat"
+    const SUFFIX = "_complete"
+    const RECORDS_FILE = "RECORDS"
 
-const WORKING_DIR = @__DIR__
-const MIT_BIH_FILES = joinpath(WORKING_DIR, DATA_FILES, MIT_BIH)
-const MIT_BIH_RECORD_LIST = (CSV.File(joinpath(MIT_BIH_FILES, RECORDS_FILE), header = false) |> Tables.matrix)[:] 
+    const WORKING_DIR = @__DIR__
+    const MIT_BIH_FILES = joinpath(WORKING_DIR, DATA_FILES, MIT_BIH)
+    const MIT_BIH_RECORD_LIST =
+        (CSV.File(joinpath(MIT_BIH_FILES, RECORDS_FILE), header = false)|>Tables.matrix)[:]
+end
 
 """
 Struct for the parameters of the program
@@ -109,16 +113,20 @@ function Parameters(;
 end
 
 function get_breakpoints(n::Int64)::Vector{Float64}
-    β = zeros(Float64, n-1)
+    β = zeros(Float64, n - 1)
 
-    [β[i] = StatsFuns.norminvcdf(i / n) for i in 1:(n-1)]
+    [β[i] = StatsFuns.norminvcdf(i / n) for i = 1:(n-1)]
 
     return β
 end
 
-function get_original_index(; paa_len::Int64, ecg_len::Int64, segment::Int64)::UnitRange{Int64}
+function get_original_index(;
+    paa_len::Int64,
+    ecg_len::Int64,
+    segment::Int64,
+)::UnitRange{Int64}
     range::Int64 = ecg_len ÷ paa_len
-    return (segment-1) * range + 1 : segment * range
+    return (segment-1)*range+1:segment*range
 end
 
 function get_discrete_index(; paa_len::Int64, ecg_len::Int64, index::Int64)::Int64

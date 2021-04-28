@@ -18,27 +18,31 @@ function MSAX(; ecg::ECG, param::Parameters)
 
     normalized_ecg = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))
 
-    for i in 1:cols
+    for i = 1:cols
         PAA!(src = normalized_ecg[:, i], dest = paa_data, col = i)
     end
 
     first::Int8 = 0
     second::Int8 = 0
 
-    for row in 1:rows
+    for row = 1:rows
         first = param.alphabet_size
         second = param.alphabet_size
         for (i::Int8, βi) in enumerate(β)
             if paa_data[row, 1] < βi
                 first = i
+                break
             end
+        end
+        for (i::Int8, βi) in enumerate(β)
             if paa_data[row, 2] < βi
                 second = i
+                break
             end
         end
         msax_data[row] = (first, second)
     end
-    
+
     return MSAX(ecg.database, ecg.number, msax_data)
 end
 
@@ -49,10 +53,15 @@ function MSAX_normalize(src::Matrix{Float64})::Matrix{Float64}
     return (sqrt(inv(Σ)) * (src .- μ)')'
 end
 
-@inline function MSAX_mindist(a::Vector{Tuple{Int8,Int8}}, b::Vector{Tuple{Int8,Int8}}, d::Matrix{Float64}, T::Int64)::Float64
+@inline function MSAX_mindist(
+    a::Vector{Tuple{Int8,Int8}},
+    b::Vector{Tuple{Int8,Int8}},
+    d::Matrix{Float64},
+    T::Int64,
+)::Float64
     s::Float64 = 0.0
 
-    for n in 1:length(a)
+    for n = 1:length(a)
         s += (d[a[n][1], b[n][1]])^2 + (d[a[n][2], b[n][2]])^2
     end
 
@@ -64,14 +73,15 @@ function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
     @info "Indexing MSAX"
 
     subsequence_count::Int64 = length(msax.data) ÷ param.subsequence_length
-    unique_sequences::Matrix{Tuple{Int8,Int8}} = fill((-1, -1), param.subsequence_length, subsequence_count)
+    unique_sequences::Matrix{Tuple{Int8,Int8}} =
+        fill((-1, -1), param.subsequence_length, subsequence_count)
     counts::Vector{Int64} = zeros(UInt64, subsequence_count)
     trie = Trie{Tuple{Int8,Int8},Vector{Int64}}()
     last_index::Int64 = 0
 
-    for i in 1:subsequence_count
-        r = ((i-1)*param.subsequence_length + 1):(i*param.subsequence_length)
-        for j in 1:subsequence_count
+    for i = 1:subsequence_count
+        r = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
+        for j = 1:subsequence_count
             if msax.data[r] == unique_sequences[:, j]
                 counts[j] += 1
                 try

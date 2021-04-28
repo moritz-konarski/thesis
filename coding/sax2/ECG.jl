@@ -37,7 +37,13 @@ keyword arguments:
 Return type:
     - ECG
 """
-function ECG(; param::Parameters, filepath::String, number::Int64, database::String, filelen::Int64)::ECG
+function ECG(;
+    param::Parameters,
+    filepath::String,
+    number::Int64,
+    database::String,
+    filelen::Int64,
+)::ECG
 
     @info "Extracting ECG"
 
@@ -48,7 +54,7 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
     end
 
     path::String = joinpath(@__DIR__, filepath, "$number$SUFFIX.$CSV_EXT")
-    
+
     if filesize(path) == 0
         @error "File size is 0, check filepath"
 
@@ -57,16 +63,34 @@ function ECG(; param::Parameters, filepath::String, number::Int64, database::Str
 
     if param.end_index > index_start
         if (param.end_index - index_start + 1) % param.fs == 0
-            data = DataFrame(CSV.File(path, skipto = index_start+1, threaded = false, types = [Int64, Float64, Float64, String, String], limit = param.end_index - index_start+1), copycols = false)
+            data = DataFrame(
+                CSV.File(
+                    path,
+                    skipto = index_start + 1,
+                    threaded = false,
+                    types = [Int64, Float64, Float64, String, String],
+                    limit = param.end_index - index_start + 1,
+                ),
+                copycols = false,
+            )
         else
             @error "Length of selected segment must be divisible by $(param.fs)"
 
             throw(DomainError(param.fs))
         end
-    else 
+    else
         max::Int64 = filelen - filelen % param.fs
         if (max - index_start + 1) % param.fs == 0
-            data = DataFrame(CSV.File(path, skipto = index_start+1, limit = max, threaded = false, types = [Int64, Float64, Float64, String, String]), copycols = false)
+            data = DataFrame(
+                CSV.File(
+                    path,
+                    skipto = index_start + 1,
+                    limit = max,
+                    threaded = false,
+                    types = [Int64, Float64, Float64, String, String],
+                ),
+                copycols = false,
+            )
         else
             @error "Length of selected segment must be divisible by $(param.fs)"
 
@@ -79,7 +103,13 @@ end
 
 function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG
     if number in MIT_BIH_RECORD_LIST
-        return ECG(param = param, filepath = "$DATA_FILES$MIT_BIH", number = number, database = MIT_BIH_NAME, filelen = MIT_BIH_FILELEN)
+        return ECG(
+            param = param,
+            filepath = "$DATA_FILES$MIT_BIH",
+            number = number,
+            database = MIT_BIH_NAME,
+            filelen = MIT_BIH_FILELEN,
+        )
     else
         @error "File number $number is not in the database!"
         throw(DomainError(number))

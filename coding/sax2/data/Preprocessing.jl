@@ -7,18 +7,20 @@ using Tables
 using DataFrames
 using Logging
 
-const DATA_FILES = "data/"
-const MIT_BIH = "mit_bih/"
-const CSV_EXT = "csv"
-const DAT_EXT = "dat"
-const RECORDS_FILE = "RECORDS"
-const ANN_PREFIX = "a"
-const ANN_SUFFIX = "_ann"
-const COMPLETE_SUFFIX = "_complete"
+if !(@isdefined DATA_FILES)
+    const DATA_FILES = "data/"
+    const MIT_BIH = "mit_bih/"
+    const CSV_EXT = "csv"
+    const DAT_EXT = "dat"
+    const RECORDS_FILE = "RECORDS"
+    const ANN_PREFIX = "a"
+    const ANN_SUFFIX = "_ann"
+    const COMPLETE_SUFFIX = "_complete"
 
-const WORKING_DIR = joinpath(@__DIR__, "..")
-const MIT_BIH_FILES = joinpath(WORKING_DIR, DATA_FILES, MIT_BIH)
-const MIT_BIH_RECORDS = joinpath(MIT_BIH_FILES, RECORDS_FILE)
+    const WORKING_DIR = joinpath(@__DIR__, "..")
+    const MIT_BIH_FILES = joinpath(WORKING_DIR, DATA_FILES, MIT_BIH)
+    const MIT_BIH_RECORDS = joinpath(MIT_BIH_FILES, RECORDS_FILE)
+end
 
 """
 Takes records from `records` in `path` and converts them to csv files

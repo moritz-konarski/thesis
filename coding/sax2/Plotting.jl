@@ -1,14 +1,20 @@
-using Plots
+
+if !(@isdefined COLOR_BETA)
+    const COLOR_ECG = palette(:tab10)[1]
+    const COLOR_PAA = palette(:tab10)[2]
+    const COLOR_SAX = "green"
+    const COLOR_BETA = "grey"
+end
 
 function ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)::Plots.Plot{Plots.GRBackend}
 
     p = plot()
 
     if time
-        p = plot(irange / param.fs, ecg.data[irange, lead], legend = false)
+        p = plot(irange / param.fs, ecg.data[irange, lead], legend = false, color = COLOR_ECG)
         xlabel!(p, "seconds")
     else
-        p = plot(irange, ecg.data[irange, lead], legend = false) 
+        p = plot(irange, ecg.data[irange, lead], legend = false, color = COLOR_ECG) 
         xlabel!(p, "samples")
     end
     ylabel!(p, "mV")
@@ -26,10 +32,10 @@ function SAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, l
     p = plot()
 
     if time
-        p = plot(irange / param.fs, normalized_ecg[irange], legend = false, label = "ECG")
+        p = plot(irange / param.fs, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG)
         xlabel!(p, "seconds")
     else
-        p = plot(irange, normalized_ecg[irange], legend = false, label = "ECG") 
+        p = plot(irange, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG) 
         xlabel!(p, "samples")
     end
     ylabel!(p, "[no unit]")
@@ -45,10 +51,10 @@ function MSAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, 
     p = plot()
 
     if time
-        p = plot(irange / param.fs, normalized_ecg[irange], legend = false, label = "ECG")
+        p = plot(irange / param.fs, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG)
         xlabel!(p, "seconds")
     else
-        p = plot(irange, normalized_ecg[irange], legend = false, label = "ECG") 
+        p = plot(irange, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG) 
         xlabel!(p, "samples")
     end
     ylabel!(p, "[no unit]")
@@ -57,14 +63,19 @@ function MSAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, 
     return p
 end
 
-function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false)
+function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
 
-    r = 1:(length(irange)÷param.points_per_segment)
+    start_index = irange[1] ÷ param.points_per_segment + 1
+    end_index = start_index - 1 + length(irange)÷param.points_per_segment
+
+    r = start_index:end_index
+    # r = irange[1]÷param.points_per_segment+1:(length(irange)÷param.points_per_segment + irange[1]÷param.points_per_segment)
 
     normalized_ecg = zeros(Float64, ecg.length, 1)
     paa_data = zeros(Float64, ecg.length ÷ param.points_per_segment, 1)
 
-    SAX_normalize!(src = ecg.data[!, lead], dest = normalized_ecg, col = columnindex(ecg.data, lead)-1)
+    SAX_normalize!(src = ecg.data[!, lead], dest = normalized_ecg, col = 1)
+    # SAX_normalize!(src = ecg.data[!, lead], dest = normalized_ecg, col = columnindex(ecg.data, lead)-1)
 
     PAA!(src = normalized_ecg[:, 1], dest = paa_data, col = 1)
 
@@ -75,7 +86,7 @@ function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parame
         if i % 2 == 1
             xs[i] = (i - 1) * param.points_per_segment / 2 + irange[1]
         else
-            xs[i] = i * param.points_per_segment / 2 + + irange[1]
+            xs[i] = i * param.points_per_segment / 2 + irange[1]
         end
     end
 
@@ -83,13 +94,32 @@ function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parame
         xs /= param.fs
     end
 
-    plot!(p, xs, ys, legend=true, label = "PAA") 
+    plot!(p, xs, ys, legend=true, label = "PAA", color = COLOR_PAA) 
     title!(p, "SAX PAA of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+
+    if breakpoints
+        β = get_breakpoints(param.alphabet_size)
+        for b in β
+            plot!(
+                p,
+                [irange[1], irange[end]],
+                [b, b],
+                linestyle = :dash,
+                label = false,
+                color = COLOR_BETA
+            )
+        end
+    end
 end
 
-function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false)
+function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
 
-    r = 1:(length(irange)÷param.points_per_segment)
+    start_index = irange[1] ÷ param.points_per_segment + 1
+    end_index = start_index - 1 + length(irange)÷param.points_per_segment
+
+    r = start_index:end_index
+
+    # r = 1:(length(irange)÷param.points_per_segment)
 
     paa_data = zeros(Float64, ecg.length ÷ param.points_per_segment, 1)
 
@@ -104,7 +134,7 @@ function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Param
         if i % 2 == 1
             xs[i] = (i - 1) * param.points_per_segment / 2 + irange[1]
         else
-            xs[i] = i * param.points_per_segment / 2 + + irange[1]
+            xs[i] = i * param.points_per_segment / 2 + irange[1]
         end
     end
 
@@ -112,6 +142,136 @@ function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Param
         xs /= param.fs
     end
 
-    plot!(p, xs, ys, legend=true, label = "PAA") 
+    plot!(p, xs, ys, legend=true, label = "PAA", color = COLOR_PAA) 
     title!(p, "MSAX PAA of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+
+    if breakpoints
+        β = get_breakpoints(param.alphabet_size)
+        for b in β
+            plot!(
+                p,
+                [irange[1], irange[end]],
+                [b, b],
+                linestyle = :dash,
+                label = false,
+                color = COLOR_BETA
+            )
+        end
+    end
+end
+
+function SAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+
+    start_index = irange[1] ÷ param.points_per_segment + 1
+    end_index = start_index - 1 + length(irange)÷param.points_per_segment
+
+    r = start_index:end_index
+    # r = 1:(length(irange)÷param.points_per_segment)
+    index = columnindex(ecg.data, lead)-1 
+
+    normalized_ecg = zeros(Float64, ecg.length, 1)
+    paa_data = zeros(Float64, ecg.length ÷ param.points_per_segment, 1)
+
+    SAX_normalize!(src = ecg.data[!, lead], dest = normalized_ecg, col = 1)
+
+    PAA!(src = normalized_ecg[:, 1], dest = paa_data, col = 1)
+
+    sax = SAX(ecg = ecg, param = param)
+
+    ys = paa_data[r]
+    xs = zeros(Float64, length(ys))
+
+    for (i, y) in enumerate(ys)
+        xs[i] = 2 * (i - 0.5) * param.points_per_segment / 2 + irange[1]
+    end
+
+    if time
+        xs /= param.fs
+    end
+
+    plot!(
+        p,
+        xs,
+        ys,
+        seriestype = :scatter,
+        series_annotations = text.(sax.data[r, index], :bottom),
+        label = "SAX",
+        markercolor = COLOR_SAX,
+        markersize = 3
+    )
+
+    title!(p, "SAX of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+
+    if breakpoints
+        β = get_breakpoints(param.alphabet_size)
+        for b in β
+            plot!(
+                p,
+                [irange[1], irange[end]],
+                [b, b],
+                linestyle = :dash,
+                label = false,
+                color = COLOR_BETA
+            )
+        end
+    end
+end
+
+function MSAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+
+    start_index = irange[1] ÷ param.points_per_segment + 1
+    end_index = start_index - 1 + length(irange)÷param.points_per_segment
+
+    r = start_index:end_index
+
+    index = columnindex(ecg.data, lead)-1 
+    # r = 1:(length(irange)÷param.points_per_segment)
+
+    paa_data = zeros(Float64, ecg.length ÷ param.points_per_segment, 1)
+
+    normalized_ecg = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))[:, columnindex(ecg.data, lead)-1]
+
+    PAA!(src = normalized_ecg, dest = paa_data, col = 1)
+
+    msax = MSAX(ecg = ecg, param = param)
+
+    data = [ t[index] for t in msax.data[r]]
+
+    ys = paa_data[r]
+    xs = zeros(Float64, length(ys))
+
+    for (i, y) in enumerate(ys)
+        xs[i] = 2 * (i - 0.5) * param.points_per_segment / 2 + irange[1]
+    end
+
+    if time
+        xs /= param.fs
+    end
+
+    plot!(
+        p,
+        xs,
+        ys,
+        seriestype = :scatter,
+        series_annotations = text.(data, :bottom),
+        label = "MSAX",
+        markercolor = COLOR_SAX,
+        markersize = 3
+    )
+
+    title!(p, "MSAX of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+
+    if breakpoints
+        β = get_breakpoints(param.alphabet_size)
+        for b in β
+            plot!(
+                p,
+                [irange[1], irange[end]],
+                [b, b],
+                linestyle = :dash,
+                label = false,
+                color = COLOR_BETA
+            )
+        end
+    end
 end
