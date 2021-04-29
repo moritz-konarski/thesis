@@ -8,15 +8,33 @@ p = Parameters(
     # PAA_segment_count = 360 ÷ 12,
     PAA_segment_count = 18,
     subsequence_length = 6,
-    alphabet_size = 5,
+    # alphabet_size = 5,
+    alphabet_size = 4,
     fs = MIT_BIH_FS,
     # end_index = 7200
 )
 
-e = get_MIT_BIH_ECG(p, 108)
+# e = get_MIT_BIH_ECG(p, 108)
+e = get_MIT_BIH_ECG(p, 100)
 
 sym = Symbol.(names(e.data)[2:3])
-time = false
+r = 1:360
+time = true
+
+s = sym[1]
+p2 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
+MSAX_PAA_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = true)
+MSAX_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
+
+s = sym[2]
+p3 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
+MSAX_PAA_plot!(p = p3, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = true)
+MSAX_plot!(p = p3, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false, upper=true)
+
+p = plot(p2, p3, layout = (2, 1))
+
+savefig(p, "../../writing/slides/pre-defense/graphics/msax.pdf")
+return p
 
 # SAX = 16 detected between the two of them
 
@@ -27,7 +45,7 @@ time = false
 # v = 392881:393120 # right on
 # v = 205681:205920 # right on
 # v = 295921:296160 # following one
-    v = 457201:457440 # right on
+    # v = 457201:457440 # right on
 # v = 600721:600960 # following one
 # v = 600961:601200 # following one
 # v = 164161:164400 # follows one
@@ -145,20 +163,20 @@ time = false
 # v = 473041:473280  # 
 # v = 581761:582000  # 
 
-x = 1000 * v[1] ÷ 1000
-r = x-2000:x+2000
+# x = 1000 * v[1] ÷ 1000
+# r = x-2000:x+2000
 
-inds = Vector{Int64}()
+# inds = Vector{Int64}()
 
-for i in r
-    if !ismissing(e.data[i, end-1])
-        println(e.data[i, end-1])
-        if e.data[i, end-1] != "N"
-            println(i)
-            push!(inds, i)
-        end
-    end
-end
+# for i in r
+#     if !ismissing(e.data[i, end-1])
+#         println(e.data[i, end-1])
+#         if e.data[i, end-1] != "N"
+#             println(i)
+#             push!(inds, i)
+#         end
+#     end
+# end
 
 # for d in e.data[r, end]
 #     if !ismissing(d)
@@ -186,33 +204,33 @@ end
 #     end
 # end
 
-s = sym[1]
-p1 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
-MSAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
+# s = sym[1]
+# p1 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
+# MSAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
 
-plot!(p1, [v[1], v[1]], [-3, 3], label = false, linestyle = :dot)
-plot!(p1, [v[end], v[end]], [-3, 3], label = false, linestyle = :dot)
+# plot!(p1, [v[1], v[1]], [-3, 3], label = false, linestyle = :dot)
+# plot!(p1, [v[end], v[end]], [-3, 3], label = false, linestyle = :dot)
 
-if length(inds) != 0
-    for i in inds
-        plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
-    end
-end
+# if length(inds) != 0
+#     for i in inds
+#         plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
+#     end
+# end
 
-s = sym[2]
-p2 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
-MSAX_PAA_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
+# s = sym[2]
+# p2 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
+# MSAX_PAA_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
 
-plot!(p2, [v[1], v[1]], [-3, 3], label = false, linestyle = :dot)
-plot!(p2, [v[end], v[end]], [-3, 3], label = false, linestyle = :dot)
+# plot!(p2, [v[1], v[1]], [-3, 3], label = false, linestyle = :dot)
+# plot!(p2, [v[end], v[end]], [-3, 3], label = false, linestyle = :dot)
 
-if length(inds) != 0
-    for i in inds
-        plot!(p2, [i, i], [-3, 3], label = "anomaly", color = :red)
-    end
-end
+# if length(inds) != 0
+#     for i in inds
+#         plot!(p2, [i, i], [-3, 3], label = "anomaly", color = :red)
+#     end
+# end
 
-plot(p1, p2, layout = (2,1), legend=false)
+# plot(p1, p2, layout = (2,1), legend=false)
 # p0 = ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
 
 # p1 = SAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)

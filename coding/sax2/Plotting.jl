@@ -99,15 +99,28 @@ function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parame
 
     if breakpoints
         β = get_breakpoints(param.alphabet_size)
-        for b in β
-            plot!(
-                p,
-                [irange[1], irange[end]],
-                [b, b],
-                linestyle = :dash,
-                label = false,
-                color = COLOR_BETA
-            )
+        if time
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]]/param.fs,
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
+        else
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]],
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
         end
     end
 end
@@ -147,15 +160,28 @@ function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Param
 
     if breakpoints
         β = get_breakpoints(param.alphabet_size)
-        for b in β
-            plot!(
-                p,
-                [irange[1], irange[end]],
-                [b, b],
-                linestyle = :dash,
-                label = false,
-                color = COLOR_BETA
-            )
+        if time
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]]/param.fs,
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
+        else
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]],
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
         end
     end
 end
@@ -194,7 +220,7 @@ function SAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters
         xs,
         ys,
         seriestype = :scatter,
-        series_annotations = text.(sax.data[r, index], :bottom),
+        series_annotations = text.(al.(sax.data[r, index]), :bottom),
         label = "SAX",
         markercolor = COLOR_SAX,
         markersize = 3
@@ -204,20 +230,33 @@ function SAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters
 
     if breakpoints
         β = get_breakpoints(param.alphabet_size)
-        for b in β
-            plot!(
-                p,
-                [irange[1], irange[end]],
-                [b, b],
-                linestyle = :dash,
-                label = false,
-                color = COLOR_BETA
-            )
+        if time
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]]/param.fs,
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
+        else
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]],
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
         end
     end
 end
 
-function MSAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+function MSAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false, upper::Bool=false)
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment
@@ -248,30 +287,60 @@ function MSAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameter
         xs /= param.fs
     end
 
-    plot!(
-        p,
-        xs,
-        ys,
-        seriestype = :scatter,
-        series_annotations = text.(data, :bottom),
-        label = "MSAX",
-        markercolor = COLOR_SAX,
-        markersize = 3
-    )
+    if upper
+        plot!(
+            p,
+            xs,
+            ys,
+            seriestype = :scatter,
+            series_annotations = text.(uppercase.(al.(data)), :bottom),
+            label = "MSAX",
+            markercolor = COLOR_SAX,
+            markersize = 3
+        )
+    else
+        plot!(
+            p,
+            xs,
+            ys,
+            seriestype = :scatter,
+            series_annotations = text.(al.(data), :bottom),
+            label = "MSAX",
+            markercolor = COLOR_SAX,
+            markersize = 3
+        )
+    end
 
     title!(p, "MSAX of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
 
     if breakpoints
         β = get_breakpoints(param.alphabet_size)
-        for b in β
-            plot!(
-                p,
-                [irange[1], irange[end]],
-                [b, b],
-                linestyle = :dash,
-                label = false,
-                color = COLOR_BETA
-            )
+        if time
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]]/param.fs,
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
+        else
+            for b in β
+                plot!(
+                    p,
+                    [irange[1], irange[end]],
+                    [b, b],
+                    linestyle = :dash,
+                    label = false,
+                    color = COLOR_BETA
+                )
+            end
         end
     end
+end
+
+function al(x)
+    return 'a' + (x - 1)
 end
