@@ -1,32 +1,39 @@
 
 if !(@isdefined COLOR_BETA)
-    const COLOR_ECG = palette(:tab10)[1]
-    const COLOR_PAA = palette(:tab10)[2]
+    const COLOR_ECG = "blue" #palette(:tab10)[1]
+    const COLOR_PAA = "orange" #palette(:tab10)[2]
     const COLOR_SAX = "green"
     const COLOR_BETA = "grey"
 end
 
-function ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)
+function ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false, from_zero::Bool=false, to_export::Bool=false)
 
-    # p = plot()
+    title = "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)"
+    if to_export
+        style = "no marks, line width = 0.7pt, aucablue"
+    else
+        style = "no marks, line width = 0.7pt, blue"
+    end
+    axis_style = ""
+    # axis_style = "grid=both"
+    ylab = "milli Volt"
+    xlab = "samples"
+    ys = ecg.data[irange, lead]
+    xs = collect(irange)
 
-    d = 1:length(irange)
+    if time
+        xlab = "seconds"
+        if from_zero
+            xs = collect(1:length(irange)) / param.fs
+        else
+            xs /= param.fs
+        end
+    end
 
-    # if time
-        p = Axis(PGFPlots.Linear(d / param.fs, ecg.data[irange, lead],style = "no marks, line width = 0.7pt"), xlabel = "seconds", ylabel = "mV", title = "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
-        # , legend = false, color = COLOR_ECG)
-        # xlabel!(p, "seconds")
-    # else
-        # p = plot(irange, ecg.data[irange, lead], legend = false, color = COLOR_ECG)
-        # xlabel!(p, "samples")
-    # end
-    # ylabel!(p, "mV")
-    # title!(p, "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
-
-    return p
+    return Axis(PGFPlots.Linear(xs, ys,style = style), style = axis_style, xlabel = xlab, ylabel = ylab, title = title)
 end
 
-function SAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)::Plots.Plot{Plots.GRBackend}
+function SAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)
 
     normalized_ecg = zeros(Float64, ecg.length, 1)
 
@@ -47,7 +54,7 @@ function SAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, l
     return p
 end
 
-function MSAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)::Plots.Plot{Plots.GRBackend}
+function MSAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)
 
     normalized_ecg = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))[:, columnindex(ecg.data, lead)-1]
 
@@ -66,7 +73,7 @@ function MSAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, 
     return p
 end
 
-function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+function SAX_PAA_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment
@@ -128,7 +135,7 @@ function SAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parame
     end
 end
 
-function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+function MSAX_PAA_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment
@@ -189,7 +196,7 @@ function MSAX_PAA_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Param
     end
 end
 
-function SAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
+function SAX_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false)
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment
@@ -259,7 +266,7 @@ function SAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters
     end
 end
 
-function MSAX_plot!(; p::Plots.Plot{Plots.GRBackend}, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false, upper::Bool=false)
+function MSAX_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitRange{Int64}, time::Bool=false, breakpoints::Bool=false, upper::Bool=false)
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment

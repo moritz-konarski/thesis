@@ -8,32 +8,49 @@
 
 \begin{frame}{What is an ECG?}
     \begin{columns}
-        \begin{column}{0.5\textwidth}
+        \begin{column}{0.55\textwidth}
             \begin{figure}
-                \includegraphics[width=1.1\textwidth]{03_ecg}
-                \caption{Section of an ECG}
+                \includegraphics[width=\textwidth,
+                height=0.7\textheight]{03_ecg}\vspace{-1.1em}
+                \caption{ECG of one heartbeat}
             \end{figure}
         \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{itemize}
-                \item electrocardiogram (ECG or EKG) records heart's 
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}[leftmargin=0pt]
+                \item electrocardiogram (ECG or EKG) records the heart's 
                     electrical activity 
                     \mynote{muscle contractions caused by electric pulses}
                     \mynote{electric pulse can be measured on the skin}
-                \item takes up to 12 simultaneous\\measurements\mycite{moody1992a}
+                \item contains up to 12 simultaneous measurements -- the leads
+                    \mycite{moody1992a}
                     \mynote{the measuring things are called electrodes}
                     \mynote{electrodes form leads (need 2 to measure anything)}
                     \mynote{they have specific positions and names}
                     \mynote{12 leads is the modern standard}
-                \item they are very common medical diagnostic tools 
+                \item common medical diagnostic tool
                     \mynote{most types of heart disease can be detected}
                     \mynote{diagnosis and analysis is performed by trained
                     cardiologists}
                     \mynote{datasets available online; contain 2 or more leads 
-                    (the most significant ones) }
+                    (the most significant ones)}
             \end{itemize}
         \end{column}
     \end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \includegraphics[width=\textwidth,height=\textheight]{03_ecg_ann}%
+        \vspace{-1em}%
+        \caption{Annotated ECG of one heartbeat}
+    \end{figure}
+    \mynote{P: short repolarization}
+    \mynote{Q: repolarization before heartbeat}
+    \mynote{R: big contraction that actually pumps blood}
+    \mynote{S: section after heartbeat}
+    \mynote{T: big repolarization; this is where ischaemia is}
+    \mynote{U: not always present}
+    \mynote{P: short repolarization}
 \end{frame}
 
 \begin{frame}{ECGs as Time Series}
@@ -68,17 +85,6 @@
             \mynote{$n$ measurements per point in time (i.e. leads)}
             \mynote{$n=1$ is univariate, $n>1$ is multivariate}
     \end{itemize}
-\end{frame}
-
-%\begin{frame}
-%\end{frame}
-
-\begin{frame}
-    \begin{figure}
-        \centering
-        \fbox{\includegraphics[width=\textwidth]{wasilewski2012}}
-        \caption{An annotated model ECG \mycite{wasilewski2012a}}
-    \end{figure}
 \end{frame}
 
 \subsection*{ECG Analysis}
