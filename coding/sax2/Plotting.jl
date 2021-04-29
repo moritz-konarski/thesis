@@ -6,19 +6,22 @@ if !(@isdefined COLOR_BETA)
     const COLOR_BETA = "grey"
 end
 
-function ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)::Plots.Plot{Plots.GRBackend}
+function ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, lead::Symbol, time::Bool=false)
 
-    p = plot()
+    # p = plot()
 
-    if time
-        p = plot(irange / param.fs, ecg.data[irange, lead], legend = false, color = COLOR_ECG)
-        xlabel!(p, "seconds")
-    else
-        p = plot(irange, ecg.data[irange, lead], legend = false, color = COLOR_ECG) 
-        xlabel!(p, "samples")
-    end
-    ylabel!(p, "mV")
-    title!(p, "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+    d = 1:length(irange)
+
+    # if time
+        p = Axis(PGFPlots.Linear(d / param.fs, ecg.data[irange, lead],style = "no marks, line width = 0.7pt"), xlabel = "seconds", ylabel = "mV", title = "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
+        # , legend = false, color = COLOR_ECG)
+        # xlabel!(p, "seconds")
+    # else
+        # p = plot(irange, ecg.data[irange, lead], legend = false, color = COLOR_ECG)
+        # xlabel!(p, "samples")
+    # end
+    # ylabel!(p, "mV")
+    # title!(p, "Lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
 
     return p
 end

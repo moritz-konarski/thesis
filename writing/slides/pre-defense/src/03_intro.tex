@@ -4,34 +4,84 @@
 
 \section{Introduction}
 
-\begin{frame}{Test}{Some Testing}
-    \begin{example}
-        Here we see an example of some bullshit
-    \end{example}
+\subsection{ECG Basics}
+
+\begin{frame}{What is an ECG?}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \includegraphics[width=1.1\textwidth]{03_ecg}
+                \caption{Section of an ECG}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item electrocardiogram (ECG or EKG) records heart's 
+                    electrical activity 
+                    \mynote{muscle contractions caused by electric pulses}
+                    \mynote{electric pulse can be measured on the skin}
+                \item takes up to 12 simultaneous\\measurements\mycite{moody1992a}
+                    \mynote{the measuring things are called electrodes}
+                    \mynote{electrodes form leads (need 2 to measure anything)}
+                    \mynote{they have specific positions and names}
+                    \mynote{12 leads is the modern standard}
+                \item they are very common medical diagnostic tools 
+                    \mynote{most types of heart disease can be detected}
+                    \mynote{diagnosis and analysis is performed by trained
+                    cardiologists}
+                    \mynote{datasets available online; contain 2 or more leads 
+                    (the most significant ones) }
+            \end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{ECG Basics}
+\begin{frame}{ECGs as Time Series}
+  %   \begin{definition}
+  %       A discrete multivariate time series is 
+  %       $\left\{\mathbf{x}[t] \right\}_{t \in \{1, \dots, T \}}$,
+  %       where $t$ is a moment in time, $T$ is the number of measurements,
+  %       $\mathbf{x}[t] = \left(x_1[t], \dots, x_n[t] \right)$ is a set of
+  %       measurements at moment $t$, and $n$ is the number of measurements at
+  %       a moment $t$.
+  %   \end{definition}
+    \begin{definition}
+        A discrete multivariate time series is a sequence of values
+        $$\left\{\mathbf{x}[t] \right\}_{t \in \{1, \dots, T \}}$$
+        where\\
+        \begin{itemize}[itemsep=0pt]
+            \item $\mathbf{x}[t] = \left(x_1[t], \dots, x_n[t] \right)$ --- set 
+                of values at moment $t$,
+            \item $t$ --- discrete moment in time, 
+            \item $T$ --- number of sets of values,
+            \item $n$ --- number of values at moment $t$.
+        \end{itemize}
+    \end{definition}
     \begin{itemize}
-        \item record electrical impulses of the heart
-        \item modern ECGs have 12 leads, online datasets contain 2 or more
-            \mycite{moody1992a}
-        \item ECGs are multivariate data (multiple data points at each sample
-            point) \mycite{zotero-346, anacleto2020}
-            \begin{equation}
-                \mathbf{x}^i[t] = (x^i_1[t], \dots, x^i_n[t])
-            \end{equation}
-        \item ECGs are very common diagnostic tools
+        \item[$\Rightarrow$] ECGs are discrete multivariate time series
+            \mycite{anacleto2020}
+            \mynote{multivariate: measure more than 1 lead per time point}
+            \mynote{discrete: set sample frequency in the machines}
+            \mynote{discrete: because measured at discrete moments in time}
+            \mynote{time series: they are data measured at equal time
+            intervals}
+            \mynote{$n$ measurements per point in time (i.e. leads)}
+            \mynote{$n=1$ is univariate, $n>1$ is multivariate}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{ECG waveform}
-    \begin{figure}[H]
+%\begin{frame}
+%\end{frame}
+
+\begin{frame}
+    \begin{figure}
         \centering
-        \fbox{\includegraphics[width=0.9\textwidth]{wasilewski2012}}
-        \caption{A standard ECG waveform with
-        annotations\mycite{wasilewski2012a}}
+        \fbox{\includegraphics[width=\textwidth]{wasilewski2012}}
+        \caption{An annotated model ECG \mycite{wasilewski2012a}}
     \end{figure}
 \end{frame}
+
+\subsection*{ECG Analysis}
 
 \begin{frame}{Automated ECG Analysis}
     \begin{itemize}

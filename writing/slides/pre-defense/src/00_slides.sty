@@ -33,7 +33,8 @@
     }
 
 % style of citations to be used
-\newcommand{\mycite}[1]{\cite{#1}}
+\newcommand{\mycite}[1]{[#1]}
+%\newcommand{\mycite}[1]{\cite{#1}}
 %\newcommand{\mycite}[1]{\nocite{#1}}
 \newcommand{\mynote}[1]{\note<1->{- #1\\}}
 
@@ -41,17 +42,13 @@
 \setbeameroption{show notes}
 %\setbeameroption{hide notes}
 % beamer presentation setup
-\mode<presentation>
-{
-    \usecolortheme{whale}
-    \useoutertheme{infolines}
-    \useinnertheme{rectangles}
-    \usetheme{default}
-    \usefonttheme{serif}
-    \setbeamertemplate{navigation symbols}{}
-    \setbeamertemplate{caption}[numbered]
-} 
-
+\usetheme{Luebeck}
+\usecolortheme{whale}
+\useoutertheme{infolines}
+\useinnertheme{rectangles}
+\usefonttheme{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
 % color of blue in the AUCA logo
 \definecolor{aucablue}{RGB}{34, 80, 169}
 % title colors
@@ -66,6 +63,11 @@
 \setbeamercolor{palette tertiary}{fg=white,bg=aucablue!90}
 % set the frame titles to the center
 \setbeamertemplate{frametitle}[default][center]
+% make definitions and theorems numbered
+\setbeamertemplate{definitions}[numbered]
+\setbeamertemplate{examples}[numbered]
+% set the margins
+\setbeamersize{text margin left=10mm,text margin right=10mm}
 
 % set the presentation font
 \RequirePackage[no-math]{fontspec}
@@ -85,9 +87,14 @@
 \graphicspath{{../graphics/}}
 \RequirePackage{float}
 
+% graphics package
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\RequirePackage{tikzscale}
+
 % set enumeration parameters
-\RequirePackage{enumitem}
-\setlist[itemize]{itemsep=1em, label={--}}
+\RequirePackage[inline]{enumitem}
+\setlist[itemize]{itemsep=1em, label={\textbullet}}
 
 % package enabling quotation and citation
 \RequirePackage{csquotes}

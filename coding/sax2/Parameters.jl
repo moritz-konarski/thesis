@@ -7,13 +7,15 @@ using StatsFuns
 using StatsBase
 using Statistics
 using Tries
-using Plots
+# using Plots
+# pgfplots()
+using PGFPlots
 
 if !(@isdefined MIT_BIH_FS)
     const MIT_BIH_FS = Int64(360)
     const MIT_BIH_FILELEN = Int64(650_000)
     const STT_FS = Int64(250)
-    const MIT_BIH_NAME = "MIT-BIH Database"
+    const MIT_BIH_NAME = "MIT-BIH"
     const STT_NAME = "European ST-T Database"
 
     const DATA_FILES = "data/"
