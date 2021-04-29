@@ -6,44 +6,51 @@
 
 \begin{frame}{ECG Basics}
     \begin{itemize}
-        \item recorded electrical impulses of the heart
-        \item leads, voltages, what datasets have what leads
-            \note<1>{the leads are I, II, II, V1-V6, aVf,...\\}
-        \item time series
+        \item record electrical impulses of the heart
+        \item modern ECGs have 12 leads, online datasets contain 2 or more
+            \mycite{moody1992a}
+        \item ECGs are multivariate data (multiple data points at each sample
+            point) \mycite{zotero-346, anacleto2020}
             \begin{equation}\nonumber
-                \mathbf{T} = \{ x_1, x_2, \dots, x_n\}
+                \mathbf{x}^i[t] = (x^i_1[t], \dots, x^i_n[t])
             \end{equation}
-            \note<1>{don't forget to mention that ECGs are time series}
-        \item widely available, used as tool to diagnose heart diseases
-        \item heart diseases are very deadly, so evaluating an ECG correctly
-            matters
-        \item concept of a discord in time series
+        \item ECGs are very common diagnostic tools
     \end{itemize}
 \end{frame}
 
 \begin{frame}{ECG waveform}
-    include graph here
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[width=0.9\textwidth]{wasilewski2012}}
+        \caption{A standard ECG waveform with
+        annotations\mycite{wasilewski2012a}}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Automated ECG Analysis}
     \begin{itemize}
-        \item automated ECG analysis has become very important recently
-        \item methods are FFT, DFT, DWT, ANN, CNN, kNN, filters, other methods
-        \item general advantages and disadvantages
-        \item general challenges and process
+        \item ECGs represent large amounts of data, thorough analysis is
+            required
+        \item 5 stages: (1) signal acquisition, filtering; (2) data 
+            transformation, processing; (3) waveform recognition; (4) feature 
+            extraction; (5) classification\mycite{kligfieldpaul2007}
+        \item some methods include FFT, DWT, ANN, kNN, filters
+        \item balance between accuracy and complexity needed
     \end{itemize}
 \end{frame}
 
 \begin{frame}{SAX and MSAX}
     \begin{itemize}
-        \item Symbolic Aggregate Approximation (who when)
-        \item time series analysis, symbolic representation, mindist
-        \item why is symbolic representation useful?
-        \item Multivariate Symbolic Aggregate Approximation (who when)
-        \item differences and advantages to SAX
-        \item THESIS: using MSAX vs SAX on ECGs should increase the accuracy of
-            discord detection
-        \item which datasets will be used?
+        \item Symbolic Aggregate
+            Approximation (SAX) creates a simplified, symbolic representation
+            \mycite{lin2003}
+        \item is guaranteed to behave like the original data
+        \item works on univariate time series, has been used on
+            ECGs\mycite{zhang2019}
+        \item Multivariate SAX (MSAX)\mycite{anacleto2020} expands SAX to 
+            multivariate time series
+        \item[$\rightarrow$] using MSAX on ECGs should increase the accuracy of
+            discord detection compared to SAX
     \end{itemize}
 \end{frame}
 

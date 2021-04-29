@@ -4,20 +4,24 @@
 
 \section{HOTSAX}
 
-\begin{frame}{Discord discovery}
-    why is this useful?
+\begin{frame}{HOTSAX}
+    \begin{itemize}
+        \item time series discords are sections of a time series that are most
+            different from all other segments of the time series (e.g. diseases 
+            in an ECG)
+        \item can be found by comparing all segments to all other
+            segments\mycite{keogh2005}
+        \item Heuristically Ordered Time series using Symbolic Aggregate 
+            Approximation is better
+            \begin{itemize}
+                \item discords are generally rare, start with the rarest segment
+                \item similar segments are likely to have similar distances, 
+                    consider them together
+            \end{itemize}
 
-    what makes it difficult?
-
-    brute force is a joke
-\end{frame}
-
-\begin{frame}{Inner Heuristic}
-    what is this and how does it work?
-\end{frame}
-
-\begin{frame}{Outer Heuristic}
-    what is this and how does it work?
+        \item[$\rightarrow$] applying HOTSAX with MSAX to ECGs should discover 
+            more discords than HOTSAX with SAX
+    \end{itemize}
 \end{frame}
 
 \end{document}

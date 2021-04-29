@@ -2,12 +2,19 @@
 
 \begin{document}
 
-\section{Results}
+\section[Results]{Preliminary Results}
 
-\begin{frame}{This is what I have found}
-    using SAX with HOTSAX resulted in:
-
-    using MSAX with HOTSAX resulted in:
+\begin{frame}{Preliminary Results}
+    \begin{itemize}
+        \item used the MIT-BIH ECG database
+        \item database has 48 recordings, every heart beat has been annotated
+            by experts
+        \item use HOTSAX with SAX, MSAX to find discords
+        \item use the annotations to check if the discovered discord is
+            a normal heart beat or not
+        \item in ECG 108, HOTSAX with SAX found 16 discords, HOTSAX with MSAX 
+            found 21
+    \end{itemize}
 \end{frame}
 
 \end{document}

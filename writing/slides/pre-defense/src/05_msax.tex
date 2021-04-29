@@ -4,20 +4,47 @@
 
 \section{MSAX}
 
-\begin{frame}{Normalization}
-    how this works and differs from SAX
+\begin{frame}{Z-Normalization}
+    \begin{itemize}
+        \item perform multivariate normalization
+        \item mean vector $\mu$ as vector of the means for each time series
+        \item covariance matrix $\Sigma$ for variances and covariances between the
+            different time series
+            \begin{equation}\nonumber
+                \mathbf{x}[t] = \Sigma^{-1/2} (\mathbf{X}[t] - \mu)
+            \end{equation}
+        \item this uses mean and covariance structure of the multivariate data
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{Sectioning}
-    basically the same, we simply put them behind each other
+\begin{frame}{PAA and Discretization}
+    \begin{itemize}
+        \item PAA is used here like in SAX, each time series is handled
+            separately
+        \item the discretization process works the same way too
+        \item each time series component is discretized separately
+        \item to differentiate them, one alphabet can for example be uppercase
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{Sectioning -- graph example}
-    graph with two leads, each with a different capitalization
+\begin{frame}{Discretization Graph}
+    \begin{figure}
+        \fbox{\includegraphics[width=0.9\textwidth]{msax}}
+        \caption{MSAX (MITBIH/100, $w = 18$, $n = 360$, alphabet size 3)}
+    \end{figure}
 \end{frame}
 
-\begin{frame}{Mindist for MSAX}
-    how does this relate to SAX and does it work in the same way?
+\begin{frame}{Distance Measure}
+    \begin{itemize}
+        \item this distance measure is based on $MINDIST$
+        \item it is also lower bounding the Euclidean distance
+        \item it adds an extra step of adding the $dist$ values for the time
+            series components
+            \begin{equation}\nonumber
+                MINDIST\_MSAX(Q,C) = \sqrt{\frac{n}{w}} \sqrt{\sum^w_{i=0}
+                \left(\sum_{i=0}^n dist(q[i],c[i])^2\right)}
+            \end{equation}
+    \end{itemize}
 \end{frame}
 
 \end{document}

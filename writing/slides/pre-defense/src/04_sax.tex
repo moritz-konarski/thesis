@@ -4,38 +4,76 @@
 
 \section{SAX}
 
-\begin{frame}{Normalization}
-    how sax is being normalized as a formula
-
-    what does this mean?
+\begin{frame}{Z-Normalization}
+    \begin{itemize}
+        \item assumption: data is approximately normally distributed
+        \item to analyze time series, they are first normalized so that $\mu=0$
+            and $\sigma=1$
+            \begin{equation}\nonumber
+                x^i[t] = \frac{X^i[t] - \mu}{\sigma}
+            \end{equation}
+        \item enables comparison between different time series
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{PAA}
-    piecewise aggregate approximation, what does it do, plus formula
-
-    dimensionality reduction
+    \begin{itemize}
+        \item piecewise aggregate approximation (PAA) reduces dimensionality 
+            (through averaging of segments)
+        \item simplifies the time series
+        \item results in $\bar C = \bar c_1,\dots,\bar c_w$
+        \item getting element $i$ of $\bar C$ (time series $x$ has length $n$)
+            \begin{equation}\nonumber
+                \bar c_i = \frac{w}{n} \sum_{j = \frac{n}{w}(i-1)+1}^
+                    {\frac{n}{w}i}x_j
+            \end{equation}
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{PAA -- graph example}
-    insert graph that shows paa here
+\begin{frame}{PAA Graph}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[width=0.9\textwidth]{saxpaa}}
+        \caption{ECG with PAA (MITBIH/100, $w = 18$, $n = 360$)}
+    \end{figure}
 \end{frame}
 
-\begin{frame}{Sectioning}
-    how is the discretization done?
-
-    thresholds
-
-    rationale
-
-    table
+\begin{frame}{Discretization}
+    \begin{itemize}
+        \item assign letters to PAA segments
+        \item breakpoints are created that divide a Gaussian curve into equal
+            parts
+        \item number of breakpoints dependent on size of alphabet
+        \item all PAA below lowest breakpoint are \textit{a}, the ones above it
+            \textit{b}\dots
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{Sectioning -- graph example}
-    insert graph that shows sectioned thing here
+\begin{frame}{Discretization Graph}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[width=0.9\textwidth]{sax}}
+        \caption{SAX (MITBIH/100, $w = 18$, $n = 360$, alphabet
+        size 3)}
+    \end{figure}
 \end{frame}
 
-\begin{frame}{mindist}
-    bounded distance to the original graph
+\begin{frame}{Distance Measure}
+    \begin{itemize}
+        \item SAX lower bounds the Euclidean distance, i.e. SAX distances
+            correspond to Euclidean distances
+        \item Euclidean distance between 2 time series $Q,C$
+            \begin{equation}\nonumber
+                D(Q,C) \equiv \sqrt{\sum_{i=1}^n (q_i - c_1)^2}
+            \end{equation}
+        \item SAX distance
+            \begin{equation}\nonumber
+                MINDIST\left(\hat Q,\hat C\right) \equiv \sqrt{\frac{n}{w}}
+                \sqrt{\sum_{i=1}^w \left(dist(\hat q_i, \hat c_i)\right)^2}
+            \end{equation}
+        \item $dist(\hat q_i, \hat c_i)$ is the difference between the 
+            breakpoints of $\hat q_i, \hat c_i$
+    \end{itemize}
 \end{frame}
 
 \end{document}
