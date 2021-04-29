@@ -45,7 +45,7 @@ function ECG(;
     filelen::Int64,
 )::ECG
 
-    @info "Extracting ECG"
+    @info "Extracting ECG $database/$number"
 
     index_start = 1
 

@@ -121,12 +121,10 @@ function get_breakpoints(n::Int64)::Vector{Float64}
 end
 
 function get_original_index(;
-    paa_len::Int64,
-    ecg_len::Int64,
+    points_per_segment::Int64,
     segment::Int64,
 )::UnitRange{Int64}
-    range::Int64 = ecg_len ÷ paa_len
-    return (segment-1)*range+1:segment*range
+    return (segment-1)*points_per_segment+1:segment*points_per_segment
 end
 
 function get_discrete_index(; paa_len::Int64, ecg_len::Int64, index::Int64)::Int64

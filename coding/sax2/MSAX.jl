@@ -115,3 +115,47 @@ function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
 
     return order
 end
+
+function HOTMSAX(;
+    param::Parameters,
+    ecg::ECG,
+    col::Int64,
+    k::Int64,
+)::Tuple{Vector{Float64},Vector{Int64}}
+
+    @info "HOTMSAX"
+
+    msax = MSAX(ecg = ecg, param = param)
+
+    diff = get_difference_matrix(param.alphabet_size)
+
+    ordering = MSAX_indexing(msax = msax, param = param)
+
+    maxs = fill(typemin(Float64), k)
+    inds = zeros(Int64, k)
+
+    len = param.points_per_segment * param.subsequence_length
+
+    for i in ordering
+        nearest_dist = typemax(Float64)
+        ri = ((i-1) * param.subsequence_length + 1):(i * param.subsequence_length)
+
+        for j in ordering
+            if i != j
+                rj = (j-1) * param.subsequence_length + 1 : j * param.subsequence_length
+                # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
+                d = MSAX_mindist(msax.data[ri], msax.data[rj], diff, len)
+                if d < nearest_dist
+                    nearest_dist = d
+                end
+                if d < last(maxs)
+                    break
+                end
+            end
+        end
+        # @info nearest_dist
+        set_d(maxs, nearest_dist, inds, i, k)
+    end
+
+    return maxs, inds
+end

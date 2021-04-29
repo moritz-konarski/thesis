@@ -87,6 +87,8 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
     trie = Trie{Int8,Vector{Int64}}()
     last_index::Int64 = 0
 
+    @info subsequence_count
+
     for i in 1:subsequence_count
         r = ((i-1)*param.subsequence_length + 1):(i*param.subsequence_length)
         for j in 1:subsequence_count
@@ -98,7 +100,8 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
                     trie[sax.data[r, col]...] = [i]
                 end
                 break
-            elseif unique_sequences[1, j] == -1
+            end
+            if unique_sequences[1, j] == -1
                 last_index += 1
                 unique_sequences[:, last_index] = sax.data[r, col]
 
@@ -113,6 +116,8 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
     unique_sequences = unique_sequences[:, 1:last_index]
 
     unique_sequences = unique_sequences[:, sortperm(counts[1:last_index])]
+
+    # @warn unique_sequences
 
     order = Vector{Int64}()
 
@@ -147,7 +152,7 @@ function HOTSAX(;
 
     for i in ordering
         nearest_dist = typemax(Float64)
-        ri = (i-1) * param.subsequence_length + 1 : i * param.subsequence_length
+        ri = ((i-1) * param.subsequence_length + 1):(i * param.subsequence_length)
 
         for j in ordering
             if i != j
@@ -162,7 +167,7 @@ function HOTSAX(;
                 end
             end
         end
-
+        # @info nearest_dist
         set_d(maxs, nearest_dist, inds, i, k)
     end
 
