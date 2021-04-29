@@ -1,0 +1,19 @@
+- [ ] blocks
+- [ ] examples
+- [ ] more plots
+- [ ] columns to compare SAX and MSAX
+- [ ] alert and emph
+- [ ] pgfplots and tiz
+- [ ] make flow chart for program
+- [ ] appendix for possible questions
+- [ ] simpler graphics
+- [ ] fewer formulas
+- [ ] frame subtitles
+- [ ] subsections
+- [ ] more paper-like structure
+- [ ] use `[plain]` for full-graph slides
+- [ ] put adequate notes
+- [ ] more introduction
+- [ ] rationale
+- [ ] definitions
+- [ ] list important researchers
