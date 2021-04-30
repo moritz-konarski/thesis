@@ -1,4 +1,3 @@
-
 if !(@isdefined COLOR_BETA)
     const COLOR_ECG = "blue" #palette(:tab10)[1]
     const COLOR_PAA = "orange" #palette(:tab10)[2]

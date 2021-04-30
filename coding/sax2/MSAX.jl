@@ -119,7 +119,7 @@ end
 function HOTMSAX(;
     param::Parameters,
     ecg::ECG,
-    k::Int64=-1,
+    k::Int64 = -1,
 )::Tuple{Vector{Float64},Vector{Int64}}
 
     # @info "HOTMSAX"
@@ -138,11 +138,11 @@ function HOTMSAX(;
 
     for i in ordering
         nearest_dist = typemax(Float64)
-        ri = ((i-1) * param.subsequence_length + 1):(i * param.subsequence_length)
+        ri = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
 
         for j in ordering
             if i != j
-                rj = (j-1) * param.subsequence_length + 1 : j * param.subsequence_length
+                rj = (j-1)*param.subsequence_length+1:j*param.subsequence_length
                 # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
                 d = MSAX_mindist(msax.data[ri], msax.data[rj], diff, len)
                 if d < nearest_dist

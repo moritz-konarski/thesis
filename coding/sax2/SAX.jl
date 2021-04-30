@@ -17,16 +17,16 @@ function SAX(; ecg::ECG, param::Parameters)
     paa_data = zeros(Float64, rows, cols)
     normalized_ecg = zeros(Float64, ecg.length, cols)
 
-    for i in 1:cols
+    for i = 1:cols
         SAX_normalize!(src = ecg.data[:, i+1], dest = normalized_ecg, col = i)
     end
 
-    for i in 1:cols
+    for i = 1:cols
         PAA!(src = normalized_ecg[:, i], dest = paa_data, col = i)
     end
 
-    for col in 1:cols
-        for row in 1:rows
+    for col = 1:cols
+        for row = 1:rows
             for (i::Int8, βi) in enumerate(β)
                 if paa_data[row, col] < βi
                     sax_data[row, col] = i
@@ -35,7 +35,7 @@ function SAX(; ecg::ECG, param::Parameters)
             end
         end
     end
-    
+
     return SAX(ecg.database, ecg.number, sax_data)
 end
 
@@ -45,8 +45,8 @@ function PAA!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
     n::Int64 = length(src)
     n_by_w::Int64 = n ÷ w
 
-    for i in 1:w
-        dest[i, col] = sum(src[(n_by_w * (i - 1) + 1):(n_by_w * i)])
+    for i = 1:w
+        dest[i, col] = sum(src[(n_by_w*(i-1)+1):(n_by_w*i)])
     end
 
     dest[:, col] *= (w / n)
@@ -57,7 +57,7 @@ function SAX_normalize!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int6
         μ::Float64 = Statistics.mean(src)
         σ::Float64 = Statistics.std(src)
 
-        for i in 1:length(src)
+        for i = 1:length(src)
             dest[i, col] = (src[i] - μ) / σ
         end
     else
@@ -67,10 +67,15 @@ function SAX_normalize!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int6
     end
 end
 
-@inline function SAX_mindist(a::Vector{Int8}, b::Vector{Int8}, d::Matrix{Float64}, T::Int64)::Float64
+@inline function SAX_mindist(
+    a::Vector{Int8},
+    b::Vector{Int8},
+    d::Matrix{Float64},
+    T::Int64,
+)::Float64
     s::Float64 = 0.0
 
-    for i in 1:length(a)
+    for i = 1:length(a)
         s += (d[a[i], b[i]])^2
     end
 
@@ -89,9 +94,9 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
 
     # @info subsequence_count
 
-    for i in 1:subsequence_count
-        r = ((i-1)*param.subsequence_length + 1):(i*param.subsequence_length)
-        for j in 1:subsequence_count
+    for i = 1:subsequence_count
+        r = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
+        for j = 1:subsequence_count
             if sax.data[r, col] == unique_sequences[:, j]
                 counts[j] += 1
                 try
@@ -133,7 +138,7 @@ function HOTSAX(;
     param::Parameters,
     ecg::ECG,
     col::Int64,
-    k::Int64=-1
+    k::Int64 = -1,
 )::Tuple{Vector{Float64},Vector{Int64}}
 
     # @info "HOTSAX"
@@ -152,11 +157,11 @@ function HOTSAX(;
 
     for i in index_order
         nearest_dist = typemax(Float64)
-        ri = ((i-1) * param.subsequence_length + 1):(i * param.subsequence_length)
+        ri = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
 
         for j in index_order
             if i != j
-                rj = (j-1) * param.subsequence_length + 1 : j * param.subsequence_length
+                rj = (j-1)*param.subsequence_length+1:j*param.subsequence_length
                 # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
                 d = SAX_mindist(sax.data[ri, col], sax.data[rj, col], diff_mat, len)
                 if d < nearest_dist

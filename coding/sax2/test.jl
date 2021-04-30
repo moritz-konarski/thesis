@@ -4,6 +4,8 @@ include("SAX.jl")
 include("MSAX.jl")
 include("Plotting.jl")
 
+k = 80
+
 @inline function get_annotations(; ecg::ECG, irange::UnitRange{Int64})::Vector{String}
     return collect(skipmissing(ecg.data[irange, end-1]))
 end
@@ -19,15 +21,30 @@ end
 
 function SAX_count_special_annotations(p::Parameters, e::ECG)
 
+    @info "SAX"
+
     count = zeros(Int64, 2)
     i1 = Vector{UnitRange{Int64}}()
     i2 = Vector{UnitRange{Int64}}()
 
-    for i in 1:2
-        maxs, inds = HOTSAX(param = p, ecg = e, col = i)
+    for i = 1:2
+        @info "  $i"
+        maxs, inds = HOTSAX(param = p, ecg = e, col = i, k = k)
+        
+        μ = mean(maxs)
+        σ = Statistics.std(maxs, mean = μ)
 
-        for ind in inds 
-            r = get_original_index(segment = ind, points_per_segment = p.points_per_subsequence)
+        println("    Detected: $(length(inds))")
+        println("    μ = $μ; σ = $σ")
+        index = 0
+        s = 0.0
+
+        for ind in inds
+            index += 1
+            r = get_original_index(
+                segment = ind,
+                points_per_segment = p.points_per_subsequence,
+            )
             if has_special_annotation(get_annotations(ecg = e, irange = r))
                 count[i] += 1
                 if i == 1
@@ -35,8 +52,11 @@ function SAX_count_special_annotations(p::Parameters, e::ECG)
                 else
                     push!(i2, r)
                 end
+                s += StatsBase.zscore([maxs[index]], μ, σ)[1]
             end
         end
+        println("    avg z: $(s / count[i])")
+        println("    Actual: $(sum(count[i]))")
     end
 
     return names(e.data)[2:3], count, [i1, i2]
@@ -44,25 +64,42 @@ end
 
 function MSAX_count_special_annotations(p::Parameters, e::ECG)
 
+    @info "MSAX"
     count::Int64 = 0
     i = Vector{UnitRange{Int64}}()
 
-    maxs, inds = HOTMSAX(param = p, ecg = e)
+    maxs, inds = HOTMSAX(param = p, ecg = e, k = k)
 
-    for ind in inds 
+    μ = mean(maxs)
+    σ = Statistics.std(maxs, mean = μ)
+
+    println("    Detected: $(length(inds))")
+    println("    μ = $μ; σ = $σ")
+    index = 0
+    s = 0.0
+
+    for ind in inds
+        index += 1
         r = get_original_index(segment = ind, points_per_segment = p.points_per_subsequence)
         if has_special_annotation(get_annotations(ecg = e, irange = r))
             count += 1
             push!(i, r)
+            s += StatsBase.zscore([maxs[index]], μ, σ)[1]
         end
     end
+    
+    println("    avg z: $(s / count)")
+    println("    Actual: $(sum(count))")
 
     return count, i
 end
 
 p = Parameters(
+    # PAA_segment_count = 60,
     PAA_segment_count = 18,
+    # subsequence_length = 60,
     subsequence_length = 12,
+    # alphabet_size = 7,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
@@ -72,7 +109,7 @@ e = get_MIT_BIH_ECG(p, 108)
 s = Symbol.(names(e.data)[2:3])[1]
 # r = 1:360
 
-time =false 
+time = false
 sax_result = SAX_count_special_annotations(p, e)
 msax_result = MSAX_count_special_annotations(p, e)
 
@@ -81,14 +118,13 @@ msax_result = MSAX_count_special_annotations(p, e)
 
 count = 0
 
-for l in 1:length(sax_result[1])
+for l = 1:length(sax_result[1])
     for res in sax_result[3][l]
-
         global count += 1
 
         inds = Vector{Int64}()
         v = res
-        r = v[1]-500:v[1]+500
+        r = v[1]-500:v[2]+500
 
         for i in r
             if !ismissing(e.data[i, end-1])
@@ -100,19 +136,26 @@ for l in 1:length(sax_result[1])
             end
         end
 
-        p1 = SAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
+        p1 = SAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
         # SAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
 
         sp = 5
 
         plot!(p1, [v[1], v[1]], [-sp, sp], label = false, linestyle = :dot, color = :green)
-        plot!(p1, [v[end], v[end]], [-sp, sp], label = false, linestyle = :dot, color = :green)
+        plot!(
+            p1,
+            [v[end], v[end]],
+            [-sp, sp],
+            label = false,
+            linestyle = :dot,
+            color = :green,
+        )
 
         if length(inds) != 0
             for i in inds
                 plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
             end
-        end 
+        end
 
         plot!(p1, title = "SAX $count")
         gui(p1)
@@ -122,41 +165,40 @@ end
 
 count = 0
 
-for l in 1:msax_result[1]
+for l = 1:msax_result[1]
+    global count += 1
 
-        global count += 1
+    inds = Vector{Int64}()
+    v = msax_result[2][l]
+    r = v[1]-500:v[2]+500
 
-        inds = Vector{Int64}()
-        v = msax_result[2][l]
-        r = v[1]-500:v[1]+500
-
-        for i in r
-            if !ismissing(e.data[i, end-1])
-                # println(e.data[i, end-1])
-                if e.data[i, end-1] != "N"
-                    # println(i)
-                    push!(inds, i)
-                end
+    for i in r
+        if !ismissing(e.data[i, end-1])
+            # println(e.data[i, end-1])
+            if e.data[i, end-1] != "N"
+                # println(i)
+                push!(inds, i)
             end
         end
+    end
 
-        p1 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
-        # SAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
+    p1 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
+    # SAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
 
-        sp = 5
+    sp = 5
 
-        plot!(p1, [v[1], v[1]], [-sp, sp], label = false, linestyle = :dot, color = :green)
-        plot!(p1, [v[end], v[end]], [-sp, sp], label = false, linestyle = :dot, color = :green)
+    plot!(p1, [v[1], v[1]], [-sp, sp], label = false, linestyle = :dot, color = :green)
+    plot!(p1, [v[end], v[end]], [-sp, sp], label = false, linestyle = :dot, color = :green)
 
-        if length(inds) != 0
-            for i in inds
-                plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
-            end
-        end 
+    if length(inds) != 0
+        for i in inds
+            plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
+        end
+    end
 
-        plot!(p1, title = "MSAX $count")
-        gui(p1)
-        readline()
+    plot!(p1, title = "MSAX $count")
+    gui(p1)
+    readline()
 end
 
 

@@ -22,14 +22,47 @@ r = 1:360
 time = true
 
 s = sym[1]
-p2 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
-MSAX_PAA_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = true)
-MSAX_plot!(p = p2, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
+p2 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
+MSAX_PAA_plot!(
+    p = p2,
+    ecg = e,
+    param = p,
+    irange = r,
+    lead = s,
+    time = time,
+    breakpoints = true,
+)
+MSAX_plot!(
+    p = p2,
+    ecg = e,
+    param = p,
+    irange = r,
+    lead = s,
+    time = time,
+    breakpoints = false,
+)
 
 s = sym[2]
-p3 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time=time)
-MSAX_PAA_plot!(p = p3, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = true)
-MSAX_plot!(p = p3, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false, upper=true)
+p3 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
+MSAX_PAA_plot!(
+    p = p3,
+    ecg = e,
+    param = p,
+    irange = r,
+    lead = s,
+    time = time,
+    breakpoints = true,
+)
+MSAX_plot!(
+    p = p3,
+    ecg = e,
+    param = p,
+    irange = r,
+    lead = s,
+    time = time,
+    breakpoints = false,
+    upper = true,
+)
 
 p = plot(p2, p3, layout = (2, 1))
 
@@ -45,7 +78,7 @@ return p
 # v = 392881:393120 # right on
 # v = 205681:205920 # right on
 # v = 295921:296160 # following one
-    # v = 457201:457440 # right on
+# v = 457201:457440 # right on
 # v = 600721:600960 # following one
 # v = 600961:601200 # following one
 # v = 164161:164400 # follows one
