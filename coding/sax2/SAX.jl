@@ -7,7 +7,7 @@ end
 
 function SAX(; ecg::ECG, param::Parameters)
 
-    @info "Calculating SAX"
+    # @info "Calculating SAX"
 
     rows::Int64 = ecg.length ÷ param.points_per_segment
     cols::Int64 = 2
@@ -79,7 +79,7 @@ end
 
 function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
 
-    @info "Indexing SAX"
+    # @info "Indexing SAX"
 
     subsequence_count::Int64 = size(sax.data, 1) ÷ param.subsequence_length
     unique_sequences::Matrix{Int8} = fill(-1, param.subsequence_length, subsequence_count)
@@ -87,7 +87,7 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
     trie = Trie{Int8,Vector{Int64}}()
     last_index::Int64 = 0
 
-    @info subsequence_count
+    # @info subsequence_count
 
     for i in 1:subsequence_count
         r = ((i-1)*param.subsequence_length + 1):(i*param.subsequence_length)
@@ -133,42 +133,58 @@ function HOTSAX(;
     param::Parameters,
     ecg::ECG,
     col::Int64,
-    k::Int64,
+    k::Int64=-1
 )::Tuple{Vector{Float64},Vector{Int64}}
 
-    @info "HOTSAX"
+    # @info "HOTSAX"
 
     sax = SAX(ecg = ecg, param = param)
 
-    diff = get_difference_matrix(param.alphabet_size)
+    diff_mat = get_difference_matrix(param.alphabet_size)
 
-    ordering = SAX_indexing(sax = sax, col = col, param = param)
+    index_order = SAX_indexing(sax = sax, col = col, param = param)
 
-    maxs = fill(typemin(Float64), k)
-    inds = zeros(Int64, k)
+    maxs::Vector{Float64} = zeros(Float64, size(sax.data, 1))
+    inds::Vector{Int64} = zeros(Int64, size(sax.data, 1))
+    index::Int64 = 0
 
     len = param.points_per_segment * param.subsequence_length
-    @info len
 
-    for i in ordering
+    for i in index_order
         nearest_dist = typemax(Float64)
         ri = ((i-1) * param.subsequence_length + 1):(i * param.subsequence_length)
 
-        for j in ordering
+        for j in index_order
             if i != j
                 rj = (j-1) * param.subsequence_length + 1 : j * param.subsequence_length
                 # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
-                d = SAX_mindist(sax.data[ri, col], sax.data[rj, col], diff, len)
+                d = SAX_mindist(sax.data[ri, col], sax.data[rj, col], diff_mat, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end
-                if d < last(maxs)
+                if d <= 0.0
                     break
                 end
             end
         end
-        # @info nearest_dist
-        set_d(maxs, nearest_dist, inds, i, k)
+        if nearest_dist > 0.0
+            index += 1
+            maxs[index] = nearest_dist
+            inds[index] = i
+        end
+    end
+
+    maxs = maxs[1:index]
+    inds = inds[1:index]
+
+    ordering = reverse(sortperm(maxs))
+
+    maxs = maxs[ordering]
+    inds = inds[ordering]
+
+    if k > 0 && k < length(maxs)
+        maxs = maxs[1:k]
+        inds = inds[1:k]
     end
 
     return maxs, inds

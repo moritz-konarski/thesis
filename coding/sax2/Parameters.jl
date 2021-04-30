@@ -7,9 +7,9 @@ using StatsFuns
 using StatsBase
 using Statistics
 using Tries
-# using Plots
+using Plots
 # pgfplots()
-using PGFPlots
+# using PGFPlots
 
 if !(@isdefined MIT_BIH_FS)
     const MIT_BIH_FS = Int64(360)
@@ -46,6 +46,7 @@ struct Parameters
     PAA_segment_count::Int64
     points_per_segment::Int64
     subsequence_length::Int64
+    points_per_subsequence::Int64
     alphabet_size::Int64
     fs::Int64
 end
@@ -109,6 +110,7 @@ function Parameters(;
         PAA_segment_count,
         fs ÷ PAA_segment_count,
         subsequence_length,
+        subsequence_length * fs ÷ PAA_segment_count,
         alphabet_size,
         fs,
     )

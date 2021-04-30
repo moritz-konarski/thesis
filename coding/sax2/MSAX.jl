@@ -7,7 +7,7 @@ end
 
 function MSAX(; ecg::ECG, param::Parameters)
 
-    @info "Calculating MSAX"
+    # @info "Calculating MSAX"
 
     rows::Int64 = ecg.length ÷ param.points_per_segment
     cols::Int64 = 2
@@ -70,7 +70,7 @@ end
 
 function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
 
-    @info "Indexing MSAX"
+    # @info "Indexing MSAX"
 
     subsequence_count::Int64 = length(msax.data) ÷ param.subsequence_length
     unique_sequences::Matrix{Tuple{Int8,Int8}} =
@@ -119,11 +119,10 @@ end
 function HOTMSAX(;
     param::Parameters,
     ecg::ECG,
-    col::Int64,
-    k::Int64,
+    k::Int64=-1,
 )::Tuple{Vector{Float64},Vector{Int64}}
 
-    @info "HOTMSAX"
+    # @info "HOTMSAX"
 
     msax = MSAX(ecg = ecg, param = param)
 
@@ -131,8 +130,9 @@ function HOTMSAX(;
 
     ordering = MSAX_indexing(msax = msax, param = param)
 
-    maxs = fill(typemin(Float64), k)
-    inds = zeros(Int64, k)
+    maxs = zeros(Float64, length(msax.data))
+    inds = zeros(Int64, length(msax.data))
+    index::Int64 = 0
 
     len = param.points_per_segment * param.subsequence_length
 
@@ -148,13 +148,30 @@ function HOTMSAX(;
                 if d < nearest_dist
                     nearest_dist = d
                 end
-                if d < last(maxs)
+                if d <= 0.0
                     break
                 end
             end
         end
-        # @info nearest_dist
-        set_d(maxs, nearest_dist, inds, i, k)
+
+        if nearest_dist > 0.0
+            index += 1
+            maxs[index] = nearest_dist
+            inds[index] = i
+        end
+    end
+
+    maxs = maxs[1:index]
+    inds = inds[1:index]
+
+    ordering = reverse(sortperm(maxs))
+
+    maxs = maxs[ordering]
+    inds = inds[ordering]
+
+    if k > 0 && k < length(maxs)
+        maxs = maxs[1:k]
+        inds = inds[1:k]
     end
 
     return maxs, inds
