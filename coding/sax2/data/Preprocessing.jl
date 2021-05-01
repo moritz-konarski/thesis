@@ -33,9 +33,14 @@ function records2csv(records::Vector{Int64}, path::String)
     cd(path)
 
     try
-        for i in 1:len
+        for i = 1:len
             print("\r\027  $i/$len")
-            run(pipeline(`rdsamp -r $(records[i]) -c -v -p`, stdout = "$(records[i]).$CSV_EXT"))
+            run(
+                pipeline(
+                    `rdsamp -r $(records[i]) -c -v -p`,
+                    stdout = "$(records[i]).$CSV_EXT",
+                ),
+            )
         end
         println()
     catch ex
@@ -60,12 +65,33 @@ function annotations2csv(records::Vector{Int64}, path::String)
         # this suppresses warning from the DataFrames package about missing data points in the annotations
         # this is ok because the files only contain annotations for events, and blank space indicates no annotation
         with_logger(NullLogger()) do
-            for i in 1:len
+            for i = 1:len
                 print("\r\027  $i/$len")
                 filebase = "$ANN_PREFIX$(records[i])"
-                run(pipeline(`rdann -r $(records[i]) -a atr -v`, stdout = "$filebase.$DAT_EXT"))
+                run(
+                    pipeline(
+                        `rdann -r $(records[i]) -a atr -v`,
+                        stdout = "$filebase.$DAT_EXT",
+                    ),
+                )
                 dat2csv(filebase)
-                CSV.write("$(records[i])$ANN_SUFFIX.$CSV_EXT", DataFrame(CSV.File("$filebase.$CSV_EXT", normalizenames = true, select = [3, 4, 8],quotechar = ''')))
+                data = DataFrame(
+                    CSV.File(
+                        "$filebase.$CSV_EXT",
+                        normalizenames = true,
+                        select = [3, 4, 8],
+                        quotechar = ''',
+                    ),
+                )
+                current_type::Union{Missing,String} = missing
+                for row in eachrow(data)
+                    if ismissing(row[3])
+                        row[3] = current_type
+                    else
+                        current_type = row[3]
+                    end
+                end
+                CSV.write("$(records[i])$ANN_SUFFIX.$CSV_EXT", data)
             end
         end
         println()
@@ -85,7 +111,7 @@ User: StefanKarpinski
 Date: April 9, 2021
 """
 function dat2csv(filebase::String)
-    open("$filebase.$CSV_EXT", write=true) do io
+    open("$filebase.$CSV_EXT", write = true) do io
         for line in eachline("$filebase.$DAT_EXT")
             join(io, split(line, r"\s+[#]{1}\s+|\s+|\t+"), ',')
             println(io)
@@ -97,7 +123,7 @@ end
 Extract all record numbers from the RECORDS file located at `file`
 """
 function get_record_numbers(file::String)::Vector{Int64}
-    return (CSV.File(file, header = false) |> Tables.matrix)[:]
+    return (CSV.File(file, header = false)|>Tables.matrix)[:]
 end
 
 """
@@ -111,12 +137,24 @@ function join_records_and_annotations(records::Vector{Int64}, path::String)
     cd(path)
 
     try
-        for i in 1:len
+        for i = 1:len
             print("\r\027  $i/$len")
-            data = DataFrame(CSV.File("$(records[i]).$CSV_EXT", datarow = 3, drop = [1], normalizenames = true))
+            data = DataFrame(
+                CSV.File(
+                    "$(records[i]).$CSV_EXT",
+                    datarow = 3,
+                    drop = [1],
+                    normalizenames = true,
+                ),
+            )
             insertcols!(data, 1, :Sample => collect(1:size(data, 1)))
-            annotations = DataFrame(CSV.File("$(records[i])$ANN_SUFFIX.$CSV_EXT", normalizenames = true))
-            CSV.write("$(records[i])$COMPLETE_SUFFIX.$CSV_EXT", outerjoin(data, annotations, on = :Sample))
+            annotations = DataFrame(
+                CSV.File("$(records[i])$ANN_SUFFIX.$CSV_EXT", normalizenames = true),
+            )
+            CSV.write(
+                "$(records[i])$COMPLETE_SUFFIX.$CSV_EXT",
+                outerjoin(data, annotations, on = :Sample),
+            )
         end
         println()
     catch ex

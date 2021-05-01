@@ -16,6 +16,7 @@
     - which database
     - which things were detected (types of heart beats)
     - all the indices of the ECG that were annotated 
+    - also store the beat type, that might be useful for analysis
 
 ## Evaluation
 
