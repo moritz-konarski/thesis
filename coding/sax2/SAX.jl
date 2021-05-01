@@ -39,19 +39,6 @@ function SAX(; ecg::ECG, param::Parameters)
     return SAX(ecg.database, ecg.number, sax_data)
 end
 
-function PAA!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
-
-    w::Int64 = size(dest, 1)
-    n::Int64 = length(src)
-    n_by_w::Int64 = n ÷ w
-
-    for i = 1:w
-        dest[i, col] = sum(src[(n_by_w*(i-1)+1):(n_by_w*i)])
-    end
-
-    dest[:, col] *= (w / n)
-end
-
 function SAX_normalize!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
     if length(src) == size(dest, 1)
         μ::Float64 = Statistics.mean(src)

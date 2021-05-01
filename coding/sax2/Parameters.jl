@@ -20,6 +20,7 @@ if !(@isdefined MIT_BIH_FS)
 
     const DATA_FILES = "data/"
     const MIT_BIH = "mit_bih/"
+    const PROCESSED_DIR = "processed_data/"
     const CSV_EXT = "csv"
     const DAT_EXT = "dat"
     const SUFFIX = "_complete"
@@ -150,21 +151,35 @@ function get_difference_matrix(n::Int64)::Matrix{Float64}
     return difference_matrix
 end
 
-@inline function set_d(
-    a::Vector{Float64},
-    v::Float64,
-    is::Vector{Int64},
-    j::Int64,
-    k::Int64,
-)
-    for i = 1:k
-        if v > a[i]
-            a[i+1:end] = a[i:end-1]
-            a[i] = v
+function PAA!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
 
-            is[i+1:end] = is[i:end-1]
-            is[i] = j
-            break
-        end
+    w::Int64 = size(dest, 1)
+    n::Int64 = length(src)
+    n_by_w::Int64 = n ÷ w
+
+    for i = 1:w
+        dest[i, col] = sum(src[(n_by_w*(i-1)+1):(n_by_w*i)])
     end
+
+    dest[:, col] *= (w / n)
 end
+
+
+# @inline function set_d(
+#     a::Vector{Float64},
+#     v::Float64,
+#     is::Vector{Int64},
+#     j::Int64,
+#     k::Int64,
+# )
+#     for i = 1:k
+#         if v > a[i]
+#             a[i+1:end] = a[i:end-1]
+#             a[i] = v
+
+#             is[i+1:end] = is[i:end-1]
+#             is[i] = j
+#             break
+#         end
+#     end
+# end
