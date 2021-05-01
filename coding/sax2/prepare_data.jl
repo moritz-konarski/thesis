@@ -2,7 +2,6 @@ include("Parameters.jl")
 include("ECG.jl")
 include("SAX.jl")
 include("MSAX.jl")
-include("Plotting.jl")
 
 @inline function get_annotations(ecg::ECG, irange::UnitRange{Int64})::String
     list = unique(collect(skipmissing(ecg.data[irange, end-1])))
@@ -42,33 +41,63 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
 end
 
 function SAX_prepare_data(p::Parameters, e::ECG, edf::DataFrame, k::Int64)
-    for i = 1:2
-        maxs, inds = HOTSAX(param = p, ecg = e, col = i, k = k)
+    for v = 1:2
+        maxs, inds = HOTSAX(param = p, ecg = e, col = v, k = k)
+        ordering = sortperm(inds)
+        maxs = maxs[ordering]
+        inds = inds[ordering]
+
+        start_i::Int64 = 1
         
         for i in 1:lastindex(inds)
-            edf[i, :sax] += 1
-            edf[i, :sax_dist] = maxs[i]
+            r = get_original_index(points_per_segment = p.points_per_subsequence, segment = inds[i])
+            for j in start_i:size(edf, 1)
+                if edf[j, :index_range] == r
+                    start_i = j + 1
+                    # TODO: add v here to make clear which lead the thing came from
+                    # then differentiate in error analysis
+                    edf[j, :sax] += 1
+                    edf[j, :sax_dist] = maxs[i]
+                    break
+                end
+            end
         end
     end
 end
 
 function MSAX_prepare_data(p::Parameters, e::ECG, edf::DataFrame, k::Int64)
     maxs, inds = HOTMSAX(param = p, ecg = e, k = k)
+    ordering = sortperm(inds)
+    maxs = maxs[ordering]
+    inds = inds[ordering]
 
+    start_i::Int64 = 1
+    
     for i in 1:lastindex(inds)
-        edf[i, :msax] += 1
-        edf[i, :msax_dist] = maxs[i]
+        r = get_original_index(points_per_segment = p.points_per_subsequence, segment = inds[i])
+        for j in start_i:size(edf, 1)
+            if edf[j, :index_range] == r
+                start_i = j + 1
+                edf[j, :msax] += 1
+                edf[j, :msax_dist] = maxs[i]
+                break
+            end
+        end
     end
 end
 
 p = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 12,
-    alphabet_size = 6,
+    PAA_segment_count = 24,
+    # PAA_segment_count = 18,
+    subsequence_length = 24,
+    # subsequence_length = 12,
+    alphabet_size = 10,
+    # alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
-k = 80
+# k = 80
+k = 150
 
 filebase = "$PROCESSED_DIR$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
 
