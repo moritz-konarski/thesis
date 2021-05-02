@@ -98,7 +98,7 @@ function ECG(;
         end
     end
 
-    ECG(database, number, size(data, 1), size(data, 2), data)
+    ECG(database, number, size(data, 1), 2, data)
 end
 
 function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG

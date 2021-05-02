@@ -125,7 +125,7 @@ function get_breakpoints(n::Int64)::Vector{Float64}
     return β
 end
 
-function get_original_index(; points_per_segment::Int64, segment::Int64)::UnitRange{Int64}
+@inline function get_original_index(points_per_segment::Int64, segment::Int64)::UnitRange{Int64}
     return (segment-1)*points_per_segment+1:segment*points_per_segment
 end
 

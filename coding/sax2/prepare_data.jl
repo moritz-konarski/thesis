@@ -4,12 +4,12 @@ include("SAX.jl")
 include("MSAX.jl")
 
 @inline function get_annotations(ecg::ECG, irange::UnitRange{Int64})::String
-    list = unique(collect(skipmissing(ecg.data[irange, end-1])))
+    list::Vector{String} = unique(collect(skipmissing(ecg.data[irange, end-1])))
     return string(list[sortperm(list)]...)
 end
 
 @inline function get_beat_type(ecg::ECG, irange::UnitRange{Int64})::String
-    list = unique(collect(skipmissing(ecg.data[irange, end])))
+    list::Vector{String} = unique(collect(skipmissing(ecg.data[irange, end])))
     return string(list[sortperm(list)]...)
 end
 
@@ -18,64 +18,73 @@ end
 end
 
 function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
-    
+
     n_sequences::Int64 = e.length ÷ p.points_per_subsequence
     n_by_l::Int64 = e.length ÷ n_sequences
 
-    beats = fill("", n_sequences)
-    annotations = fill("", n_sequences)
-    index_range = fill((1:2)::UnitRange{Int64}, n_sequences)
-    sax = zeros(Int64, n_sequences)
-    sax_dist = zeros(Float64, n_sequences)
-    msax = zeros(Int64, n_sequences)
-    msax_dist = zeros(Float64, n_sequences)
+    beats::Vector{String} = fill("", n_sequences)
+    annotations::Vector{String} = fill("", n_sequences)
+    index_range::Vector{UnitRange{Int64}} = fill((1:2)::UnitRange{Int64}, n_sequences)
+    sax::Vector{Int64} = zeros(Int64, n_sequences)
+    sax_dist::Vector{Float64} = zeros(Float64, n_sequences)
+    msax::Vector{Int64} = zeros(Int64, n_sequences)
+    msax_dist::Vector{Float64} = zeros(Float64, n_sequences)
 
-    for i in 1:n_sequences
-        r = (n_by_l*(i-1)+1):(n_by_l*i)
+    for i::Int64 ∈ 1:n_sequences
+        r::UnitRange{Int64} = (n_by_l*(i-1)+1):(n_by_l*i)
         index_range[i] = r
         annotations[i] = get_annotations(e, r)
-        beats[i] =  get_beat_type(e, r)
+        beats[i] = get_beat_type(e, r)
     end
 
-    return DataFrame(index_range = index_range, annotations = annotations, beats = beats, sax = sax, sax_dist = sax_dist, msax = msax, msax_dist = msax_dist)
+    return DataFrame(
+        index_range = index_range,
+        annotations = annotations,
+        beats = beats,
+        sax = sax,
+        sax_dist = sax_dist,
+        msax = msax,
+        msax_dist = msax_dist,
+    )
 end
 
-function SAX_prepare_data(p::Parameters, e::ECG, edf::DataFrame, k::Int64)
-    for v = 1:2
-        maxs, inds = HOTSAX(param = p, ecg = e, col = v, k = k)
-        ordering = sortperm(inds)
+function SAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Nothing
+    for v::Int64 ∈ 1:e.leads
+        maxs::Vector{Float64}, inds::Vector{Int64} =
+            HOTSAX(param = p, ecg = e, col = v, k = k)
+        ordering::Vector{Int64} = sortperm(inds)
         maxs = maxs[ordering]
         inds = inds[ordering]
 
         start_i::Int64 = 1
-        
-        for i in 1:lastindex(inds)
-            r = get_original_index(points_per_segment = p.points_per_subsequence, segment = inds[i])
-            for j in start_i:size(edf, 1)
+
+        for i::Int64 ∈ 1:lastindex(inds)
+            r::UnitRange{Int64} = get_original_index(p.points_per_subsequence, inds[i])
+            for j::Int64 ∈ start_i:size(edf, 1)
                 if edf[j, :index_range] == r
                     start_i = j + 1
-                    # TODO: add v here to make clear which lead the thing came from
-                    # then differentiate in error analysis
-                    edf[j, :sax] += 1
+                    edf[j, :sax] += v
                     edf[j, :sax_dist] = maxs[i]
                     break
                 end
             end
         end
     end
+
+    return nothing
 end
 
-function MSAX_prepare_data(p::Parameters, e::ECG, edf::DataFrame, k::Int64)
-    maxs, inds = HOTMSAX(param = p, ecg = e, k = k)
-    ordering = sortperm(inds)
+function MSAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Nothing
+    maxs::Vector{Float64}, inds::Vector{Int64} = HOTMSAX(param = p, ecg = e, k = k)
+    ordering::Vector{Int64} = sortperm(inds)
     maxs = maxs[ordering]
     inds = inds[ordering]
 
     start_i::Int64 = 1
-    
-    for i in 1:lastindex(inds)
-        r = get_original_index(points_per_segment = p.points_per_subsequence, segment = inds[i])
-        for j in start_i:size(edf, 1)
+
+    for i::Int64 ∈ 1:lastindex(inds)
+        r::UnitRange{Int64} = get_original_index(p.points_per_subsequence, inds[i])
+        for j::Int64 ∈ start_i:size(edf, 1)
             if edf[j, :index_range] == r
                 start_i = j + 1
                 edf[j, :msax] += 1
@@ -84,127 +93,78 @@ function MSAX_prepare_data(p::Parameters, e::ECG, edf::DataFrame, k::Int64)
             end
         end
     end
+
+    return nothing
 end
 
-p = Parameters(
-    PAA_segment_count = 24,
-    # PAA_segment_count = 18,
-    subsequence_length = 24,
-    # subsequence_length = 12,
-    alphabet_size = 10,
-    # alphabet_size = 6,
+function process_all_records(p::Parameters, k::Int64, subdir::String)::Nothing
+    directory::String = "$PROCESSED_DIR$subdir/$(p.PAA_segment_count)/"
+    filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
+
+    if !isdir("./$directory")
+        mkpath("./$directory")
+    end
+
+    for record::Int64 ∈ MIT_BIH_RECORD_LIST
+        e::ECG = get_MIT_BIH_ECG(p, record)
+
+        edf::DataFrame = get_ecg_dataframe(p, e)
+
+        SAX_prepare_data!(p, e, k, edf)
+
+        MSAX_prepare_data!(p, e, k, edf)
+
+        CSV.write("$(filebase)_$record.$CSV_EXT", edf, quotestrings = true)
+    end
+
+    return nothing
+end
+
+p0 = Parameters(
+    PAA_segment_count = 72,
+    subsequence_length = 72,
+    alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
-# k = 80
-k = 150
+p1 = Parameters(
+    PAA_segment_count = 36,
+    subsequence_length = 36,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
 
-filebase = "$PROCESSED_DIR$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
+p2 = Parameters(
+    PAA_segment_count = 24,
+    subsequence_length = 24,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
 
-for record in MIT_BIH_RECORD_LIST
+p3 = Parameters(
+    PAA_segment_count = 18,
+    subsequence_length = 18,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
 
-    e = get_MIT_BIH_ECG(p, record)
+p4 = Parameters(
+    PAA_segment_count = 12,
+    subsequence_length = 12,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
 
-    edf = get_ecg_dataframe(p, e)
+p5 = Parameters(
+    PAA_segment_count = 6,
+    subsequence_length = 6,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
 
-    SAX_prepare_data(p, e, edf, k)
+k = Int64(80)
+subdirectory = "paa_count/"
 
-    MSAX_prepare_data(p, e, edf, k)
-
-    CSV.write("$(filebase)_$record.$CSV_EXT", edf, quotestrings=true)
+for param ∈ [p0, p1, p2, p3, p4, p5]
+    process_all_records(param, k, subdirectory)
 end
-
-# s = Symbol.(names(e.data)[2:3])[1]
-# # r = 1:360
-
-# time = false
-# sax_result = SAX_count_special_annotations(p, e)
-# msax_result = MSAX_count_special_annotations(p, e)
-
-# # print(DataFrame(sax_result))
-# # print(msax_result)
-
-# count = 0
-
-# for l = 1:length(sax_result[1])
-#     for res in sax_result[3][l]
-#         global count += 1
-
-#         inds = Vector{Int64}()
-#         v = res
-#         r = v[1]-500:v[2]+500
-
-#         for i in r
-#             if !ismissing(e.data[i, end-1])
-#                 # println(e.data[i, end-1])
-#                 if e.data[i, end-1] != "N"
-#                     # println(i)
-#                     push!(inds, i)
-#                 end
-#             end
-#         end
-
-#         p1 = SAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
-#         # SAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
-
-#         sp = 5
-
-#         plot!(p1, [v[1], v[1]], [-sp, sp], label = false, linestyle = :dot, color = :green)
-#         plot!(
-#             p1,
-#             [v[end], v[end]],
-#             [-sp, sp],
-#             label = false,
-#             linestyle = :dot,
-#             color = :green,
-#         )
-
-#         if length(inds) != 0
-#             for i in inds
-#                 plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
-#             end
-#         end
-
-#         plot!(p1, title = "SAX $count")
-#         gui(p1)
-#         readline()
-#     end
-# end
-
-# count = 0
-
-# for l = 1:msax_result[1]
-#     global count += 1
-
-#     inds = Vector{Int64}()
-#     v = msax_result[2][l]
-#     r = v[1]-500:v[2]+500
-
-#     for i in r
-#         if !ismissing(e.data[i, end-1])
-#             # println(e.data[i, end-1])
-#             if e.data[i, end-1] != "N"
-#                 # println(i)
-#                 push!(inds, i)
-#             end
-#         end
-#     end
-
-#     p1 = MSAX_ECG_plot(ecg = e, param = p, irange = r, lead = s, time = time)
-#     # SAX_PAA_plot!(p = p1, ecg = e, param = p, irange = r, lead = s, time=time, breakpoints = false)
-
-#     sp = 5
-
-#     plot!(p1, [v[1], v[1]], [-sp, sp], label = false, linestyle = :dot, color = :green)
-#     plot!(p1, [v[end], v[end]], [-sp, sp], label = false, linestyle = :dot, color = :green)
-
-#     if length(inds) != 0
-#         for i in inds
-#             plot!(p1, [i, i], [-3, 3], label = "anomaly", color = :red)
-#         end
-#     end
-
-#     plot!(p1, title = "MSAX $count")
-#     gui(p1)
-#     readline()
-# end
