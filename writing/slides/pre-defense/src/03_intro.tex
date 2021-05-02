@@ -4,7 +4,7 @@
 
 \section{Introduction}
 
-\subsection{ECG Basics}
+\subsection*{ECG Basics}
 
 \begin{frame}{What is an ECG?}
     \begin{columns}
@@ -64,20 +64,33 @@
   %       measurements at moment $t$, and $n$ is the number of measurements at
   %       a moment $t$.
   %   \end{definition}
+  %  \begin{definition}
+  %      A discrete multivariate time series is a sequence of values
+  %      $$\left\{\mathbf{x}[t] \right\}_{t \in \{1, \dots, T \}}$$
+  %      where\\
+  %      \begin{itemize}[itemsep=0pt]
+  %          \item $\mathbf{x}[t] = \left(x_1[t], \dots, x_n[t] \right)$ --- set 
+  %              of values at moment $t$,
+  %          \item $t$ --- discrete moment in time, 
+  %          \item $T$ --- number of sets of values,
+  %          \item $n$ --- number of values at moment $t$.
+  %      \end{itemize}
+  %  \end{definition}
     \begin{definition}
-        A discrete multivariate time series is a sequence of values
-        $$\left\{\mathbf{x}[t] \right\}_{t \in \{1, \dots, T \}}$$
-        where\\
-        \begin{itemize}[itemsep=0pt]
-            \item $\mathbf{x}[t] = \left(x_1[t], \dots, x_n[t] \right)$ --- set 
-                of values at moment $t$,
-            \item $t$ --- discrete moment in time, 
-            \item $T$ --- number of sets of values,
-            \item $n$ --- number of values at moment $t$.
-        \end{itemize}
+        A discrete multivariate time series is an ordered sequence at discrete 
+        points in
+        time that has $n$ values at each of these points. If $n=1$, the series
+        is univariate and if $n>1$, it is multivariate.
     \end{definition}
     \begin{itemize}
-        \item ECGs are discrete multivariate time series
+        \item digital ECGs are discrete multivariate time series:
+            \begin{itemize}
+                \item have $>1$ value at each point
+                    \mynote{modern ECGs have at least 2, most have 12}
+                \item recorded at discrete, evenly spaced time points
+                    \mynote{digital ones have set sampling frequencies, even
+                    the machines have set frequencies}
+            \end{itemize}
             \mycite{anacleto2020}
             \mynote{multivariate: measure more than 1 lead per time point}
             \mynote{discrete: set sample frequency in the machines}
@@ -86,20 +99,38 @@
             intervals}
             \mynote{$n$ measurements per point in time (i.e. leads)}
             \mynote{$n=1$ is univariate, $n>1$ is multivariate}
+        \item time series analysis methods can be applied to ECGs
     \end{itemize}
 \end{frame}
 
 \subsection*{ECG Analysis}
 
-\begin{frame}{Automated ECG Analysis}
+\begin{frame}{ECG Analysis}
     \begin{itemize}
-        \item ECGs represent large amounts of data, thorough analysis is
-            required
-        \item 5 stages: (1) signal acquisition, filtering; (2) data 
-            transformation, processing; (3) waveform recognition; (4) feature 
-            extraction; (5) classification\mycite{kligfieldpaul2007}
-        \item some methods include FFT, DWT, ANN, kNN, filters
-        \item balance between accuracy and complexity needed
+        \item standard method: manual analysis by cardiologist
+            \mynote{is relatively slow; time is of the essence}
+            \mynote{lots of training required}
+            \mynote{error prone}
+            \mynote{maybe not feasible for long ECGs}
+        \item recently: automated (computer-assisted) ECG analysis
+            \mynote{can speed up process}
+            \mynote{can pick up details humans miss}
+        \item {multiple stages:~}
+            \begin{enumerate*}[label=(\arabic*)]
+                \item signal acquisition, filtering;
+                    % TODO: add notes to these to explain the differences
+                    \mynote{digitizing paper ECGs or recording digital ones}
+                    \mynote{filtering to remove various types of noise}
+                \item data transformation, processing;
+                    \mynote{reduce complexity of the data}
+                \item waveform recognition, feature extraction;
+                \item classification
+            \end{enumerate*}
+            \mycite{kligfieldpaul2007}
+        \item common methods: FFT, DWT, ANN, kNN,\dots
+            % TODO: add notes for each of the things that I mention
+            \mynote{balance between accuracy and complexity needed}
+        \item relatively new methods are SAX, MSAX, and HOTSAX
     \end{itemize}
 \end{frame}
 

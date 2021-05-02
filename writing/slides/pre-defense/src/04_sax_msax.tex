@@ -1,0 +1,154 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{SAX and MSAX}
+
+\subsection*{Process}
+
+\begin{frame}{Step 1: Z-Normalization}
+    \mynote{say that the process is the same as MSAX based on SAX}
+    \begin{block}{Assumption}
+        The time series values are normally distributed.
+    \end{block}%
+    % TODO: cite this
+    \mynote{to compare time series, normalization is the accepted step}
+    % TODO: test this in program
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item normalize univariate time series
+                \item uses scalar mean and variance
+                %\item results in mean of 0 and standard deviation of 1
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item normalize multivariate time series
+                    %TODO: research what exactly this means
+               \item uses vector mean and covariance matrix
+               \mynote{what is this}
+               %\item results in mean of 0 and standard deviation of 1
+               % TODO: is this true?
+               \mynote{data is now uncorrelated}
+               \mynote{takes into account the correlation between leads}
+           \end{itemize}
+       \end{column}
+    \end{columns}
+    \vspace{1em}
+    \begin{itemize}
+        \item[$\Rightarrow$] time series have mean 0 and standard
+            deviation 1
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2: Dimensionality Reduction}
+    \begin{block}{Method}
+        Piecewise Aggregate Approximation (PAA) takes $T$ values and finds 
+        the averages of $w$ segments ($w<T$), reducing the complexity.
+    \end{block}%
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item apply PAA to time series
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item apply PAA to each of the time series individually
+           \end{itemize}
+       \end{column}
+    \end{columns}
+    \vspace{1em}
+    \begin{itemize}
+        \item[$\Rightarrow$] time series has been simplified, consisting of
+            fewer elements
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[height=0.73\textheight]{saxpaa}}
+        \caption{ECG with PAA (MITBIH/100, $w = 18$, $T = 360$)}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Step 3: Discretization}
+    \begin{block}{Method}
+        Create breakpoints splitting a normal curve into $N$ segments; each
+        segment has equal probability. Then assign a letter to each segment;
+        \textit{a} to the lowest, \textit{b} to the next\dots{} Result is called
+        a \textit{word}.
+    \end{block}%
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item discretize the time series
+                \item results in one word
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item discretize each time series individually
+               \item results in one word, multiple letters per segment
+           \end{itemize}
+       \end{column}
+    \end{columns}
+    \mynote{simplifies time series even more}
+    \mynote{creates discrete categories, can be more useful}
+\end{frame}
+
+% TODO: add slide with some breakpoints for illustration
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[height=0.73\textheight]{sax}}
+        \caption{SAX (MITBIH/100, $w = 18$, $T = 360$, alphabet
+        size 4)}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Step 4: Distance Measure}
+    \begin{block}{Method}
+        To compare two same-length SAX words, a distance measure is needed. 
+        Distance is defined for letters: 0 for neighbors; absolute difference 
+        of breakpoints otherwise. 
+    \end{block}%
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+                \begin{equation}\nonumber
+                    \sqrt{\frac{T}{w}}\sqrt{\sum_{i=1}^w 
+                    \left(dist(\hat q[i], \hat c[i])\right)^2}
+                \end{equation}
+            \mynote{$n$ -- length of original time series}
+            \mynote{$w$ -- length of word}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+            \begin{equation}\nonumber
+                \sqrt{\frac{T}{w}} \sqrt{\sum^w_{i=1}
+                \left(\sum_{j=1}^n 
+                \left(dist(\hat q_j[i], \hat c_j[i])\right)^2\right)}
+            \end{equation}
+       \end{column}
+    \end{columns}
+    \mynote{this lower-bounds the euclidean distance, meaning that results in
+    SAX should hold true for the real data too}
+\end{frame}
+
+% TODO: add slide with difference matrix and example 
+
+\end{document}
