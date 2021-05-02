@@ -1,44 +1,57 @@
-# data <- read.csv("../processed_data/MIT-BIH-24-24-10-150_108.csv")
-# data <- read.csv("../processed_data/MIT-BIH-24-24-10-150_100.csv")
+library(ggplot2)
 
 get_sax_tn <- function(data) {
     return(dim(data[(data$annotations == "N" |
-                         data$annotations == "") & data$sax == 0, ])[1])
-}
-
-get_msax_tn <- function(data) {
-    return(dim(data[(data$annotations == "N" |
-                         data$annotations == "") & data$msax == 0, ])[1])
+                         data$annotations == "") &
+                        data$sax == 0, ])[1])
 }
 
 get_sax_tp <- function(data) {
     return(dim(data[(data$annotations != "N" &
-                         data$annotations != "") & data$sax != 0, ])[1])
-}
-
-get_msax_tp <- function(data) {
-    return(dim(data[(data$annotations != "N" &
-                         data$annotations != "") & data$sax != 0, ])[1])
+                         data$annotations != "") &
+                        data$sax != 0, ])[1])
 }
 
 get_sax_fp <- function(data) {
     return(dim(data[(data$annotations == "N" |
-                         data$annotations == "") & data$sax != 0, ])[1])
-}
-
-get_msax_fp <- function(data) {
-    return(dim(data[(data$annotations == "N" |
-                         data$annotations == "") & data$sax != 0, ])[1])
+                         data$annotations == "") &
+                        data$sax != 0, ])[1])
 }
 
 get_sax_fn <- function(data) {
     return(dim(data[(data$annotations != "N" &
-                         data$annotations != "") & data$sax == 0, ])[1])
+                         data$annotations != "") &
+                        data$sax == 0, ])[1])
 }
+
+get_msax_tn <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") &
+                        data$msax == 0, ])[1])
+}
+
+
+
+get_msax_tp <- function(data) {
+    return(dim(data[(data$annotations != "N" &
+                         data$annotations != "") &
+                        data$msax != 0, ])[1])
+}
+
+
+
+get_msax_fp <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") &
+                        data$msax != 0, ])[1])
+}
+
+
 
 get_msax_fn <- function(data) {
     return(dim(data[(data$annotations != "N" &
-                         data$annotations != "") & data$sax == 0, ])[1])
+                         data$annotations != "") &
+                        data$msax == 0, ])[1])
 }
 
 
@@ -115,7 +128,13 @@ type.msax.accuracy <- cbind()
 type.msax.f1 <- cbind()
 
 for (type in types) {
-    files <- list.files(path=paste0("../processed_data/paa_count/", type), pattern="*.csv", full.names=TRUE, recursive=FALSE)
+    files <-
+        list.files(
+            path = paste0("../processed_data/paa_count/", type),
+            pattern = "*.csv",
+            full.names = TRUE,
+            recursive = FALSE
+        )
     
     sax.recalls <- c()
     sax.accuracy <- c()
@@ -137,7 +156,8 @@ for (type in types) {
         
         msax.recalls <- c(msax.recalls, get_msax_recall(data))
         msax.accuracy <- c(msax.accuracy, get_msax_accuracy(data))
-        msax.precision <- c(msax.precision, get_msax_precision(data))
+        msax.precision <-
+            c(msax.precision, get_msax_precision(data))
         msax.f1 <- c(msax.f1, get_msax_f1(data))
     }
     
@@ -147,7 +167,8 @@ for (type in types) {
     type.sax.f1 <- cbind(type.sax.f1, sax.f1)
     
     type.msax.recalls <- cbind(type.msax.recalls, msax.recalls)
-    type.msax.precision <- cbind(type.msax.precision, msax.precision)
+    type.msax.precision <-
+        cbind(type.msax.precision, msax.precision)
     type.msax.accuracy <- cbind(type.msax.accuracy, msax.accuracy)
     type.msax.f1 <- cbind(type.msax.f1, msax.f1)
 }
@@ -162,14 +183,66 @@ colnames(type.msax.precision) <- paste0(types)
 colnames(type.msax.accuracy) <- paste0(types)
 colnames(type.msax.f1) <- paste0(types)
 
-# transform into column format
+type_col <- rep(types, each = dim(type.msax.accuracy)[1])
+is_sax <- c(rep(1, length(type_col)), rep(0, length(type_col)))
+type_col <- rep(type_col, 2)
 
-# write function to read the files
-# put each file type in own directory
-# perform sax analysis on a lead by lead basis
+data <-
+    data.frame(
+        type = as.factor(type_col),
+        is_sax = is_sax,
+        accuracy = c(as.vector(type.sax.accuracy), as.vector(type.msax.accuracy)),
+        precision = c(
+            as.vector(type.sax.precision),
+            as.vector(type.msax.precision)
+        ),
+        recall = c(as.vector(type.sax.recalls), as.vector(type.msax.recalls)),
+        f1 = c(as.vector(type.sax.f1), as.vector(type.msax.f1))
+    )
 
-# library(ggplot2)
+acc_plot <-
+    ggplot(data, aes(
+        x = type,
+        y = accuracy,
+        fill = as.factor(is_sax)
+    )) +
+    geom_boxplot() +
+    labs(title = paste0(
+        "Accuracy ",
+        cor(data$is_sax, data$precision, use = "complete.obs")
+    ))
 
-# TODO: figure out what to do about the empty segments: how can they be counted
-# because some of the ones identified would probably be connected, but cannot be shown
+prec_plot <-
+    ggplot(data, aes(
+        x = type,
+        y = precision,
+        fill = as.factor(is_sax)
+    )) +
+    geom_boxplot() +
+    labs(title = paste0(
+        "Precision ",
+        cor(data$is_sax, data$precision, use = "complete.obs")
+    ))
 
+rec_plot <-
+    ggplot(data, aes(
+        x = type,
+        y = recall,
+        fill = as.factor(is_sax)
+    )) +
+    geom_boxplot() +
+    labs(title = paste0("Recall ", cor(data$is_sax, data$recall, use = "complete.obs")))
+
+f1_plot <-
+    ggplot(data, aes(
+        x = type,
+        y = f1,
+        fill = as.factor(is_sax)
+    )) +
+    geom_boxplot() +
+    labs(title = paste0("F1 ", cor(data$is_sax, data$f1, use = "complete.obs")))
+
+summary(lm(data$is_sax ~ data$accuracy))
+summary(lm(data$is_sax ~ data$precision))
+summary(lm(data$is_sax ~ data$recall))
+summary(lm(data$is_sax ~ data$f1))

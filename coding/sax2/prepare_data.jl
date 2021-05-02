@@ -98,7 +98,7 @@ function MSAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::No
 end
 
 function process_all_records(p::Parameters, k::Int64, subdir::String)::Nothing
-    directory::String = "$PROCESSED_DIR$subdir/$(p.PAA_segment_count)/"
+    directory::String = "$PROCESSED_DIR$subdir/$(p.subsequence_length)/"
     filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
 
     if !isdir("./$directory")
@@ -121,49 +121,49 @@ function process_all_records(p::Parameters, k::Int64, subdir::String)::Nothing
 end
 
 p0 = Parameters(
-    PAA_segment_count = 72,
-    subsequence_length = 72,
+    PAA_segment_count = 18,
+    subsequence_length = 3,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
 p1 = Parameters(
-    PAA_segment_count = 36,
-    subsequence_length = 36,
+    PAA_segment_count = 18,
+    subsequence_length = 6,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
 p2 = Parameters(
-    PAA_segment_count = 24,
-    subsequence_length = 24,
+    PAA_segment_count = 18,
+    subsequence_length = 9,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
 p3 = Parameters(
     PAA_segment_count = 18,
-    subsequence_length = 18,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
-
-p4 = Parameters(
-    PAA_segment_count = 12,
     subsequence_length = 12,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
+p4 = Parameters(
+    PAA_segment_count = 18,
+    subsequence_length = 15,
+    alphabet_size = 6,
+    fs = MIT_BIH_FS,
+)
+
 p5 = Parameters(
-    PAA_segment_count = 6,
-    subsequence_length = 6,
+    PAA_segment_count = 18,
+    subsequence_length = 18,
     alphabet_size = 6,
     fs = MIT_BIH_FS,
 )
 
 k = Int64(80)
-subdirectory = "paa_count/"
+subdirectory = "subsequence_length/"
 
 for param ∈ [p0, p1, p2, p3, p4, p5]
     process_all_records(param, k, subdirectory)
