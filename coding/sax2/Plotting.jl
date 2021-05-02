@@ -40,8 +40,24 @@ function SAX_ECG_plot(; ecg::ECG, param::Parameters, irange::UnitRange{Int64}, l
 
     p = plot()
 
+    β = get_breakpoints(param.alphabet_size)
+    for b in β
+        plot!(
+            p,
+            [0, 1],
+            # [irange[1], irange[end]]/param.fs,
+            [b, b],
+            linestyle = :dash,
+            color = COLOR_BETA,
+            lw = 2,
+            label = ""
+        )
+    end
+
+    plot!(p, legend = false)
+
     if time
-        p = plot(irange / param.fs, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG)
+        p = plot!((1:length(irange)) / param.fs, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG, lw =2)
         xlabel!(p, "seconds")
     else
         p = plot(irange, normalized_ecg[irange], legend = false, label = "ECG", color = COLOR_ECG) 
@@ -76,6 +92,8 @@ function SAX_PAA_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::U
 
     start_index = irange[1] ÷ param.points_per_segment + 1
     end_index = start_index - 1 + length(irange)÷param.points_per_segment
+    # start_index = irange[1] ÷ param.points_per_segment + 2
+    # end_index = start_index-1 + length(irange)÷param.points_per_segment
 
     r = start_index:end_index
     # r = irange[1]÷param.points_per_segment+1:(length(irange)÷param.points_per_segment + irange[1]÷param.points_per_segment)
@@ -93,17 +111,22 @@ function SAX_PAA_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::U
 
     for (i, y) in enumerate(ys)
         if i % 2 == 1
-            xs[i] = (i - 1) * param.points_per_segment / 2 + irange[1]
+            xs[i] = (i - 1) * param.points_per_segment / 2# + irange[1]
         else
-            xs[i] = i * param.points_per_segment / 2 + irange[1]
+            xs[i] = i * param.points_per_segment / 2# + irange[1]
         end
+        # if i % 2 == 1
+        #     xs[i] = (i) * param.points_per_segment / 2 + irange[1]
+        # else
+        #     xs[i] = (i+1) * param.points_per_segment / 2 + irange[1]
+        # end
     end
 
     if time
         xs /= param.fs
     end
 
-    plot!(p, xs, ys, legend=true, label = "PAA", color = COLOR_PAA) 
+    plot!(p, xs, ys, legend=true, label = "PAA", color = COLOR_PAA, lw = 2) 
     title!(p, "SAX PAA of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
 
     if breakpoints
@@ -217,7 +240,7 @@ function SAX_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitR
     xs = zeros(Float64, length(ys))
 
     for (i, y) in enumerate(ys)
-        xs[i] = 2 * (i - 0.5) * param.points_per_segment / 2 + irange[1]
+        xs[i] = 2 * (i - 0.5) * param.points_per_segment / 2# + irange[1]
     end
 
     if time
@@ -232,7 +255,8 @@ function SAX_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitR
         series_annotations = text.(al.(sax.data[r, index]), :bottom),
         label = "SAX",
         markercolor = COLOR_SAX,
-        markersize = 3
+        markersize = 3,
+        lw=2
     )
 
     title!(p, "SAX of lead $(strip(String(lead), '_')) of $(ecg.database)/$(ecg.number)")
@@ -243,11 +267,13 @@ function SAX_plot!(; p, ecg::ECG, param::Parameters, lead::Symbol, irange::UnitR
             for b in β
                 plot!(
                     p,
-                    [irange[1], irange[end]]/param.fs,
+                    [0, 1],
+                    # [irange[1], irange[end]]/param.fs,
                     [b, b],
                     linestyle = :dash,
+                    color = COLOR_BETA,
+                    lw = 2,
                     label = false,
-                    color = COLOR_BETA
                 )
             end
         else

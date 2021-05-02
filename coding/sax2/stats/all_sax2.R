@@ -226,3 +226,5 @@ summary(lm(data$is_sax ~ data$accuracy))
 summary(lm(data$is_sax ~ data$precision))
 summary(lm(data$is_sax ~ data$recall))
 summary(lm(data$is_sax ~ data$f1))
+
+mean(data[data$is_sax == 1,]$recall)
