@@ -1,107 +1,175 @@
 # data <- read.csv("../processed_data/MIT-BIH-24-24-10-150_108.csv")
-data <- read.csv("../processed_data/MIT-BIH-24-24-10-150_100.csv")
+# data <- read.csv("../processed_data/MIT-BIH-24-24-10-150_100.csv")
+
+get_sax_tn <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") & data$sax == 0, ])[1])
+}
+
+get_msax_tn <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") & data$msax == 0, ])[1])
+}
+
+get_sax_tp <- function(data) {
+    return(dim(data[(data$annotations != "N" &
+                         data$annotations != "") & data$sax != 0, ])[1])
+}
+
+get_msax_tp <- function(data) {
+    return(dim(data[(data$annotations != "N" &
+                         data$annotations != "") & data$sax != 0, ])[1])
+}
+
+get_sax_fp <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") & data$sax != 0, ])[1])
+}
+
+get_msax_fp <- function(data) {
+    return(dim(data[(data$annotations == "N" |
+                         data$annotations == "") & data$sax != 0, ])[1])
+}
+
+get_sax_fn <- function(data) {
+    return(dim(data[(data$annotations != "N" &
+                         data$annotations != "") & data$sax == 0, ])[1])
+}
+
+get_msax_fn <- function(data) {
+    return(dim(data[(data$annotations != "N" &
+                         data$annotations != "") & data$sax == 0, ])[1])
+}
+
+
+get_sax_accuracy <- function(data) {
+    tp <- get_sax_tp(data)
+    tn <- get_sax_tn(data)
+    fn <- get_sax_fn(data)
+    fp <- get_sax_fp(data)
+    
+    return((tp + tn) / (tp + tn + fp + fn))
+}
+
+get_msax_accuracy <- function(data) {
+    tp <- get_msax_tp(data)
+    tn <- get_msax_tn(data)
+    fn <- get_msax_fn(data)
+    fp <- get_msax_fp(data)
+    
+    return((tp + tn) / (tp + tn + fp + fn))
+}
+
+get_sax_recall <- function(data) {
+    tp <- get_sax_tp(data)
+    fn <- get_sax_fn(data)
+    
+    return(tp / (tp + fn))
+}
+
+get_msax_recall <- function(data) {
+    tp <- get_msax_tp(data)
+    fn <- get_msax_fn(data)
+    
+    return(tp / (tp + fn))
+}
+
+get_sax_precision <- function(data) {
+    tp <- get_sax_tp(data)
+    fp <- get_sax_fp(data)
+    
+    return(tp / (tp + fp))
+}
+
+get_msax_precision <- function(data) {
+    tp <- get_msax_tp(data)
+    fp <- get_msax_fp(data)
+    
+    return(tp / (tp + fp))
+}
+
+get_sax_f1 <- function(data) {
+    recall <- get_sax_recall(data)
+    precision <- get_sax_precision(data)
+    
+    return(2 * (recall * precision) / (recall + precision))
+}
+
+get_msax_f1 <- function(data) {
+    recall <- get_msax_recall(data)
+    precision <- get_msax_precision(data)
+    
+    return(2 * (recall * precision) / (recall + precision))
+}
+
+types <- c(6, 12, 18, 24, 36, 72)
+
+type.sax.recalls <- cbind()
+type.sax.precision <- cbind()
+type.sax.accuracy <- cbind()
+type.sax.f1 <- cbind()
+
+type.msax.recalls <- cbind()
+type.msax.precision <- cbind()
+type.msax.accuracy <- cbind()
+type.msax.f1 <- cbind()
+
+for (type in types) {
+    files <- list.files(path=paste0("../processed_data/paa_count/", type), pattern="*.csv", full.names=TRUE, recursive=FALSE)
+    
+    sax.recalls <- c()
+    sax.accuracy <- c()
+    sax.precision <- c()
+    sax.f1 <- c()
+    
+    msax.recalls <- c()
+    msax.accuracy <- c()
+    msax.precision <- c()
+    msax.f1 <- c()
+    
+    for (file in files) {
+        data <- read.csv(file)
+        
+        sax.recalls <- c(sax.recalls, get_sax_recall(data))
+        sax.accuracy <- c(sax.accuracy, get_sax_accuracy(data))
+        sax.precision <- c(sax.precision, get_sax_precision(data))
+        sax.f1 <- c(sax.f1, get_sax_f1(data))
+        
+        msax.recalls <- c(msax.recalls, get_msax_recall(data))
+        msax.accuracy <- c(msax.accuracy, get_msax_accuracy(data))
+        msax.precision <- c(msax.precision, get_msax_precision(data))
+        msax.f1 <- c(msax.f1, get_msax_f1(data))
+    }
+    
+    type.sax.recalls <- cbind(type.sax.recalls, sax.recalls)
+    type.sax.precision <- cbind(type.sax.precision, sax.precision)
+    type.sax.accuracy <- cbind(type.sax.accuracy, sax.accuracy)
+    type.sax.f1 <- cbind(type.sax.f1, sax.f1)
+    
+    type.msax.recalls <- cbind(type.msax.recalls, msax.recalls)
+    type.msax.precision <- cbind(type.msax.precision, msax.precision)
+    type.msax.accuracy <- cbind(type.msax.accuracy, msax.accuracy)
+    type.msax.f1 <- cbind(type.msax.f1, msax.f1)
+}
+
+colnames(type.sax.recalls) <- paste0(types)
+colnames(type.sax.precision) <- paste0(types)
+colnames(type.sax.accuracy) <- paste0(types)
+colnames(type.sax.f1) <- paste0(types)
+
+colnames(type.msax.recalls) <- paste0(types)
+colnames(type.msax.precision) <- paste0(types)
+colnames(type.msax.accuracy) <- paste0(types)
+colnames(type.msax.f1) <- paste0(types)
+
+# transform into column format
 
 # write function to read the files
 # put each file type in own directory
 # perform sax analysis on a lead by lead basis
 
-library(ggplot2)
+# library(ggplot2)
 
 # TODO: figure out what to do about the empty segments: how can they be counted
 # because some of the ones identified would probably be connected, but cannot be shown
-
-sax.tn <-
-    data[(data$annotations == "N" |
-              data$annotations == "") & data$sax == 0, ]
-sax.tn.count <- dim(sax.tn)[1]
-
-sax.tp <-
-    data[(data$annotations != "N" &
-              data$annotations != "") & data$sax != 0, ]
-sax.tp.count <- dim(sax.tp)[1]
-
-sax.fp <-
-    data[(data$annotations == "N" |
-              data$annotations == "") & data$sax != 0, ]
-sax.fp.count <- dim(sax.fp)[1]
-
-sax.fn <-
-    data[(data$annotations != "N" &
-              data$annotations != "") & data$sax == 0, ]
-sax.fn.count <- dim(sax.fn)[1]
-
-
-msax.tn <-
-    data[(data$annotations == "N" |
-              data$annotations == "") & data$msax == 0, ]
-msax.tn.count <- dim(msax.tn)[1]
-
-msax.tp <-
-    data[(data$annotations != "N" &
-              data$annotations != "") & data$msax != 0, ]
-msax.tp.count <- dim(msax.tp)[1]
-
-msax.fp <-
-    data[(data$annotations == "N" |
-              data$annotations == "") & data$msax != 0, ]
-msax.fp.count <- dim(msax.fp)[1]
-
-msax.fn <-
-    data[(data$annotations != "N" &
-              data$annotations != "") & data$msax == 0, ]
-msax.fn.count <- dim(msax.fn)[1]
-
-
-sax.acc <-
-    (sax.tp.count + sax.tn.count) / (sax.fn.count + sax.fp.count + sax.tp.count + sax.tn.count)
-
-msax.acc <-
-    (msax.tp.count + msax.tn.count) / (msax.fn.count + msax.fp.count + msax.tp.count + msax.tn.count)
-
-
-sax.recall <- sax.tp.count / (sax.tp.count + sax.fn.count)
-
-msax.recall <- msax.tp.count / (msax.tp.count + msax.fn.count)
-
-
-sax.precision <- sax.tp.count / (sax.tp.count + sax.fp.count)
-
-msax.precision <- msax.tp.count / (msax.tp.count + msax.fp.count)
-
-
-sax.f1 <-
-    2 * sax.recall * sax.precision / (sax.precision + sax.recall)
-
-msax.f1 <-
-    2 * msax.recall * msax.precision / (msax.precision + msax.recall)
-
-
-acc <- paste(
-    "Accuracy: ",
-    round(sax.acc, digits = 5),
-    "->",
-    round(msax.acc, digits = 5)
-)
-
-rec <- paste(
-    "Recall:   ",
-    round(sax.recall, digits = 5),
-    "->",
-    round(msax.recall, digits = 5)
-)
-
-pre <- paste(
-    "Precision:",
-    round(sax.precision, digits = 5),
-    "->",
-    round(msax.precision, digits = 5)
-)
-
-f1 <- paste("F1:       ", round(sax.f1, digits = 5), "->", round(msax.f1, digits =
-                                                              5))
-
-print(acc)
-print(rec)
-print(pre)
-print(f1)
 
