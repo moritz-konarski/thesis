@@ -9,3 +9,12 @@ significant, even negative when considering a combination of both sax
     combination sax seems to become more accurate, while msax levels out; there
     is not significant correlation though;
 
+# Notes
+
+- make hypothesis clear that I assume to compare Msax to 1 SAX because they
+both yield one SAX word -> hypothesis is that MSAX is better here
+- also compare it so simply using SAX twice and combining the results: at that
+point, 2 SAX things are slightly better
+
+=> try this with the incart database that has 12 leads and see which method
+works better
