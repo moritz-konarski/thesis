@@ -2,9 +2,27 @@
 
 \begin{document}
 
-\section{SAX}
+\section{Process of SAX, MSAX}
 
-\begin{frame}{Z-Normalization}
+\subsection{Overview}
+
+\begin{frame}{Process of SAX and MSAX}
+    \begin{itemize}
+        \item SAX and MSAX require the same steps
+    \end{itemize}
+    \begin{enumerate}
+        \item Z-Normalization
+        \item Dimensionality Reduction
+        \item Discretization
+        \item Distance Measure
+    \end{enumerate}
+\end{frame}
+
+\subsection{Process}
+
+\begin{frame}{Step 1: Z-Normalization}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
     \begin{itemize}
         \item assumption: data is approximately normally distributed
         \item to analyze time series, they are first normalized so that $\mu=0$
@@ -14,9 +32,25 @@
             \end{equation}
         \item enables comparison between different time series
     \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+    \begin{itemize}
+    \item perform multivariate normalization
+    \item mean vector $\mu$ as vector of the means for each time series
+    \item covariance matrix $\Sigma$ for variances and covariances between the
+        different time series
+        \begin{equation}\nonumber
+            \mathbf{x}[t] = \Sigma^{-1/2} (\mathbf{X}[t] - \mu)
+        \end{equation}
+    \item this uses mean and covariance structure of the multivariate data
+    \end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{PAA}
+\begin{frame}{Step 2: Dimensionality Reduction}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
     \begin{itemize}
         \item piecewise aggregate approximation (PAA) reduces dimensionality 
             (through averaging of segments)
@@ -28,6 +62,17 @@
                     {\frac{n}{w}i}x_j
             \end{equation}
     \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+    \begin{itemize}
+    \item PAA is used here like in SAX, each time series is handled
+        separately
+    \item the discretization process works the same way too
+    \item each time series component is discretized separately
+    \item to differentiate them, one alphabet can for example be uppercase
+    \end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{PAA Graph}
@@ -38,7 +83,9 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{Discretization}
+\begin{frame}{Step 3: Discretization}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
     \begin{itemize}
         \item assign letters to PAA segments
         \item breakpoints are created that divide a Gaussian curve into equal
@@ -47,6 +94,10 @@
         \item all PAA below lowest breakpoint are \textit{a}, the ones above it
             \textit{b}\dots
     \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{Discretization Graph}
@@ -58,7 +109,9 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{Distance Measure}
+\begin{frame}{Step 4: Distance Measure}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
     \begin{itemize}
         \item SAX lower bounds the Euclidean distance, i.e. SAX distances
             correspond to Euclidean distances
@@ -74,6 +127,20 @@
         \item $dist(\hat q_i, \hat c_i)$ is the difference between the 
             breakpoints of $\hat q_i, \hat c_i$
     \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+    \begin{itemize}
+    \item this distance measure is based on $MINDIST$
+    \item it is also lower bounding the Euclidean distance
+    \item it adds an extra step of adding the $dist$ values for the time
+        series components
+        \begin{equation}\nonumber
+            MINDIST\_MSAX(Q,C) = \sqrt{\frac{n}{w}} \sqrt{\sum^w_{i=0}
+            \left(\sum_{i=0}^n dist(q[i],c[i])^2\right)}
+        \end{equation}
+\end{itemize}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \end{document}

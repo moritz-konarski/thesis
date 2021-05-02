@@ -44,13 +44,15 @@
         \vspace{-1em}%
         \caption{Annotated ECG of one heartbeat}
     \end{figure}
-    \mynote{P: short repolarization}
-    \mynote{Q: repolarization before heartbeat}
-    \mynote{R: big contraction that actually pumps blood}
-    \mynote{S: section after heartbeat}
-    \mynote{T: big repolarization; this is where ischaemia is}
-    \mynote{U: not always present}
-    \mynote{P: short repolarization}
+    \mynote{P wave: atria depolarizing / blood entering the heart}
+    \mynote{QRS complex: ventricular depolarization / heart contraction pumping
+    blood}
+    \mynote{T: return of ventricle to polarized state}
+    \mynote{U: present in 25\%, maybe some feedback}
+    \mynote{P wave: atria depolarizing / blood entering the heart}
+    \mynote{ST-segment: significant, depression, elevation, slope show
+    ischaemia}
+    \mynote{R-R interval: shows rhythm and thus arrhytmia etc}
 \end{frame}
 
 \begin{frame}{ECGs as Time Series}
@@ -75,7 +77,7 @@
         \end{itemize}
     \end{definition}
     \begin{itemize}
-        \item[$\Rightarrow$] ECGs are discrete multivariate time series
+        \item ECGs are discrete multivariate time series
             \mycite{anacleto2020}
             \mynote{multivariate: measure more than 1 lead per time point}
             \mynote{discrete: set sample frequency in the machines}
@@ -101,18 +103,29 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{SAX and MSAX}
+\begin{frame}{SAX, MSAX, and HOTSAX}
     \begin{itemize}
-        \item Symbolic Aggregate
-            Approximation (SAX) creates a simplified, symbolic representation
+        % TODO: cite lin2003 with authors
+        \item Symbolic Aggregate Approximation (SAX) creates a simplified, 
+            symbolic representation
             \mycite{lin2003}
-        \item is guaranteed to behave like the original data
-        \item works on univariate time series, has been used on
-            ECGs\mycite{zhang2019}
+            \mynote{represent ecg as letters that still mean the same thing}
+            \mynote{is guaranteed to behave like the original data}
+            \mynote{works on univariate time series, has been used on ECGs}
+            \mycite{zhang2019}
+            % TODO: cite authors
+            % TODO: mention that it is a new method from Dec 2020
         \item Multivariate SAX (MSAX)\mycite{anacleto2020} expands SAX to 
             multivariate time series
-        \item[$\rightarrow$] using MSAX on ECGs should increase the accuracy of
-            discord detection compared to SAX
+            \mynote{takes the correlation between ecg leads into account}
+            % TODO: tell what correlation is
+        % TODO: spell out name
+        \item HOTSAX is a discord discovery algorithm that has been used with
+            SAX
+        \item[$\rightarrow$] using HOTSAX with MSAX on ECGs should increase the 
+            accuracy of discord detection compared to HOTSAX with SAX
+            \mynote{mention that MSAX to ECGs in particular is new}
+            \mynote{mention that HOTSAX with MSAX is new}
     \end{itemize}
 \end{frame}
 
