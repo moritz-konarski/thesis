@@ -2,25 +2,24 @@
 
 \begin{document}
 
-\section{SAX and MSAX}
+\section{Methods}
 
-\subsection*{Process}
+\subsection*{SAX and MSAX}
 
 \begin{frame}{Step 1: Z-Normalization}
     \mynote{say that the process is the same as MSAX based on SAX}
     \begin{block}{Assumption}
         The time series values are normally distributed.
     \end{block}%
-    % TODO: cite this
+    \mynote{this is assumed and this worked for other people who applied SAX to
+    ECGs}
     \mynote{to compare time series, normalization is the accepted step}
-    % TODO: test this in program
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
             \begin{center} SAX \end{center}
             \begin{itemize}
                 \item normalize univariate time series
                 \item uses scalar mean and variance
-                %\item results in mean of 0 and standard deviation of 1
             \end{itemize}
         \end{column}
         \vrule{}
@@ -28,28 +27,20 @@
            \begin{center} MSAX \end{center}
            \begin{itemize}
                \item normalize multivariate time series
-                    %TODO: research what exactly this means
                \item uses vector mean and covariance matrix
                \mynote{what is this}
-               %\item results in mean of 0 and standard deviation of 1
-               % TODO: is this true?
-               \mynote{data is now uncorrelated}
                \mynote{takes into account the correlation between leads}
            \end{itemize}
        \end{column}
     \end{columns}
-    \vspace{1em}
-    \begin{itemize}
-        \item[$\Rightarrow$] time series have mean 0 and standard
-            deviation 1
-    \end{itemize}
 \end{frame}
 
 \begin{frame}{Step 2: Dimensionality Reduction}
-    \begin{block}{Method}
-        Piecewise Aggregate Approximation (PAA) takes $T$ values and finds 
-        the averages of $w$ segments ($w<T$), reducing the complexity.
-    \end{block}%
+    \begin{block}{PAA}
+        Piecewise Aggregate Approximation (PAA) takes $T$ time series points,
+        splits it into $w$ ($w<T$) segments, and averages each of them.
+    \end{block}
+    \mynote{this reduces complexity}
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
             \begin{center} SAX \end{center}
@@ -65,11 +56,8 @@
            \end{itemize}
        \end{column}
     \end{columns}
-    \vspace{1em}
-    \begin{itemize}
-        \item[$\Rightarrow$] time series has been simplified, consisting of
-            fewer elements
-    \end{itemize}
+    \mynote{PAA form of time series is shorter and simpler}
+    \mynote{it still somewhat corresponds to the original}
 \end{frame}
 
 \begin{frame}[plain]
@@ -81,12 +69,17 @@
 \end{frame}
 
 \begin{frame}{Step 3: Discretization}
-    \begin{block}{Method}
-        Create breakpoints splitting a normal curve into $N$ segments; each
-        segment has equal probability. Then assign a letter to each segment;
-        \textit{a} to the lowest, \textit{b} to the next\dots{} Result is called
-        a \textit{word}.
-    \end{block}%
+    \begin{block}{SAX Discretization}
+        Find breakpoints splitting $\mathcal{N}(0,1)$ into $B$ equiprobable 
+        segments.\\
+        Assign a letter to each area: \textit{a} to most-negative, 
+        \textit{b} to the next biggest\dots{}\\
+        PAA segments get letters based on which area they are in.\\
+    \end{block}
+    \mynote{result is called word}
+    \mynote{$N$ is the alphabet size}
+    \mynote{big thing here is that this gives defined probability to each
+    letter; makes no sense for real numbers (like PAA values)}
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
             \begin{center} SAX \end{center}
@@ -100,7 +93,7 @@
            \begin{center} MSAX \end{center}
            \begin{itemize}
                \item discretize each time series individually
-               \item results in one word, multiple letters per segment
+               \item results in one word, one letter per time series
            \end{itemize}
        \end{column}
     \end{columns}
@@ -109,6 +102,7 @@
 \end{frame}
 
 % TODO: add slide with some breakpoints for illustration
+% TODO: add graph that has MSAX series for illustration
 
 \begin{frame}[plain]
     \begin{figure}
@@ -120,10 +114,10 @@
 \end{frame}
 
 \begin{frame}{Step 4: Distance Measure}
-    \begin{block}{Method}
-        To compare two same-length SAX words, a distance measure is needed. 
-        Distance is defined for letters: 0 for neighbors; absolute difference 
-        of breakpoints otherwise. 
+    \begin{block}{MINDIST}
+        A distance measure is defined to compare two SAX words.
+        Distance is defined for a pair of letters: 0 if they are neighbors; 
+        absolute difference of breakpoint values otherwise. 
     \end{block}%
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
@@ -149,6 +143,29 @@
     SAX should hold true for the real data too}
 \end{frame}
 
-% TODO: add slide with difference matrix and example 
+% TODO: add slide with difference matrix and example
+
+\subsection*{HOTSAX}
+
+\begin{frame}{HOTSAX}
+    \begin{itemize}                                                             
+        \item ``brute-force" discord discovery is slow, needs $T^2$ operations
+        \item HOTSAX speeds up discord discovery by considering that
+            \begin{itemize}
+                \item discords are rare, start with rarest segment
+                \item similar segments have similar distances, consider together
+            \end{itemize}
+        \item HOTSAX detects anomalies, it is not a classifier
+            \mynote{this is the basic idea that can speed up the process}       
+            \mynote{it is not guaranteed to do so, but it does not decrease     
+            efficiency}
+        \item it uses SAX and MSAX for dimensionality reduction
+            \mynote{this speeds up the process even more as we have fewer
+            elements}
+            \mynote{because of lower bounding, it still gives accurate results}
+    \end{itemize}                                                               
+\end{frame}                                                                     
+                                                                                
+% TODO: insert one frame about programming                                      
 
 \end{document}

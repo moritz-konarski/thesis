@@ -21,18 +21,22 @@
                     electrical activity 
                     \mynote{muscle contractions caused by electric pulses}
                     \mynote{electric pulse can be measured on the skin}
-                \item contains up to 12 simultaneous measurements -- the leads
-                    \mycite{moody1992a}
+                \item contains up to 12 simultaneous measurements---the leads
+                    \mycite{moody1992}
                     \mynote{the measuring things are called electrodes}
                     \mynote{electrodes form leads (need 2 to measure anything)}
                     \mynote{they have specific positions and names}
                     \mynote{12 leads is the modern standard}
-                \item common medical diagnostic tool
+                \item common medical diagnostic tool\mycite{zotero-330}
                     \mynote{most types of heart disease can be detected}
                     \mynote{diagnosis and analysis is performed by trained
                     cardiologists}
-                    \mynote{datasets available online; contain 2 or more leads 
-                    (the most significant ones)}
+                    \mynote{\textbf{datasets available online; contain 2 or 
+                    more leads (the most significant ones)}}
+                    \mynote{\textbf{I will be using online datasets for my
+                    analysis}}
+                    \mynote{heart diseases are some of the most deadly ones,
+                    thus ECG are really important}
             \end{itemize}
         \end{column}
     \end{columns}
@@ -77,21 +81,20 @@
   %      \end{itemize}
   %  \end{definition}
     \begin{definition}
-        A discrete multivariate time series is an ordered sequence at discrete 
-        points in
-        time that has $n$ values at each of these points. If $n=1$, the series
-        is univariate and if $n>1$, it is multivariate.
+        A discrete time series is an ordered sequence that, at discrete points 
+        in time, has $n$ values each. If $n=1$, the series is univariate and 
+        if $n>1$, it is multivariate.
     \end{definition}
     \begin{itemize}
         \item digital ECGs are discrete multivariate time series:
+            \mycite{anacleto2020}
             \begin{itemize}
-                \item have $>1$ value at each point
+                \item have $>1$ value at each point, often $n=12$
                     \mynote{modern ECGs have at least 2, most have 12}
                 \item recorded at discrete, evenly spaced time points
                     \mynote{digital ones have set sampling frequencies, even
                     the machines have set frequencies}
             \end{itemize}
-            \mycite{anacleto2020}
             \mynote{multivariate: measure more than 1 lead per time point}
             \mynote{discrete: set sample frequency in the machines}
             \mynote{discrete: because measured at discrete moments in time}
@@ -112,52 +115,94 @@
             \mynote{lots of training required}
             \mynote{error prone}
             \mynote{maybe not feasible for long ECGs}
-        \item recently: automated (computer-assisted) ECG analysis
+        \item recently: automated or computer-assisted ECG analysis
             \mynote{can speed up process}
             \mynote{can pick up details humans miss}
-        \item {multiple stages:~}
+        \item multiple stages:
+            \mycite{kligfieldpaul2007}
             \begin{enumerate*}[label=(\arabic*)]
-                \item signal acquisition, filtering;
-                    % TODO: add notes to these to explain the differences
+                \item signal acquisition;
                     \mynote{digitizing paper ECGs or recording digital ones}
+                \item data transformation, processing, filtering;
                     \mynote{filtering to remove various types of noise}
-                \item data transformation, processing;
                     \mynote{reduce complexity of the data}
                 \item waveform recognition, feature extraction;
+                    \mynote{select important features and neglect irrelevant
+                    ones to ease analysis}
                 \item classification
+                    \mynote{often added, figure out if there is some disease
+                    present or not}
             \end{enumerate*}
-            \mycite{kligfieldpaul2007}
-        \item common methods: FFT, DWT, ANN, kNN,\dots
-            % TODO: add notes for each of the things that I mention
+        \item current research focus: artificial neural networks\dots
+            \mycite{xie202}
             \mynote{balance between accuracy and complexity needed}
+            \mynote{ann: hand all the steps discussed to a NN; use as good
+            classifier too}
         \item relatively new methods are SAX, MSAX, and HOTSAX
     \end{itemize}
 \end{frame}
 
 \begin{frame}{SAX, MSAX, and HOTSAX}
     \begin{itemize}
-        % TODO: cite lin2003 with authors
-        \item Symbolic Aggregate Approximation (SAX) creates a simplified, 
-            symbolic representation
+        \item \citeauthor*{lin2003} (\citeyear{lin2003}): Symbolic Aggregate 
+            Approximation (SAX)---simplified, symbolic representation
             \mycite{lin2003}
-            \mynote{represent ecg as letters that still mean the same thing}
-            \mynote{is guaranteed to behave like the original data}
-            \mynote{works on univariate time series, has been used on ECGs}
+            \mynote{ecg as letters that mean same thing as original}
+            \mynote{guaranteed to behave like the original data}
+            \mynote{works on univariate time series}
+            \mynote{has been used on ECGs}
             \mycite{zhang2019}
-            % TODO: cite authors
-            % TODO: mention that it is a new method from Dec 2020
-        \item Multivariate SAX (MSAX)\mycite{anacleto2020} expands SAX to 
-            multivariate time series
+        \item \citeauthor*{anacleto2020} (\citeyear{anacleto2020}): Multivariate 
+            SAX (MSAX)---expands SAX to multivariate time series
+            \mycite{anacleto2020}
             \mynote{takes the correlation between ecg leads into account}
-            % TODO: tell what correlation is
-        % TODO: spell out name
-        \item HOTSAX is a discord discovery algorithm that has been used with
-            SAX
-        \item[$\rightarrow$] using HOTSAX with MSAX on ECGs should increase the 
-            accuracy of discord detection compared to HOTSAX with SAX
-            \mynote{mention that MSAX to ECGs in particular is new}
-            \mynote{mention that HOTSAX with MSAX is new}
+            \mynote{cov mat: covariance between each lead and variance on diag}
+        \item \citeauthor*{keogh2005} (\citeyear{keogh2005}): Heuristically 
+            Ordered Time series using Symbolic Aggregate Approximation 
+            (HOTSAX)---discord discovery algorithm for SAX
+            \mynote{uses sax representation to make the finding of discords
+            easier}
+            \mynote{can use MSAX just as well}
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Time Series Discords}
+    \begin{definition}
+        A time series discord is the subsequence of a time series that is most
+        different from all other subsequences.\\
+        $k$ time series discords are the $k$ most different subsequences.
+    \end{definition}
+    \begin{itemize}
+        \item discords represent anomalies in an ECG
+            \mynote{these can be diseases, noise, etc}
+            \mynote{the discord does not discern}
+        \item can be found by comparing all subsequences to all other
+            subsequences; does not scale well 
+            \mycite{keogh2005}
+            \mynote{this is not feasible because of complexity}
+        \item HOTSAX makes this process faster
+    \end{itemize}
+\end{frame}
+
+\subsection*{Hypothesis}
+
+\begin{frame}{Hypothesis}
+    \begin{exampleblock}{}
+        HOTSAX with MSAX will increase the number of relevant discords detected 
+        compared to HOTSAX with SAX.\\
+        Accuracy can be judged with the help of annotated ECGs from online
+        databases.
+        \mynote{mention that MSAX to ECGs in particular is new}
+        \mynote{mention that HOTSAX with MSAX is new}
+        \mynote{results will not be great as HOTSAX is not a real classifier;
+        this is about finding out if MSAX adds more useful information}
+        \mynote{THIS METHOD WILL NOT BE SUPER ACCURATE; MANY ECG changes
+        are relatively small and would get lost in the SAX process}
+        \mynote{THE METHOD HAS NO AWARENESS OF MEDICAL RELEVANCE OR ANY OF
+        THAT}
+        \mynote{NOVEL: MSAX IS SUPER NEW; HAS NOT BEEN APPLIED TO ECGs IN
+        THIS WAY; ALSO NOT USED WITH HOTSAX}
+    \end{exampleblock}
 \end{frame}
 
 \end{document}
