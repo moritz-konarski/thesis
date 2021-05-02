@@ -63,7 +63,7 @@
 \begin{frame}[plain]
     \begin{figure}
         \centering
-        \fbox{\includegraphics[height=0.73\textheight]{saxpaa}}
+        \fbox{\includegraphics[height=0.9\textheight]{paa_graph}}
         \caption{ECG with PAA (MITBIH/100, $w = 18$, $T = 360$)}
     \end{figure}
 \end{frame}
@@ -101,15 +101,11 @@
     \mynote{creates discrete categories, can be more useful}
 \end{frame}
 
-% TODO: add slide with some breakpoints for illustration
-% TODO: add graph that has MSAX series for illustration
-
 \begin{frame}[plain]
     \begin{figure}
         \centering
-        \fbox{\includegraphics[height=0.73\textheight]{sax}}
-        \caption{SAX (MITBIH/100, $w = 18$, $T = 360$, alphabet
-        size 4)}
+        \fbox{\includegraphics[height=0.9\textheight]{sax_graph}}
+        \caption{SAX (MITBIH/100, $w = 18$, $T = 360$, $B=4$)}
     \end{figure}
 \end{frame}
 
@@ -143,7 +139,19 @@
     SAX should hold true for the real data too}
 \end{frame}
 
-% TODO: add slide with difference matrix and example
+\begin{frame}{Difference Matrix}
+    \begin{table}
+        \centering
+        \caption{Difference matrix for $B=4$}
+        \begin{tabular}{| c | c | c | c | c |}\hline
+                &   a   &   b   & c     &       d \\\hline
+             a  &  0     &0     &0.67449& 1.34898 \\\hline
+             b  &  0     &0     &0    & 0.67449\\\hline
+             c  &  0.67449 &0     &0    & 0\\\hline
+             d  &  1.34898 &0.67449 &0    & 0\\\hline
+        \end{tabular}
+    \end{table}
+\end{frame}
 
 \subsection*{HOTSAX}
 
@@ -166,6 +174,4 @@
     \end{itemize}                                                               
 \end{frame}                                                                     
                                                                                 
-% TODO: insert one frame about programming                                      
-
 \end{document}
