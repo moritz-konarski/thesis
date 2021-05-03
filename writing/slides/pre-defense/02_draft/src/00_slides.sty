@@ -32,26 +32,26 @@
     %\fbox{\includegraphics[height=0.1\textheight]{auca_logo}}
     }
 
-\AtBeginSection[]{
-    \begin{frame}
-    \vfill
-    \centering
-    \begin{beamercolorbox}[sep=8pt,center]{title}
-      \usebeamerfont{title}\insertsectionhead\par%
-    \end{beamercolorbox}
-    \vfill
-    \end{frame}
-}
+%\AtBeginSection[]{
+%    \begin{frame}
+%    \vfill
+%    \centering
+%    \begin{beamercolorbox}[sep=8pt,center]{title}
+%      \usebeamerfont{title}\insertsectionhead\par%
+%    \end{beamercolorbox}
+%    \vfill
+%    \end{frame}
+%}
 
 % style of citations to be used
 %\newcommand{\mycite}[1]{[#1]}
-\newcommand{\mycite}[1]{\cite{#1}}
-%\newcommand{\mycite}[1]{\nocite{#1}}
+%\newcommand{\mycite}[1]{\cite{#1}}
+\newcommand{\mycite}[1]{\nocite{#1}}
 \newcommand{\mynote}[1]{\note<1->{- #1\\}}
 
 % show or hide notes
-\setbeameroption{show notes}
-%\setbeameroption{hide notes}
+%\setbeameroption{show notes}
+\setbeameroption{hide notes}
 %\setbeameroption{show only notes}
 % beamer presentation setup
 \usetheme{Luebeck}

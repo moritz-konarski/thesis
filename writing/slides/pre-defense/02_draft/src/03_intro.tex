@@ -1,0 +1,161 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Introduction}
+
+\subsection*{ECG Basics}
+
+\begin{frame}{What is an ECG?}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{figure}
+                \includegraphics[width=\textwidth,
+                height=0.7\textheight]{03_ecg_ann}\vspace{-1.1em}
+                \caption{Annotated ECG of one heartbeat}
+            \end{figure}
+            \mynote{P wave: blood entering the heart}
+            \mynote{QRS complex: heart contraction pumping blood}
+            \mynote{T: return of ventricle to polarized state}
+            \mynote{U: present in 25\%}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}[leftmargin=0pt]
+                \item electrocardiogram (ECG or EKG) records the heart's 
+                    electrical activity 
+                    \mynote{muscle contractions caused by electric pulses}
+                    \mynote{electric pulse can be measured on the skin}
+                \item contains up to 12 simultaneous measurements---the leads
+                    \mycite{moody1992}
+                    \mynote{electrodes form leads (need 2 to measure anything)}
+                \item common medical diagnostic tool\mycite{zotero-330}
+                    \mynote{most types of heart disease can be detected}
+                    \mynote{diagnosis and analysis is performed by trained
+                    cardiologists}
+                    \mynote{\textbf{datasets available online; contain 2 or 
+                    more leads (the most significant ones)}}
+                    \mynote{\textbf{I will be using online datasets for my
+                    analysis}}
+                    \mynote{heart diseases are some of the most deadly ones,
+                    thus ECG are really important}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{ECGs as Time Series}
+    \begin{definition}
+        A discrete time series is an ordered sequence which, at discrete points 
+        in time, has $n$ values each. If $n=1$, the series is univariate and 
+        if $n>1$, it is multivariate.
+    \end{definition}
+    \begin{itemize}
+        \item digital ECGs are discrete multivariate time series:
+            \mycite{anacleto2020}
+            \begin{itemize}
+                \item have $>1$ value at each point, often $n=12$
+                    \mynote{modern ECGs have at least 2, most have 12}
+                \item recorded at discrete, evenly spaced time points
+                    \mynote{digital ones have set sampling frequencies, even
+                    the machines have set frequencies}
+            \end{itemize}
+            \mynote{multivariate: measure more than 1 lead per time point}
+            \mynote{discrete: set sample frequency in the machines}
+            \mynote{discrete: because measured at discrete moments in time}
+            \mynote{time series: they are data measured at equal time
+            intervals}
+            \mynote{$n$ measurements per point in time (i.e. leads)}
+            \mynote{$n=1$ is univariate, $n>1$ is multivariate}
+        \item time series analysis methods can be applied to ECGs
+    \end{itemize}
+\end{frame}
+
+\subsection*{ECG Analysis}
+
+\begin{frame}{ECG Analysis}
+    \begin{itemize}
+        \item standard method: manual analysis by cardiologist
+            \mynote{is relatively slow; time is of the essence}
+            \mynote{lots of training required}
+            \mynote{error prone}
+            \mynote{maybe not feasible for long ECGs}
+        \item automated or computer-assisted ECG analysis seeks to replace that
+            \mynote{can speed up process}
+            \mynote{can pick up details humans miss}
+        \item multiple stages:
+            \mycite{kligfieldpaul2007}
+            \begin{enumerate*}[label=(\arabic*)]
+                \item signal acquisition;
+                    \mynote{digitizing paper ECGs or recording digital ones}
+                \item data transformation, processing, filtering;
+                    \mynote{filtering to remove various types of noise}
+                    \mynote{reduce complexity of the data}
+                \item waveform recognition, feature extraction;
+                    \mynote{select important features and neglect irrelevant
+                    ones to ease analysis}
+                \item classification
+                    \mynote{often added, figure out if there is some disease
+                    present or not}
+            \end{enumerate*}
+        \item current research focus: artificial neural networks
+            \mycite{xie2020}
+            \mynote{balance between accuracy and complexity needed}
+            \mynote{ann: hand all the steps discussed to a NN; use as good
+            classifier too}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SAX, MSAX, and HOTSAX}
+    \begin{itemize}
+        \item \citeauthor*{lin2003} (\citeyear{lin2003}):\\
+            Symbolic Aggregate Approximation (SAX)---simplified, symbolic 
+            representation
+            \mycite{lin2003}
+            \mynote{ecg as letters that mean same thing as original}
+            \mynote{guaranteed to behave like the original data}
+            \mynote{works on univariate time series}
+            \mynote{has been used on ECGs}
+            \mycite{zhang2019}
+        \item \citeauthor*{anacleto2020} (\citeyear{anacleto2020}):\\ 
+            Multivariate SAX (MSAX)---expands SAX to multivariate time series
+            \mycite{anacleto2020}
+            \mynote{takes the correlation between ecg leads into account}
+            \mynote{cov mat: covariance between each lead and variance on diag}
+        \item \citeauthor*{keogh2005} (\citeyear{keogh2005}):\\ 
+            Heuristically Ordered Time series using SAX (HOTSAX)---discord 
+            discovery algorithm for SAX
+            \mynote{uses sax representation to make the finding of discords
+            easier}
+            \mynote{can use MSAX just as well}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Time Series Discords}
+    \begin{definition}
+        A time series discord is the subsequence of a time series that is most
+        different from all other subsequences.\\
+        $k$ time series discords are the $k$ most different subsequences.
+    \end{definition}
+    \begin{itemize}
+        \item discords represent anomalies in an ECG
+            \mynote{these can be diseases, noise, etc}
+            \mynote{the discord does not discern}
+        \item HOTSAX enables fast discord discovery
+            \mycite{keogh2005}
+    \end{itemize}
+\end{frame}
+
+\subsection*{Hypothesis}
+
+\begin{frame}{Hypothesis}
+    \begin{exampleblock}{}
+        HOTSAX with MSAX will increase the number of relevant discords detected 
+        compared to HOTSAX with SAX.
+    \end{exampleblock}
+    \mynote{\textbf{mention that MSAX to ECGs in particular is new}}
+    \mynote{\textbf{mention that HOTSAX with MSAX is new}}
+    \mynote{THIS METHOD WILL NOT BE SUPER ACCURATE; MANY ECG changes
+    are relatively small and would get lost in the SAX process}
+\end{frame}
+
+\end{document}
