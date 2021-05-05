@@ -20,13 +20,28 @@
 \newcommand{\department}{Applied Mathematics and Informatics Program}
 \newcommand{\duedate}{May 3, 2021}
 
-\title{\thesistitle{}}
+\title[\shortthesistitle{}]{\thesistitle{}}
 
-\author{\thesisauthor{}\\Supervised by \thesissupervisor{}}
+\author[\shortthesisauthor{}]{\thesisauthor{}\\Supervised by \thesissupervisor{}}
 
-\date{\duedate{}}
+\institute[\shortinstitution{}]{\department{},\\[2pt]\institution{}\vspace{3em}}
 
-\RequirePackage{beamerarticle}
+\date[\duedate{}]{
+    \footnotesize\duedate{}\\Bishkek, Kyrgyz Republic\\[0.5em]
+    \includegraphics[height=0.1\textheight]{auca_logo}
+    %\fbox{\includegraphics[height=0.1\textheight]{auca_logo}}
+    }
+
+\AtBeginSection[]{
+    \begin{frame}
+    \vfill
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}\insertsectionhead\par%
+    \end{beamercolorbox}
+    \vfill
+    \end{frame}
+}
 
 % style of citations to be used
 %\newcommand{\mycite}[1]{[#1]}
@@ -34,9 +49,37 @@
 \newcommand{\mycite}[1]{\nocite{#1}}
 \newcommand{\mynote}[1]{\note<1->{- #1\\}}
 
+% show or hide notes
+%\setbeameroption{show notes}
+\setbeameroption{hide notes}
+%\setbeameroption{show only notes}
+% beamer presentation setup
+\usetheme{Luebeck}
+\usecolortheme{whale}
+\useoutertheme{infolines}
+\useinnertheme{rectangles}
+\usefonttheme{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
+% color of blue in the AUCA logo
 \definecolor{aucablue}{RGB}{34, 80, 169}
-
-\RequirePackage[margin=1in]{geometry}
+% title colors
+\setbeamercolor{titlelike}{fg=white,bg=aucablue,parent=structure}
+% colors of the side bars
+\setbeamercolor{palette sidebar primary}{fg=aucablue!90,bg=aucablue}
+\setbeamercolor{palette sidebar secondary}{fg=aucablue!90,bg=aucablue}
+\setbeamercolor{palette sidebar tertiary}{fg=aucablue!90,bg=aucablue}
+% color of the top and bottom bars
+\setbeamercolor{palette primary}{fg=white,bg=aucablue!90}
+\setbeamercolor{palette secondary}{fg=white,bg=aucablue!90}
+\setbeamercolor{palette tertiary}{fg=white,bg=aucablue!90}
+% set the frame titles to the center
+\setbeamertemplate{frametitle}[default][center]
+% make definitions and theorems numbered
+\setbeamertemplate{definitions}[numbered]
+\setbeamertemplate{examples}[numbered]
+% set the margins
+\setbeamersize{text margin left=10mm,text margin right=10mm}
 
 % set the presentation font
 \RequirePackage[no-math]{fontspec}
@@ -79,7 +122,6 @@
 % set font to smaller for slides
 \renewcommand*{\bibfont}{\footnotesize}
 
-\RequirePackage{hyperref}
 % how links look and some pdf parameters
 \hypersetup{
     urlcolor=aucablue,

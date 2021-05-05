@@ -1,0 +1,79 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section[Results]{Preliminary Results}
+
+\subsection*{Implementation}
+
+\begin{frame}{Implementation}
+    \begin{itemize}
+        \item SAX, MSAX, HOTSAX implemented in Julia, a scientific
+            programming language
+            \mynote{fast, type support, great libraries, JIT compilation}
+        \item used annotated digital ECGs from the MIT-BIH arrhythmia database
+            \mycite{moody1992}
+            \mynote{ecgs have all heart beats annotated}
+            \mynote{know which are normal, diseases, noise, etc}
+            \mynote{48 recordings of 30 minutes}
+        \item HOTSAX performed for different $w$, $B$, subsequence lengths
+            \mynote{$w$ - paa segments; $B$ - alphabet size; subsequence
+            length for HOTSAX}
+        \item results exported to CSV file and analyzed using the
+            R programming language
+    \end{itemize}
+\end{frame}
+
+\subsection*{Preliminary Results}
+
+\begin{frame}{Preliminary Results}
+    \begin{itemize}
+        \item focus on comparing SAX and MSAX with the top $k=80$ discords
+        \item to analyze the relevance of results, recall (sensitivity) is used
+            \mynote{how many relevant items are selected}
+            \mynote{recall = true positive / (true positive + false negative)}
+            \mynote{this is done because for medical things it is more useful
+            to look at a couple too many segments than not enough}
+        \item analyzed total of 816 results for different parameters (SAX and 
+            MSAX for each)
+        \item recall for MSAX is higher compared to SAX
+        \item if SAX is applied to 2 leads and the results combined, it
+            slightly outperforms MSAX
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{box_single_sax}}
+        \caption{Boxplot comparing Recall for MSAX and single-lead SAX}
+    \end{figure}
+    \mynote{msax: average = 17.5\%}
+    \mynote{sax: average = 6.4\%}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{box_double_sax}}
+        \caption{Boxplot comparing Recall for MSAX and dual-lead SAX}
+    \end{figure}
+    \mynote{msax: average = 17.5\%}
+    \mynote{sax: average = 18.5\%}
+\end{frame}
+
+\subsection*{Outlook}
+
+\begin{frame}{Outlook}
+    \begin{itemize}
+        \item perform statistical tests for significance of the result
+            \mynote{for example t-test, biserieal correlation}
+        \item analyze the outliers visible in the boxplots
+        \item more tests with different sets of parameters
+        \item explore the influence of parameters on the result
+        \item use the 12-lead INCART ECG database to investigate the influence
+            of larger numbers of leads
+    \end{itemize}
+\end{frame}
+
+\end{document}
