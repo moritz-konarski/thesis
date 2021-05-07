@@ -1,11 +1,10 @@
-
 struct SAX
     database::String
     number::Int64
     data::Matrix{Int8}
 end
 
-function SAX(; ecg::ECG, param::Parameters)
+function SAX(ecg::ECG, param::Parameters)::SAX
 
     # @info "Calculating SAX"
 
@@ -14,20 +13,20 @@ function SAX(; ecg::ECG, param::Parameters)
     β::Vector{Float64} = get_breakpoints(param.alphabet_size)
 
     sax_data::Matrix{Int8} = fill(param.alphabet_size, rows, cols)
-    paa_data = zeros(Float64, rows, cols)
-    normalized_ecg = zeros(Float64, ecg.length, cols)
+    paa_data::Matrix{Float64} = zeros(Float64, rows, cols)
+    normalized_ecg::Matrix{Float64} = zeros(Float64, ecg.length, cols)
 
-    for i = 1:cols
-        SAX_normalize!(src = ecg.data[:, i+1], dest = normalized_ecg, col = i)
+    for i::Int64 ∈ 1:cols
+        SAX_normalize!(normalized_ecg, ecg.data[:, i+1], i)
     end
 
-    for i = 1:cols
-        PAA!(src = normalized_ecg[:, i], dest = paa_data, col = i)
+    for i::Int64 ∈ 1:cols
+        PAA!(paa_data, normalized_ecg[:, i], i)
     end
 
-    for col = 1:cols
-        for row = 1:rows
-            for (i::Int8, βi) in enumerate(β)
+    for col::Int64 ∈ 1:cols
+        for row::Int64 ∈ 1:rows
+            for (i::Int8, βi::Float64) ∈ enumerate(β)
                 if paa_data[row, col] < βi
                     sax_data[row, col] = i
                     break
@@ -39,12 +38,12 @@ function SAX(; ecg::ECG, param::Parameters)
     return SAX(ecg.database, ecg.number, sax_data)
 end
 
-function SAX_normalize!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
+function SAX_normalize!(dest::Matrix{Float64}, src::Vector{Float64}, col::Int64)::Nothing
     if length(src) == size(dest, 1)
         μ::Float64 = Statistics.mean(src)
         σ::Float64 = Statistics.std(src)
 
-        for i = 1:length(src)
+        for i ∈ 1:lastindex(src)
             dest[i, col] = (src[i] - μ) / σ
         end
     else
@@ -52,6 +51,8 @@ function SAX_normalize!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int6
 
         throw(DomainError(length(dest)))
     end
+
+    return nothing
 end
 
 @inline function SAX_mindist(
@@ -62,7 +63,7 @@ end
 )::Float64
     s::Float64 = 0.0
 
-    for i = 1:length(a)
+    for i = 1:lastindex(a)
         s += (d[a[i], b[i]])^2
     end
 
@@ -76,14 +77,17 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
     subsequence_count::Int64 = size(sax.data, 1) ÷ param.subsequence_length
     unique_sequences::Matrix{Int8} = fill(-1, param.subsequence_length, subsequence_count)
     counts::Vector{Int64} = zeros(UInt64, subsequence_count)
-    trie = Trie{Int8,Vector{Int64}}()
+    trie::Trie{Int8,Vector{Int64}} = Trie{Int8,Vector{Int64}}()
     last_index::Int64 = 0
 
     # @info subsequence_count
 
-    for i = 1:subsequence_count
-        r = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
-        for j = 1:subsequence_count
+    for i::Int64 ∈ 1:subsequence_count
+        r_start::Int64 = (i - 1) * param.subsequence_length + 1
+        r_end::Int64 = i * param.subsequence_length
+        r::UnitRange{Int64} = r_start:r_end
+
+        for j::Int64 ∈ 1:subsequence_count
             if sax.data[r, col] == unique_sequences[:, j]
                 counts[j] += 1
                 try
@@ -111,7 +115,7 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
 
     # @warn unique_sequences
 
-    order = Vector{Int64}()
+    order::Vector{Int64} = Vector{Int64}()
 
     for i = 1:last_index
         order = vcat(order, get(trie[unique_sequences[:, i]...]))
@@ -120,37 +124,39 @@ function SAX_indexing(; sax::SAX, col::Int64, param::Parameters)::Vector{Int64}
     return order
 end
 
-# TODO: find out why all the nearest_dists equal 0
 function HOTSAX(;
     param::Parameters,
     ecg::ECG,
     col::Int64,
-    k::Int64 = -1,
 )::Tuple{Vector{Float64},Vector{Int64}}
 
     # @info "HOTSAX"
 
-    sax = SAX(ecg = ecg, param = param)
+    sax::SAX = SAX(ecg, param)
 
-    diff_mat = get_difference_matrix(param.alphabet_size)
+    diff_mat::Matrix{Float64} = get_difference_matrix(param.alphabet_size)
 
-    index_order = SAX_indexing(sax = sax, col = col, param = param)
+    index_order::Vector{Int64} = SAX_indexing(sax = sax, col = col, param = param)
 
     maxs::Vector{Float64} = zeros(Float64, size(sax.data, 1))
     inds::Vector{Int64} = zeros(Int64, size(sax.data, 1))
     index::Int64 = 0
 
-    len = param.points_per_segment * param.subsequence_length
+    len::Int64 = param.points_per_segment * param.subsequence_length
 
-    for i in index_order
-        nearest_dist = typemax(Float64)
-        ri = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
+    for i::Int64 ∈ index_order
+        nearest_dist::Float64 = typemax(Float64)
+        ri_start::Int64 = (i - 1) * param.subsequence_length + 1
+        ri_end::Int64 = i * param.subsequence_length
+        ri::UnitRange{Int64} = ri_start:ri_end
 
-        for j in index_order
+        for j::Int64 ∈ index_order
             if i != j
-                rj = (j-1)*param.subsequence_length+1:j*param.subsequence_length
-                # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
-                d = SAX_mindist(sax.data[ri, col], sax.data[rj, col], diff_mat, len)
+                rj_start::Int64 = (j - 1) * param.subsequence_length + 1
+                rj_end::Int64 = j * param.subsequence_length
+                rj::UnitRange{Int64} = rj_start:rj_end
+                d::Float64 =
+                    SAX_mindist(sax.data[ri, col], sax.data[rj, col], diff_mat, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -169,14 +175,14 @@ function HOTSAX(;
     maxs = maxs[1:index]
     inds = inds[1:index]
 
-    ordering = reverse(sortperm(maxs))
+    ordering::Vector{Int64} = reverse(sortperm(maxs))
 
     maxs = maxs[ordering]
     inds = inds[ordering]
 
-    if k > 0 && k < length(maxs)
-        maxs = maxs[1:k]
-        inds = inds[1:k]
+    if param.k > 0 && param.k < length(maxs)
+        maxs = maxs[1:param.k]
+        inds = inds[1:param.k]
     end
 
     return maxs, inds

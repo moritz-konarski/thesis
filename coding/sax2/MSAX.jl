@@ -5,7 +5,7 @@ struct MSAX
     data::Vector{Tuple{Int8,Int8}}
 end
 
-function MSAX(; ecg::ECG, param::Parameters)
+function MSAX(; ecg::ECG, param::Parameters)::MSAX
 
     # @info "Calculating MSAX"
 
@@ -14,32 +14,34 @@ function MSAX(; ecg::ECG, param::Parameters)
     β::Vector{Float64} = get_breakpoints(param.alphabet_size)
 
     msax_data::Vector{Tuple{Int8,Int8}} = fill((0, 0), rows)
-    paa_data = zeros(Float64, rows, cols)
+    paa_data::Matrix{Float64} = zeros(Float64, rows, cols)
 
-    normalized_ecg = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))
+    normalized_ecg::Matrix{Float64} = MSAX_normalize(Matrix{Float64}(ecg.data[:, 2:3]))
 
-    for i = 1:cols
-        PAA!(src = normalized_ecg[:, i], dest = paa_data, col = i)
+    for i::Int64 ∈ 1:cols
+        PAA!(paa_data, normalized_ecg[:, i], i)
     end
 
     first::Int8 = 0
     second::Int8 = 0
 
-    for row = 1:rows
+    for row::Int64 ∈ 1:rows
         first = param.alphabet_size
         second = param.alphabet_size
-        for (i::Int8, βi) in enumerate(β)
+
+        for (i::Int8, βi::Float64) ∈ enumerate(β)
             if paa_data[row, 1] < βi
                 first = i
                 break
             end
         end
-        for (i::Int8, βi) in enumerate(β)
+        for (i::Int8, βi::Float64) ∈ enumerate(β)
             if paa_data[row, 2] < βi
                 second = i
                 break
             end
         end
+
         msax_data[row] = (first, second)
     end
 
@@ -61,7 +63,7 @@ end
 )::Float64
     s::Float64 = 0.0
 
-    for n = 1:length(a)
+    for n::Int64 ∈ 1:lastindex(a)
         s += (d[a[n][1], b[n][1]])^2 + (d[a[n][2], b[n][2]])^2
     end
 
@@ -79,9 +81,12 @@ function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
     trie = Trie{Tuple{Int8,Int8},Vector{Int64}}()
     last_index::Int64 = 0
 
-    for i = 1:subsequence_count
-        r = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
-        for j = 1:subsequence_count
+    for i::Int64 ∈ 1:subsequence_count
+        r_start::Int64 = (i - 1) * param.subsequence_length + 1
+        r_end::Int64 = i * param.subsequence_length
+        r::UnitRange{Int64} = r_start:r_end
+
+        for j::Int64 ∈ 1:subsequence_count
             if msax.data[r] == unique_sequences[:, j]
                 counts[j] += 1
                 try
@@ -103,7 +108,6 @@ function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
     end
 
     unique_sequences = unique_sequences[:, 1:last_index]
-    # sorter = sortperm(counts[1:last_index])
 
     unique_sequences = unique_sequences[:, sortperm(counts[1:last_index])]
 
@@ -116,35 +120,34 @@ function MSAX_indexing(; msax::MSAX, param::Parameters)::Vector{Int64}
     return order
 end
 
-function HOTMSAX(;
-    param::Parameters,
-    ecg::ECG,
-    k::Int64 = -1,
-)::Tuple{Vector{Float64},Vector{Int64}}
+function HOTMSAX(; param::Parameters, ecg::ECG)::Tuple{Vector{Float64},Vector{Int64}}
 
     # @info "HOTMSAX"
 
-    msax = MSAX(ecg = ecg, param = param)
+    msax::MSAX = MSAX(ecg = ecg, param = param)
 
-    diff = get_difference_matrix(param.alphabet_size)
+    diff::Matrix{Float64} = get_difference_matrix(param.alphabet_size)
 
-    ordering = MSAX_indexing(msax = msax, param = param)
+    ordering::Vector{Int64} = MSAX_indexing(msax = msax, param = param)
 
-    maxs = zeros(Float64, length(msax.data))
-    inds = zeros(Int64, length(msax.data))
+    maxs::Vector{Float64} = zeros(Float64, length(msax.data))
+    inds::Vector{Int64} = zeros(Int64, length(msax.data))
     index::Int64 = 0
 
-    len = param.points_per_segment * param.subsequence_length
+    len::Int64 = param.points_per_segment * param.subsequence_length
 
-    for i in ordering
-        nearest_dist = typemax(Float64)
-        ri = ((i-1)*param.subsequence_length+1):(i*param.subsequence_length)
+    for i::Int64 ∈ ordering
+        nearest_dist::Float64 = typemax(Float64)
+        ri_start::Int64 = (i - 1) * param.subsequence_length + 1
+        ri_end::Int64 = i * param.subsequence_length
+        ri::UnitRange{Int64} = ri_start:ri_end
 
-        for j in ordering
+        for j::Int64 ∈ ordering
             if i != j
-                rj = (j-1)*param.subsequence_length+1:j*param.subsequence_length
-                # d = mindist(sax.data[ri, col], sax.data[rj, col], sax.difference_matrix, len)
-                d = MSAX_mindist(msax.data[ri], msax.data[rj], diff, len)
+                rj_start::Int64 = (j - 1) * param.subsequence_length + 1
+                rj_end::Int64 = j * param.subsequence_length
+                rj::UnitRange{Int64} = rj_start:rj_end
+                d::Float64 = MSAX_mindist(msax.data[ri], msax.data[rj], diff, len)
                 if d < nearest_dist
                     nearest_dist = d
                 end
@@ -169,9 +172,9 @@ function HOTMSAX(;
     maxs = maxs[ordering]
     inds = inds[ordering]
 
-    if k > 0 && k < length(maxs)
-        maxs = maxs[1:k]
-        inds = inds[1:k]
+    if param.k > 0 && param.k < length(maxs)
+        maxs = maxs[1:param.k]
+        inds = inds[1:param.k]
     end
 
     return maxs, inds

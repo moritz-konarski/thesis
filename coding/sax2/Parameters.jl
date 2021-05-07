@@ -7,7 +7,7 @@ using StatsFuns
 using StatsBase
 using Statistics
 using Tries
-using Plots
+# using Plots
 # pgfplots()
 # using PGFPlots
 
@@ -50,6 +50,7 @@ struct Parameters
     points_per_subsequence::Int64
     alphabet_size::Int64
     fs::Int64
+    k::Int64
 end
 
 """
@@ -68,9 +69,10 @@ function Parameters(;
     PAA_segment_count::Int64,
     subsequence_length::Int64,
     alphabet_size::Int64,
+    fs::Int64,
     start_index::Int64 = -1,
     end_index::Int64 = -1,
-    fs::Int64,
+    k::Int64 = -1,
 )::Parameters
 
     if start_index > 0 && end_index > 0
@@ -114,31 +116,37 @@ function Parameters(;
         subsequence_length * fs ÷ PAA_segment_count,
         alphabet_size,
         fs,
+        k,
     )
 end
 
 function get_breakpoints(n::Int64)::Vector{Float64}
-    β = zeros(Float64, n - 1)
+    β::Vector{Float64} = zeros(Float64, n - 1)
 
     [β[i] = StatsFuns.norminvcdf(i / n) for i = 1:(n-1)]
 
     return β
 end
 
-@inline function get_original_index(points_per_segment::Int64, segment::Int64)::UnitRange{Int64}
-    return (segment-1)*points_per_segment+1:segment*points_per_segment
+@inline function get_subsequence_index_range(
+    param::Parameters,
+    subsequence::Int64,
+)::UnitRange{Int64}
+    r_start::Int64 = (subsequence - 1) * param.points_per_subsequence + 1
+    r_end::Int64 = subsequence * param.points_per_subsequence
+    return r_start:r_end
 end
 
-function get_discrete_index(; paa_len::Int64, ecg_len::Int64, index::Int64)::Int64
-    return index ÷ (ecg_len ÷ paa_len) + 1
+@inline function get_subsequence(param::Parameters, index::Int64)::Int64
+    return index ÷ param.points_per_subsequence + 1
 end
 
 function get_difference_matrix(n::Int64)::Matrix{Float64}
     difference_matrix::Matrix{Float64} = zeros(Float64, n, n)
-    β = get_breakpoints(n)
+    β::Vector{Float64} = get_breakpoints(n)
 
-    for i = 1:n
-        for j = 1:n
+    for i::Int64 ∈ 1:n
+        for j::Int64 ∈ 1:n
             if abs(i - j) > 1
                 if j > i
                     difference_matrix[i, j] = β[j-1] - β[i]
@@ -151,35 +159,17 @@ function get_difference_matrix(n::Int64)::Matrix{Float64}
     return difference_matrix
 end
 
-function PAA!(; src::Vector{Float64}, dest::Matrix{Float64}, col::Int64)
+function PAA!(dest::Matrix{Float64}, src::Vector{Float64}, col::Int64)::Nothing
 
     w::Int64 = size(dest, 1)
     n::Int64 = length(src)
     n_by_w::Int64 = n ÷ w
 
-    for i = 1:w
+    for i::Int64 ∈ 1:w
         dest[i, col] = sum(src[(n_by_w*(i-1)+1):(n_by_w*i)])
     end
 
     dest[:, col] *= (w / n)
+
+    return nothing
 end
-
-
-# @inline function set_d(
-#     a::Vector{Float64},
-#     v::Float64,
-#     is::Vector{Int64},
-#     j::Int64,
-#     k::Int64,
-# )
-#     for i = 1:k
-#         if v > a[i]
-#             a[i+1:end] = a[i:end-1]
-#             a[i] = v
-
-#             is[i+1:end] = is[i:end-1]
-#             is[i] = j
-#             break
-#         end
-#     end
-# end

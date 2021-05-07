@@ -45,7 +45,7 @@ function ECG(;
     filelen::Int64,
 )::ECG
 
-    @info "Extracting ECG $database/$number"
+    # @info "Extracting ECG $database/$number"
 
     index_start = 1
 
@@ -98,11 +98,11 @@ function ECG(;
         end
     end
 
-    ECG(database, number, size(data, 1), 2, data)
+    return ECG(database, number, size(data, 1), 2, data)
 end
 
 function get_MIT_BIH_ECG(param::Parameters, number::Int64)::ECG
-    if number in MIT_BIH_RECORD_LIST
+    if number ∈ MIT_BIH_RECORD_LIST
         return ECG(
             param = param,
             filepath = "$DATA_FILES$MIT_BIH",

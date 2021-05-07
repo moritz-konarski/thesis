@@ -30,6 +30,11 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
     msax::Vector{Int64} = zeros(Int64, n_sequences)
     msax_dist::Vector{Float64} = zeros(Float64, n_sequences)
 
+    k_vals::Vector{Int64} = fill(p.k, n_sequences)
+    paa::Vector{Int64} = fill(p.PAA_segment_count, n_sequences)
+    subseq::Vector{Int64} = fill(p.subsequence_length, n_sequences)
+    alph::Vector{Int64} = fill(p.alphabet_size, n_sequences)
+
     for i::Int64 ∈ 1:n_sequences
         r::UnitRange{Int64} = (n_by_l*(i-1)+1):(n_by_l*i)
         index_range[i] = r
@@ -39,6 +44,10 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
 
     return DataFrame(
         index_range = index_range,
+        k = k_vals,
+        paa_segments = paa,
+        subsequence_count = subseq,
+        alphabet_size = alph,
         annotations = annotations,
         beats = beats,
         sax = sax,
@@ -48,10 +57,10 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
     )
 end
 
-function SAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Nothing
+function SAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
     for v::Int64 ∈ 1:e.leads
         maxs::Vector{Float64}, inds::Vector{Int64} =
-            HOTSAX(param = p, ecg = e, col = v, k = k)
+            HOTSAX(param = p, ecg = e, col = v)
         ordering::Vector{Int64} = sortperm(inds)
         maxs = maxs[ordering]
         inds = inds[ordering]
@@ -59,7 +68,7 @@ function SAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Not
         start_i::Int64 = 1
 
         for i::Int64 ∈ 1:lastindex(inds)
-            r::UnitRange{Int64} = get_original_index(p.points_per_subsequence, inds[i])
+            r::UnitRange{Int64} = get_subsequence_index_range(p, inds[i])
             for j::Int64 ∈ start_i:size(edf, 1)
                 if edf[j, :index_range] == r
                     start_i = j + 1
@@ -74,8 +83,8 @@ function SAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Not
     return nothing
 end
 
-function MSAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::Nothing
-    maxs::Vector{Float64}, inds::Vector{Int64} = HOTMSAX(param = p, ecg = e, k = k)
+function MSAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
+    maxs::Vector{Float64}, inds::Vector{Int64} = HOTMSAX(param = p, ecg = e)
     ordering::Vector{Int64} = sortperm(inds)
     maxs = maxs[ordering]
     inds = inds[ordering]
@@ -83,7 +92,7 @@ function MSAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::No
     start_i::Int64 = 1
 
     for i::Int64 ∈ 1:lastindex(inds)
-        r::UnitRange{Int64} = get_original_index(p.points_per_subsequence, inds[i])
+        r::UnitRange{Int64} = get_subsequence_index_range(p, inds[i])
         for j::Int64 ∈ start_i:size(edf, 1)
             if edf[j, :index_range] == r
                 start_i = j + 1
@@ -97,74 +106,83 @@ function MSAX_prepare_data!(p::Parameters, e::ECG, k::Int64, edf::DataFrame)::No
     return nothing
 end
 
-function process_all_records(p::Parameters, k::Int64, subdir::String)::Nothing
-    directory::String = "$PROCESSED_DIR$subdir/$(p.subsequence_length)/"
-    filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
+function process_all_records(p::Parameters, subdir::String)::Nothing
+    directory::String = "$PROCESSED_DIR$subdir/"
+    filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$(p.k)"
 
     if !isdir("./$directory")
         mkpath("./$directory")
     end
 
-    for record::Int64 ∈ MIT_BIH_RECORD_LIST
+    len::Int64 = length(MIT_BIH_RECORD_LIST)
+
+    for (count::Int64, record::Int64) ∈ enumerate(MIT_BIH_RECORD_LIST)
+
+        print("\r\027  $count/$len")
         e::ECG = get_MIT_BIH_ECG(p, record)
 
         edf::DataFrame = get_ecg_dataframe(p, e)
 
-        SAX_prepare_data!(p, e, k, edf)
+        SAX_prepare_data!(p, e, edf)
 
-        MSAX_prepare_data!(p, e, k, edf)
+        MSAX_prepare_data!(p, e, edf)
 
         CSV.write("$(filebase)_$record.$CSV_EXT", edf, quotestrings = true)
     end
 
+    println()
+
     return nothing
 end
 
-p0 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 3,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
+const subdirectory = "big_test/"
 
-p1 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 6,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
+const ks =
+    [-1, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200]
+const paa = [
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    12,
+    15,
+    18,
+    20,
+    24,
+    30,
+    36,
+    40,
+    45,
+    60,
+    72,
+    90,
+    120,
+    180,
+    360,
+]
+const alphabet = 2:25
 
-p2 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 9,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
-
-p3 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 12,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
-
-p4 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 15,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
-
-p5 = Parameters(
-    PAA_segment_count = 18,
-    subsequence_length = 18,
-    alphabet_size = 6,
-    fs = MIT_BIH_FS,
-)
-
-k = Int64(80)
-subdirectory = "subsequence_length/"
-
-for param ∈ [p0, p1, p2, p3, p4, p5]
-    process_all_records(param, k, subdirectory)
+for k::Int64 ∈ ks
+    for paa_seg::Int64 ∈ paa
+        for subseq::Int64 ∈ paa
+            if paa_seg % subseq != 0
+                continue
+            end
+            for alph::Int64 ∈ alphabet
+                @info "Computing\n  k=$k\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
+                param = Parameters(
+                    PAA_segment_count = paa_seg,
+                    subsequence_length = subseq,
+                    alphabet_size = alph,
+                    fs = MIT_BIH_FS,
+                    k = k,
+                )
+                process_all_records(param, subdirectory)
+            end
+        end
+    end
 end
