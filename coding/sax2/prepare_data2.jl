@@ -127,11 +127,11 @@ function process_all_records(p::Parameters, subdir::String, ks::Vector{Int64})::
         mkpath("./$directory")
     end
 
-    len::Int64 = length(MIT_BIH_RECORD_LIST[1:5])
+    len::Int64 = length(MIT_BIH_RECORD_LIST)
 
-    for (count::Int64, record::Int64) ∈ enumerate(MIT_BIH_RECORD_LIST[1:5])
+    for (count::Int64, record::Int64) ∈ enumerate(MIT_BIH_RECORD_LIST)
 
-        # print("\r\027  $count/$len")
+        print("\r\027  $count/$len")
         e::ECG = get_MIT_BIH_ECG(p, record)
 
         sax1_maxs::Vector{Float64}, sax1_inds::Vector{Int64} = HOTSAX(param = p, ecg = e, col = 1)
@@ -154,7 +154,7 @@ function process_all_records(p::Parameters, subdir::String, ks::Vector{Int64})::
         end
     end
 
-    # println()
+    println()
 
     return nothing
 end
@@ -166,7 +166,7 @@ function test_parameters(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Vector
                 continue
             end
             for alph::Int64 ∈ alphabet
-                # @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
+                @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
                 param = Parameters(
                     PAA_segment_count = paa_seg,
                     subsequence_length = subseq,
@@ -188,7 +188,7 @@ function test_parameters_high(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::V
                 continue
             end
             for alph::Int64 ∈ alphabet
-                # @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
+                @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
                 param = Parameters(
                     PAA_segment_count = paa_seg,
                     subsequence_length = subseq,
@@ -210,7 +210,7 @@ function test_parameters_low(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Ve
                 continue
             end
             Threads.@threads for alph::Int64 ∈ alphabet
-                # @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
+                @info "Computing\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
                 param = Parameters(
                     PAA_segment_count = paa_seg,
                     subsequence_length = subseq,
@@ -226,58 +226,35 @@ function test_parameters_low(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Ve
 end
 
 
-# const ks =
-#     [-1, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200]
-# const paa = [
-#     2,
-#     3,
-#     4,
-#     5,
-#     6,
-#     8,
-#     9,
-#     10,
-#     12,
-#     15,
-#     18,
-#     20,
-#     24,
-#     30,
-#     36,
-#     40,
-#     45,
-#     60,
-#     72,
-#     90,
-#     120,
-#     180,
-#     360,
-# ]
-# const alphabet = 2:25
-
-const subdirectory = "test/"
-normal = "norm/"
-high = "high/"
-low = "low/"
-
-const tks =
-    [-1, 45, 80, 200]
-const tpaa = [
+const ks =
+    [-1, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200]
+const paa = [
     2,
+    3,
+    4,
     5,
+    6,
+    8,
+    9,
+    10,
+    12,
+    15,
+    18,
+    20,
+    24,
+    30,
+    36,
+    40,
     45,
+    60,
+    72,
+    90,
+    120,
+    180,
+    360,
 ]
-const talphabet = [3, 5, 25]
+const alphabet = collect(2:25)
 
-# test_parameters(tpaa, talphabet, tks, normal)
-# test_parameters_high(tpaa, talphabet, tks, high)
-# test_parameters_low(tpaa, talphabet, tks, low)
+const subdirectory = "new/"
 
-for i in 1:3
-    @info "Standard"
-    @time test_parameters(tpaa, talphabet, tks, normal)
-    @info "High Threads"
-    @time test_parameters_high(tpaa, talphabet, tks, high)
-    @info "Low Threads"
-    @time test_parameters_low(tpaa, talphabet, tks, low)
-end
+@time test_parameters_low(paa, alphabet, ks, subdirectory)
