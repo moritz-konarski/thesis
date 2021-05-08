@@ -6,39 +6,48 @@
 \ProvidesPackage{thesis}
     [2020/12/10 v0.01 LaTeX package for my own purposes]
 
-\newcommand{\thesistitle}{Multivariate Symbolic Aggregate Approximation \\
+\newcommand{\thesistitle}{Multivariate Symbolic Aggregate Approximation\\
 for ECG Analysis}
+\newcommand{\shorthesistitle}{MSAX for ECG Analysis}
 \newcommand{\thesisauthor}{Moritz M. Konarski}
-\newcommand{\thesissupervisor}{Professor Taalaibek Imanaliev}
+\newcommand{\thesissupervisor}{Professor Taalaibek M. Imanaliev}
 \newcommand{\thesiskeywords}{
     acute cardiac ischemia, 
     ECG, 
-    mathematical modeling,
-    MSAX
+    mathematical modeling
 }
-\newcommand{\thesissubject}{Multivariate Symbolic Aggregate Approximation for 
-ECG Analysis}
+\newcommand{\thesissubject}{SAX and MSAX for ECG abnormality detection}
+
+%\newcommand{\mycite}[1]{[#1]}
+\newcommand{\mycite}[1]{\cite{#1}}
+%\newcommand{\mycite}[1]{\nocite{#1}}
+
+\RequirePackage{fixmetodonotes}
 
 \RequirePackage[american]{babel}
 \RequirePackage[
     left=3cm,
-    right=1.5cm,
+    right=3cm,
     top=2cm,
     bottom=2cm,
     showframe
+  %
+  %   left=3cm,
+  %   right=1.5cm,
+  %   top=2cm,
+  %   bottom=2cm,
 ]{geometry}
-
-\RequirePackage[firstpageonly]{draftwatermark}
 
 \RequirePackage{showkeys}
 
 \RequirePackage{xcolor}
+\definecolor{aucablue}{RGB}{34, 80, 169}
 \RequirePackage{hyperref}
 \hypersetup{
     colorlinks=true,
     allcolors=black,
-    urlcolor=blue,
-    urlbordercolor=blue,
+    urlcolor=aucablue,
+    urlbordercolor=aucablue,
     final,
     pdftitle={\thesistitle{}},
     pdfauthor={\thesisauthor{}},

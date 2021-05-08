@@ -2,7 +2,7 @@
 % Date of presentation: May 3rd, 2021
 % Moritz Konarski, AUCA
 
-\documentclass[a4paper, 12pt]{article}
+\documentclass[aspectratio=149]{beamer}
 
 \usepackage{../src/00_slides}
 
@@ -10,11 +10,13 @@
 
 %===== START
 
-\maketitle
+\setbeamertemplate{sidebar left}{}
 
 \subfile{../src/02_start}
 
 %===== MAIN BODY
+
+\setbeamertemplate{sidebar left}[sidebar theme]
 
 %===== introduction
 
