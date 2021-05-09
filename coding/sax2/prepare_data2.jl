@@ -225,9 +225,8 @@ function test_parameters_low(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Ve
     return nothing
 end
 
-
 const ks =
-    [-1, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200]
+    [-1, 1, 10, 40, 50, 100, 150, 200]
 const paa = [
     2,
     3,
@@ -237,24 +236,14 @@ const paa = [
     8,
     9,
     10,
-    12,
-    15,
     18,
-    20,
-    24,
     30,
-    36,
-    40,
     45,
-    60,
-    72,
     90,
-    120,
-    180,
     360,
 ]
-const alphabet = collect(2:25)
+const alphabet = [2, 5, 9, 13, 19, 25]
 
-const subdirectory = "new/"
+const subdirectory = "test2/"
 
 @time test_parameters_low(paa, alphabet, ks, subdirectory)
