@@ -1,14 +1,43 @@
 library(ggplot2)
+library(tikzDevice)
+
+y <- exp(seq(1,10,.1))
+x <- 1:length(y)
+
+data <- data.frame(x = x, y = y)
+
+tikz(file = "./test/graphics/test.tex")
+a = runif(100)
+boxplot(a)
+dev.off()
+
+tikz(file = "./test/graphics/test.tex",
+     width = 6,
+     height = 6)
+a = runif(100)
+b = runif(100) + 0.3
+data <- data.frame(a, b)
+ggplot(data, aes(x = a, y = b)) +
+    geom_point() +
+    labs(
+        x = "$\\alpha$",
+        y = "$\\beta$",
+        title = "\\LaTeX{} test plot"
+    ) + 
+    geom_smooth(method = lm, se=F)
+dev.off()
+
+ggplot(data, aes(x = x, y = y)) + geom_line()
 
 data <- read.csv2("./data_summarized/data-bFALSE-sTRUE-c1.csv")
 
-
-
-ggplot(data,
-       aes(x = as.factor(paa_segment_count),
-           y = recall)) +
-    geom_boxplot(outlier.shape = NA) + 
-    facet_grid(subsequence_length ~ paa_segment_count, scales='free')
+tikz(file = "./test/test.tex")
+p1 <- ggplot(data,
+             aes(x = as.factor(paa_segment_count),
+                 y = recall)) +
+    geom_boxplot(outlier.shape = NA) +
+    facet_grid(subsequence_length ~ paa_segment_count, scales = 'free')
+dev.off()
 
 unique(data$paa_segment_count)
 # 2  3  4  5  6  8  9 10 15 18 20 24 30
