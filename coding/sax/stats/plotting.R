@@ -29,7 +29,7 @@ dev.off()
 
 ggplot(data, aes(x = x, y = y)) + geom_line()
 
-data <- read.csv2("./data_summarized/data-bFALSE-sTRUE-c1.csv")
+data <- read.csv2("./data_summarized/data-bFALSE-sFALSE-c0.csv")
 
 tikz(file = "./test/test.tex")
 p1 <- ggplot(data,
