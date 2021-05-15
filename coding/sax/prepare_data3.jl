@@ -2,6 +2,7 @@ include("Parameters.jl")
 include("ECG.jl")
 include("SAX.jl")
 include("MSAX.jl")
+using Dates
 
 @inline function get_annotations(ecg::ECG, irange::UnitRange{Int64})::String
     list::Vector{String} = unique(collect(skipmissing(ecg.data[irange, end-1])))
@@ -17,7 +18,7 @@ end
     return length(s) > 1
 end
 
-function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
+function get_ecg_dataframe(p::Parameters, e::ECG, k::Int64)::DataFrame
 
     n_sequences::Int64 = e.length ÷ p.points_per_subsequence
     n_by_l::Int64 = e.length ÷ n_sequences
@@ -30,7 +31,7 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
     msax::Vector{Int64} = zeros(Int64, n_sequences)
     msax_dist::Vector{Float64} = zeros(Float64, n_sequences)
 
-    k_vals::Vector{Int64} = fill(p.k, n_sequences)
+    k_vals::Vector{Int64} = fill(k, n_sequences)
     paa::Vector{Int64} = fill(p.PAA_segment_count, n_sequences)
     subseq::Vector{Int64} = fill(p.subsequence_length, n_sequences)
     alph::Vector{Int64} = fill(p.alphabet_size, n_sequences)
@@ -57,47 +58,49 @@ function get_ecg_dataframe(p::Parameters, e::ECG)::DataFrame
     )
 end
 
-function SAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
-    for v::Int64 ∈ 1:e.leads
-        maxs::Vector{Float64}, inds::Vector{Int64} =
-            HOTSAX(param = p, ecg = e, col = v)
-        ordering::Vector{Int64} = sortperm(inds)
-        maxs = maxs[ordering]
-        inds = inds[ordering]
+function SAX_prepare_data!(p::Parameters, edf::DataFrame, data::Tuple{Vector{Float64},Vector{Int64}}, col::Int64)::Nothing
+# function SAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
+    # for v::Int64 ∈ 1:e.leads
+        # maxs::Vector{Float64}, inds::Vector{Int64} =
+        #     HOTSAX(param = p, ecg = e, col = v)
+        # ordering::Vector{Int64} = sortperm(inds)
+        # maxs = maxs[ordering]
+        # inds = inds[ordering]
 
         start_i::Int64 = 1
 
-        for i::Int64 ∈ 1:lastindex(inds)
-            r::UnitRange{Int64} = get_subsequence_index_range(p, inds[i])
+        for i::Int64 ∈ 1:lastindex(data[2])
+            r::UnitRange{Int64} = get_subsequence_index_range(p, data[2][i])
             for j::Int64 ∈ start_i:size(edf, 1)
                 if edf[j, :index_range] == r
                     start_i = j + 1
-                    edf[j, :sax] += v
-                    edf[j, :sax_dist] = maxs[i]
+                    edf[j, :sax] += col
+                    edf[j, :sax_dist] = data[1][i]
                     break
                 end
             end
         end
-    end
+    # end
 
     return nothing
 end
 
-function MSAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
-    maxs::Vector{Float64}, inds::Vector{Int64} = HOTMSAX(param = p, ecg = e)
-    ordering::Vector{Int64} = sortperm(inds)
-    maxs = maxs[ordering]
-    inds = inds[ordering]
+function MSAX_prepare_data!(p::Parameters, edf::DataFrame, data::Tuple{Vector{Float64},Vector{Int64}})::Nothing
+# function MSAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
+    # maxs::Vector{Float64}, inds::Vector{Int64} = HOTMSAX(param = p, ecg = e)
+    # ordering::Vector{Int64} = sortperm(inds)
+    # maxs = maxs[ordering]
+    # inds = inds[ordering]
 
     start_i::Int64 = 1
 
-    for i::Int64 ∈ 1:lastindex(inds)
-        r::UnitRange{Int64} = get_subsequence_index_range(p, inds[i])
+    for i::Int64 ∈ 1:lastindex(data[2])
+        r::UnitRange{Int64} = get_subsequence_index_range(p, data[2][i])
         for j::Int64 ∈ start_i:size(edf, 1)
             if edf[j, :index_range] == r
                 start_i = j + 1
                 edf[j, :msax] += 1
-                edf[j, :msax_dist] = maxs[i]
+                edf[j, :msax_dist] = data[1][i]
                 break
             end
         end
@@ -106,9 +109,20 @@ function MSAX_prepare_data!(p::Parameters, e::ECG, edf::DataFrame)::Nothing
     return nothing
 end
 
-function process_all_records(p::Parameters, subdir::String)::Nothing
+@inline function get_k(maxs::Vector{Float64}, inds::Vector{Int64}, k::Int64)::Tuple{Vector{Float64},Vector{Int64}}
+    if k < 1 || k > lastindex(inds)
+        ord::Vector{Int64} = sortperm(inds)
+        return maxs[ord], inds[ord]
+    else
+        new_m = maxs[1:k]
+        new_i = inds[1:k]
+        o::Vector{Int64} = sortperm(new_i)
+        return new_m[o], new_i[o]
+    end
+end
+
+function process_all_records(p::Parameters, subdir::String, ks::Vector{Int64})::Nothing
     directory::String = "$PROCESSED_DIR$subdir/"
-    filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$(p.k)"
 
     if !isdir("./$directory")
         mkpath("./$directory")
@@ -118,20 +132,45 @@ function process_all_records(p::Parameters, subdir::String)::Nothing
 
     for (count::Int64, record::Int64) ∈ enumerate(MIT_BIH_RECORD_LIST)
 
-        print("\r\027  $count/$len")
         e::ECG = get_MIT_BIH_ECG(p, record)
 
-        edf::DataFrame = get_ecg_dataframe(p, e)
+        sax1_maxs::Vector{Float64}, sax1_inds::Vector{Int64} = HOTSAX(param = p, ecg = e, col = 1)
+        sax2_maxs::Vector{Float64}, sax2_inds::Vector{Int64} = HOTSAX(param = p, ecg = e, col = 2)
 
-        SAX_prepare_data!(p, e, edf)
+        msax_maxs::Vector{Float64}, msax_inds::Vector{Int64} = HOTMSAX(param = p, ecg = e)
 
-        MSAX_prepare_data!(p, e, edf)
+        for k::Int64 ∈ ks
+            filebase::String = "$directory$MIT_BIH_NAME-$(p.PAA_segment_count)-$(p.subsequence_length)-$(p.alphabet_size)-$k"
 
-        CSV.write("$(filebase)_$record.$CSV_EXT", edf, quotestrings = true)
+            edf::DataFrame = get_ecg_dataframe(p, e, k)
+
+            SAX_prepare_data!(p, edf, get_k(sax1_maxs, sax1_inds, k), 1)
+
+            SAX_prepare_data!(p, edf, get_k(sax2_maxs, sax2_inds, k), 2)
+
+            MSAX_prepare_data!(p, edf, get_k(msax_maxs, msax_inds, k))
+
+            CSV.write("$(filebase)_$record.$CSV_EXT", edf, quotestrings = true)
+        end
     end
 
-    println()
+    return nothing
+end
 
+function multithread_processing(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Vector{Int64}, path::String)::Nothing
+    for paa_seg::Int64 ∈ paa
+        @info "Computing\n  paa_count=$paa_seg"
+        Threads.@threads for alph::Int64 ∈ alphabet
+            println("       $(Dates.format(now(), "HH:MM:SS"))  alphabet=$alph")
+            param = Parameters(
+                PAA_segment_count = paa_seg,
+                subsequence_length = paa_seg,
+                alphabet_size = alph,
+                fs = MIT_BIH_FS,
+            )
+            process_all_records(param, path, ks)
+        end
+    end
     return nothing
 end
 
@@ -164,21 +203,6 @@ const paa = [
     180,
     360,
 ]
-const alphabet = [2, 4, 6, 8, 10, 13, 16, 19, 25]
+const alphabet = collect(2:25)
 
-for k::Int64 ∈ ks
-    for paa_seg::Int64 ∈ paa
-        subseq::Int64 = paa_seg
-        for alph::Int64 ∈ alphabet
-            @info "Computing\n  k=$k\n  paa_count=$paa_seg\n  subseg_count=$subseq\n  alphabet=$alph"
-            param = Parameters(
-                PAA_segment_count = paa_seg,
-                subsequence_length = subseq,
-                alphabet_size = alph,
-                fs = MIT_BIH_FS,
-                k = k,
-            )
-            process_all_records(param, subdirectory)
-        end
-    end
-end
+multithread_processing(paa, alphabet, ks, subdirectory)
