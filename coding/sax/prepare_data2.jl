@@ -225,25 +225,10 @@ function test_parameters_low(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Ve
     return nothing
 end
 
-const ks =
-    [-1, 1, 10, 40, 50, 100, 150, 200]
-const paa = [
-    2,
-    3,
-    4,
-    5,
-    6,
-    8,
-    9,
-    10,
-    18,
-    30,
-    45,
-    90,
-    360,
-]
-const alphabet = [2, 5, 9, 13, 19, 25]
+const ks = [200]
+const paa = [12]
+const alphabet = [9]
 
-const subdirectory = "test2/"
+const subdirectory = "quick_test/"
 
 @time test_parameters_low(paa, alphabet, ks, subdirectory)

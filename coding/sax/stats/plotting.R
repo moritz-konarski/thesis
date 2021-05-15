@@ -29,7 +29,6 @@ dev.off()
 
 ggplot(data, aes(x = x, y = y)) + geom_line()
 
-data <- read.csv2("./data_summarized/data-bFALSE-sFALSE-c0.csv")
 
 tikz(file = "./test/test.tex")
 p1 <- ggplot(data,
@@ -41,6 +40,8 @@ dev.off()
 
 unique(data$paa_segment_count)
 # 2  3  4  5  6  8  9 10 15 18 20 24 30
+
+data <- read.csv2("./data_summarized/data-bFALSE-sTRUE-c2.csv")
 
 paas <- c(2, 3, 4, 5, 6, 8, 9, 10, 15, 18, 20, 24, 30)
 
@@ -73,11 +74,23 @@ ggplot(subset, aes(
            y = recall,
            fill = as.factor(method)
        )) +
-    geom_boxplot() +
+    geom_boxplot(outlier.shape = NA) +
     labs(x = "subsequence lengths",
          y = "Recall",
          fill = "Method",
          title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(paa_segment_count), scales = "free")
+
+ggplot(subset, aes(
+           x = as.factor(subsequence_length),
+           y = f1,
+           fill = as.factor(method)
+       )) +
+    geom_boxplot() +
+    labs(x = "subsequence lengths",
+         y = "F1",
+         fill = "Method",
+         title = "F1 for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(paa_segment_count), scales = "free")
 
 ggplot(subset, aes(
@@ -133,6 +146,9 @@ plot_ly(
 
 cor(data$subsequence_length, data$recall)
 summary(lm(data$paa_segment_count ~ data$recall))
+
+cor(data$is_sax, data$recall)
+summary(lm(data$recall ~ data$is_sax))
 
 cor(data$recall, data$subsequence_length)
 m0 <- lm(data$recall ~ data$subsequence_length)

@@ -18,3 +18,7 @@ point, 2 SAX things are slightly better
 
 => try this with the incart database that has 12 leads and see which method
 works better
+
+=> important: eliminate the subsequence length from the calculations, delete
+the old raw data, and then rerun the whole thing with more segment length and
+ks, but without different subsequence lengths
