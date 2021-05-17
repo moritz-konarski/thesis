@@ -41,8 +41,10 @@ dev.off()
 unique(data$paa_segment_count)
 # 2  3  4  5  6  8  9 10 15 18 20 24 30
 
-data <- read.csv2("./data_summarized/data-bFALSE-sTRUE-c2.csv")
-data2 <- read.csv2("./data_summarized2/data-bFALSE-sTRUE-c2.csv")
+data <- read.csv2("./data_summarized/data-beat_types-FALSE--single-FALSE--first_sax-FALSE.csv")
+data <- read.csv2("./data_summarized/data-beat_types-FALSE--single-TRUE--first_sax-FALSE.csv")
+data <- read.csv2("./data_summarized/data-beat_types-FALSE--single-TRUE--first_sax-TRUE.csv")
+data <- read.csv2("./data_summarized/data-beat_types-TRUE--single-TRUE--first_sax-FALSE.csv")
 
 paas <- c(2, 3, 4, 5, 6, 8, 9, 10, 15, 18, 20, 24, 30)
 
@@ -82,7 +84,7 @@ ggplot(subset, aes(
          title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(paa_segment_count), scales = "free")
 
-ggplot(data2, aes(
+ggplot(data, aes(
            y = recall,
            x = as.factor(method),
            fill = as.factor(method)
@@ -94,7 +96,7 @@ ggplot(data2, aes(
          title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(paa_segment_count), scales = "free")
 
-ggplot(data2, aes(
+ggplot(data, aes(
            y = recall,
            x = as.factor(paa_segment_count),
            fill = as.factor(method)
@@ -104,6 +106,59 @@ ggplot(data2, aes(
          y = "Recall",
          fill = "Method",
          title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(k))
+# for single sax, no beat -> around 20 segments puts recall at ~75 % for k=-1
+#   precision here is about 25%, could be ok
+# for single sax, w/ beat -> around 20 segments puts recall at ~75 % for k=-1
+#   precision here is about 50%, could be ok
+# dual sax, no beat -> for k=-1 msax beats dual sax
+#   precision here is about 25%, could be ok
+
+ggplot(data, aes(
+           y = recall,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Recall",
+         fill = "Method",
+         title = "Recall for PAA Segment Counts and Subsequence Lengths")
+
+ggplot(data, aes(
+           y = recall,
+           x = as.factor(method),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Recall",
+         fill = "Method",
+         title = "Recall for PAA Segment Counts and Subsequence Lengths")
+
+
+ggplot(data, aes(
+           y = accuracy,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Accuracy",
+         fill = "Method",
+         title = "Accuracy for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(k), scales = "free")
+
+ggplot(data, aes(
+           y = precision,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Precision",
+         fill = "Method",
+         title = "Precision for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(k), scales = "free")
 
 ggplot(data2, aes(
@@ -196,8 +251,11 @@ plot_ly(
 cor(data$subsequence_length, data$recall)
 summary(lm(data$paa_segment_count ~ data$recall))
 
-cor(data$is_sax, data$recall)
-summary(lm(data$recall ~ data$is_sax))
+cor(data$is_msax, data$recall)
+summary(lm(data$recall ~ data$is_msax))
+
+cor(data$k, data$recall)
+summary(lm(data$recall ~ data$k))
 
 cor(data$recall, data$subsequence_length)
 m0 <- lm(data$recall ~ data$subsequence_length)
