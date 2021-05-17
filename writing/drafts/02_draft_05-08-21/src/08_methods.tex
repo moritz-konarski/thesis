@@ -18,4 +18,127 @@
     \\- describe how a got all the data
 }
 
+This section explains the methods used in this research. \TODO{create flow
+charts for all this shit to make it simpler}. First methods section for the
+analytical methods in a mathematical way.
+
+\subsection{Mathematical Foundations}
+
+\begin{itemize}
+    \item section for the workings
+    \item explain theoretical foundations of the approach
+    \item what is it grounded in, who, what, when
+\end{itemize}
+
+\subsection{SAX}
+
+\begin{itemize}
+    \item idea
+    \item normalization
+    \item dimensionality reduction
+    \item discretization
+    \item distance measure
+    \item \TODO{all with graphs and formulas}
+\end{itemize}
+
+\subsection{MSAX}
+
+\begin{itemize}
+    \item idea
+    \item normalization
+    \item dimensionality reduction
+    \item discretization
+    \item distance measure
+    \item \TODO{all with graphs and formulas}
+    \item \TODO{points out differences to SAX}
+\end{itemize}
+
+\subsection{HOTSAX}
+
+\begin{itemize}
+    \item what is hotsax
+    \item its theoretical foundations
+    \item advantages, disadvantages
+    \item how does it work
+\end{itemize}
+
+\subsection{Statistical Analysis of Results}
+
+\begin{itemize}
+    \item explain true positive, true negative, and so on
+    \item explain recall, accuracy, precision, f1
+    \item explain why recall was chosen and if that is fair
+    \item introduce the correlations that we would expect to find if my
+        hypothesis is true and also the ones that would disprove it
+    \item which types of correlation, significance testing, and modeling will
+        be used and why; what are the justifications
+\end{itemize}
+
+\subsection{Implementation}
+
+How I implemented the above stuff. Languages, approaches, hurdles, all the
+details needed to reproduce this research. Also mention the simplifications
+I chose to make and why: no sliding window, only even divisors, only divisors
+within sampling frequency and cutting ECG to even multiple of sampling
+frequency.
+
+\subsubsection{ECG acquisition}
+
+flow chart for process
+
+\begin{itemize}
+    \item where to download
+    \item what exactly are the ECGs
+    \item where do they come from
+    \item technical parameters of them
+    \item the physionet suite
+    \item annotations, what they mean, how I can get them, etc
+\end{itemize}
+
+\subsubsection{preprocessing}
+
+flow chart for process
+
+\TODO{the codes and constants given for each thing}
+
+\begin{itemize}
+    \item how were they preprocessed
+    \item physionet suite
+    \item my script and what it does and why
+    \item problems and limitations of this 
+    \item libraries used
+\end{itemize}
+
+\subsubsection{SAX}
+
+\TODO{how was the whole data thing handled, how is the data created}
+
+flow chart for process
+
+\begin{itemize}
+    \item how was sax implemented
+    \item how does HOTSAX work here
+    \item libraries used
+\end{itemize}
+
+\subsubsection{MSAX}
+
+flow chart for process
+
+\begin{itemize}
+    \item how was sax implemented
+    \item how does HOTSAX work here
+    \item \TODO{point out differences to SAX}
+    \item libraries used
+\end{itemize}
+
+\subsection{Statistical Evaluation}
+
+\begin{itemize}
+    \item reading the data into R
+    \item summarizing the data
+    \item the summarized data files
+    \item libraries used
+\end{itemize}
+
 \end{document}

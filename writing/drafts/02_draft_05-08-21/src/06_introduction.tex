@@ -9,6 +9,21 @@
     \\- introduce relevance of sensitivity here
 }
 
+\TODO{Just start from scratch:
+\\- introduction with who data for ihd, arrh
+\\- prevention and detection is important
+\\- ECG is THE method for that
+\\- how an ECG works; pros and cons of an ECG
+\\- how an ECG is also a multivariate time series
+\\- where does automated ECG analysis come into play?
+\\- time series methods to ECG
+\\- discords that then lead to next point: connect to the 5 steps, signal which
+I will look at, where is SAX, HOTSAX, where is the cardiologist...
+\\- the approach of sifting out the abnormal beats and having a cardiologist
+look at them instead of doing everything internally
+\\- SAX, MSAX, HOTSAX and my hypothesis
+\\- use definitions etc}
+
 \section{Introduction}
 
 \TODO{UPDATE: In the year 2016, over 9.4 million people worldwide died of ischemic 
@@ -19,6 +34,9 @@ Death caused by IHD disproportionally affects people
 over 50 years of age, with 91\% of deaths for men and 95\% of deaths for women 
 occurring in that age range. In Kyrgyzstan, 13\% of all deaths in 2016 were 
 caused by IHD \mycite{who2018}.}\par
+
+% add statistical data about arrhythmia too, in case I need to cut the ihd data
+% use the new who data, take KG out of the picture
 
 \TODO{FOCUS MORE ON MY ACTUAL TOPIC:\\
 Ischemic heart disease is characterized by restricted blood flow to an area 
@@ -31,6 +49,8 @@ is called myocardial infarction, more commonly known as a heart attack. The
 deprivation of oxygen the heart experiences leads to the characteristic chest
 pain commonly associated with heart attacks \mycite{iom2010}.}\par
 
+% stick to ischaemia a little less, add arrhythmia to the mix
+
 \TODO{mention arrhythmia too, it is what the mit database looks at}
 
 IHD can be diagnosed before it leads to a heart attack.
@@ -39,6 +59,9 @@ pharmacologically induced stress, or stress induced by physical exercise.
 During an exercise stress test, an electrocardiograph (sometimes combined with
 other methods) records the patient's heart activity, resulting in an electrocardiogram
 (ECG) \mycite{iom2010}. 
+
+% also add that ecgs are performed when people present with unidentified chest
+% pains or something like that
 
 \TODO{make this its own paragraph section}
 
@@ -57,6 +80,7 @@ The ECG is a diagnostic tool used to evaluate patients
 with (suspected) heart problems. It is a non-invasive, real-time, and 
 cost-effective method
 that may be used to diagnose IHD. It is the most common tool used for cardiac
+% and arrythmia
 analysis and diagnosis \mycite{alghatrif2012, kligfield2007, xie2020}. The most 
 common form of
 the ECG is the 12-lead variant. The 12-lead ECG consists of 6 leads connected to
@@ -65,6 +89,8 @@ The leads record the differences in electrical potential
 between the places on the body that they are attached to. This reflects
 the differences in voltage that the heart experiences with each heart beat
 because those voltage differences are conducted by the body. The measurements
+% this is horribly worded; they record the electricity that makes the heart
+% beat
 are taken in millivolts (mV). The ECG represents the state of the heart; a 
 recorded ECG has the shape of a wave (the ECG wave) \mycite{kligfield2007,
 xie2020}.
@@ -75,6 +101,8 @@ included}
 If the state of the heart beat changes  as the result of 
 a disease like IHD (changing the measurable potentials or their occurrence over 
 time), the ECG is able to record these changes.\par
+% it can record the electrical activity, so when it changes based on a disease,
+% the ECG reflects that
 
 The characteristic shape of an ECG for two heart beats is shown in
 \figref{fig:ecg-waveform}; the figure is taken from \mycite{wasilewski2012}. 
@@ -114,6 +142,7 @@ non-specialized physicians and trainees \mycite{alghatrif2012, xie2020}.
 
 \TODO{make it about assisting in their diagnosis by pointing out important
 segments -> discords}
+% what can ECG analysis really add here?
 
 For the diagnosis of IHD, changes in the ST-segment and T-wave are of 
 particular interest. An elevation of the ST-segment compared to a normal heart
@@ -122,6 +151,7 @@ A downward depression of the ST-segment, especially in combination with chest
 pain, is another indication of IHD. The changes in the ST-segment are thought
 to be caused by current flow between healthy heart muscle and ischemic heart
 muscle \mycite{rautaharju2009, wasilewski2012}.\par
+% add what can be done to arrhythmia and the like
 
 \TODO{after introducing idea of discord discovery, introduce ECGs as time
 series:
