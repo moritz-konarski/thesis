@@ -136,13 +136,13 @@ prepare_data <- function(with_beat_types, single_sax, is_first_sax, dirname) {
 
 dirname <- "test_number_2/"
 
-prepare_data(T, T, T, dirname) 
+#prepare_data(T, T, T, dirname) 
 
-prepare_data(T, T, F, dirname)
+#prepare_data(T, T, F, dirname)
 
-prepare_data(F, T, T, dirname)
+#prepare_data(F, T, T, dirname)
 
-prepare_data(F, T, F, dirname)
+#prepare_data(F, T, F, dirname)
 
 prepare_data(T, F, F, dirname)
 
