@@ -164,7 +164,7 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
     
     files <-
         list.files(
-            path = "../processed_data/test/",
+            path = "../processed_data/test_number_2/",
             pattern = "*.csv",
             full.names = TRUE,
             recursive = FALSE
@@ -268,11 +268,11 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
                paste0("./data_summarized/data-b", with_beat_types, "-s", single_sax, "-c", sax_code, ".csv"))
 }
 
-#prepare_data(T, T, 1)
-#prepare_data(F, T, 1)
+prepare_data(T, T, 1)
+prepare_data(F, T, 1)
  
-#prepare_data(T, T, 2)
-#prepare_data(F, T, 2)
+prepare_data(T, T, 2)
+prepare_data(F, T, 2)
  
 prepare_data(F, F, 0)
 prepare_data(T, F, 0)
