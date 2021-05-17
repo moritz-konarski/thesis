@@ -86,7 +86,19 @@ ggplot(subset, aes(
 
 ggplot(data, aes(
            y = recall,
-           x = as.factor(method),
+           x = as.factor(k),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Recall",
+         fill = "Method",
+         title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(paa_segment_count), scales = "free")
+
+ggplot(data, aes(
+           y = precision,
+           x = as.factor(k),
            fill = as.factor(method)
        )) +
     geom_boxplot(outlier.shape = NA) +
@@ -160,6 +172,18 @@ ggplot(data, aes(
          fill = "Method",
          title = "Precision for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(k), scales = "free")
+
+ggplot(data, aes(
+           y = recall,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Precision",
+         fill = "Method",
+         title = "Precision for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(alphabet_size), scales = "free")
 
 ggplot(data2, aes(
            y = accuracy,
