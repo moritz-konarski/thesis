@@ -1,3 +1,5 @@
+# TODO: switch msax to have the 1 and sax the 0, name to is_msax -> positive
+# correlation coefficients
 prepare_data <- function(with_beat_types, single_sax, sax_code) {
     if (with_beat_types) {
         if (single_sax) {
