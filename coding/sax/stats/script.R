@@ -166,7 +166,7 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
     
     files <-
         list.files(
-            path = "../processed_data/test_number_2/",
+            path = "../processed_data/",
             pattern = "*.csv",
             full.names = TRUE,
             recursive = FALSE
@@ -250,15 +250,15 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
         alphabet_size[count] <- data$alphabet_size[1]
     }
     
-    is_sax <-
-        c(rep(1, length(msax.accuracy)[1]), rep(0, length(msax.accuracy)[1]))
+    is_msax <-
+        c(rep(0, length(msax.accuracy)[1]), rep(1, length(msax.accuracy)[1]))
     
     method <-
         c(rep("SAX", length(msax.accuracy)[1]), rep("MSAX", length(msax.accuracy)[1]))
     
     data <-
         data.frame(
-            is_sax = is_sax,
+            is_msax = is_msax,
             method = method,
             k = rep(k, 2),
             paa_segment_count = rep(paa_segment_count, 2),
@@ -275,11 +275,20 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
                paste0("./data_summarized/data-b", with_beat_types, "-s", single_sax, "-c", sax_code, ".csv"))
 }
 
-prepare_data(T, T, 1)
-prepare_data(F, T, 1)
- 
-prepare_data(T, T, 2)
-prepare_data(F, T, 2)
- 
-prepare_data(F, F, 0)
-prepare_data(T, F, 0)
+# prepare_data(T, T, 1)
+# prepare_data(F, T, 1)
+#  
+# prepare_data(T, T, 2)
+# prepare_data(F, T, 2)
+#  
+# prepare_data(T, F, 0)
+    prepare_data(F, F, 0)
+
+start <- Sys.time()
+i <- 0
+while (i < 10000) {
+    prepare_data(F, F, 0)
+    i <- i + 1
+}
+print(Sys.time() - start)
+# 6.8 mins
