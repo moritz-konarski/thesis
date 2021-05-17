@@ -42,6 +42,7 @@ unique(data$paa_segment_count)
 # 2  3  4  5  6  8  9 10 15 18 20 24 30
 
 data <- read.csv2("./data_summarized/data-bFALSE-sTRUE-c2.csv")
+data2 <- read.csv2("./data_summarized2/data-bFALSE-sTRUE-c2.csv")
 
 paas <- c(2, 3, 4, 5, 6, 8, 9, 10, 15, 18, 20, 24, 30)
 
@@ -80,6 +81,54 @@ ggplot(subset, aes(
          fill = "Method",
          title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
     facet_wrap(vars(paa_segment_count), scales = "free")
+
+ggplot(data2, aes(
+           y = recall,
+           x = as.factor(method),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Recall",
+         fill = "Method",
+         title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(paa_segment_count), scales = "free")
+
+ggplot(data2, aes(
+           y = recall,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Recall",
+         fill = "Method",
+         title = "Recall for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(k), scales = "free")
+
+ggplot(data2, aes(
+           y = accuracy,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Accuracy",
+         fill = "Method",
+         title = "Accuracy for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(k), scales = "free")
+
+ggplot(data2, aes(
+           y = precision,
+           x = as.factor(paa_segment_count),
+           fill = as.factor(method)
+       )) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(x = "Method",
+         y = "Precision",
+         fill = "Method",
+         title = "Precision for PAA Segment Counts and Subsequence Lengths") + 
+    facet_wrap(vars(k), scales = "free")
 
 ggplot(subset, aes(
            x = as.factor(subsequence_length),
@@ -159,4 +208,8 @@ m1 <- lm(data$recall ~ data$paa_segment_count)
 cor(data$recall, data$paa_segment_count)
 m2 <- lm(data$recall ~ data$paa_segment_count + data$subsequence_length)
 
+cor(data$is_sax, data$recall)
+summary(lm(data$recall ~ data$is_sax))
 
+cor(data2$is_sax, data2$recall)
+summary(lm(data2$recall ~ data2$is_sax))

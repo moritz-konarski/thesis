@@ -201,6 +201,9 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
     
     subsequence_length <- c(NA)
     length(subsequence_length) <- len
+
+    alphabet_size <- c(NA)
+    length(alphabet_size) <- len
     
     for (file in files) {
         count <- count + 1
@@ -242,6 +245,7 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
         k[count] <- data$k[1]
         paa_segment_count[count] <- data$paa_segments[1]
         subsequence_length[count] <- data$subsequence_count[1]
+        alphabet_size[count] <- data$alphabet_size[1]
     }
     
     is_sax <-
@@ -257,6 +261,7 @@ prepare_data <- function(with_beat_types, single_sax, sax_code) {
             k = rep(k, 2),
             paa_segment_count = rep(paa_segment_count, 2),
             subsequence_length = rep(subsequence_length, 2),
+            alphabet_size = rep(alphabet_size, 2),
             accuracy = c(as.vector(sax.accuracy), as.vector(msax.accuracy)),
             precision = c(as.vector(sax.precision),
                           as.vector(msax.precision)),
