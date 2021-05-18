@@ -2,6 +2,85 @@
 
 \begin{document}
 
+\section{Background and Related Work}
+
+This section provides background information on time series and ECGs, as well
+as their analysis.
+
+\subsection{Time Series and Time Series Analysis}
+
+\TODO{insert some formulas and symbols, make sure that they are consistent}
+
+A time series is a set of values recorded at specific times. A common form of
+time series are discrete-time time series (often simply called discrete time
+series). Discrete time series are time series whose values are recorded at
+discrete points in time, the most common example of this are time series with
+values recorded at fixed intervals. Continuous-time time series are time series
+that are recorded continuously over an interval \mycite{brockwell2016}. Time
+series are used in many disciplines to record information on time-dependent 
+processes, e.g. stock prices in economics, the sun's activity in physics, and 
+the heart's activity in medicine. Time series can be recorded digitally,
+physically, or physically recorded and then digitized. The recorded data can 
+then be used to gain insight into the underlying processes. To gain insight 
+from time series, 
+the relevant information needs to be extracted from the time series, a process 
+that is often called data mining. Data mining of time series is a vast 
+discipline that includes the visualization, forecasting, indexing, clustering, 
+anomaly detection, classification, and summarization of time series. 
+Time series indexing is the 
+\TODO{insert some symbols here}
+process of finding the most similar time series to a given time series. The
+division of time series into groups of similar time series is called clustering.
+Identifying parts of a time series that are not ``normal" (don't fit
+certain parameters) constitutes anomaly detection. To classify a time series
+means to assign it a label based on its features, e.g. ``sick" or ``healthy".
+Finally, summarization is the reduction of the complexity (often length) of
+a time series while preserving its main features 
+\mycite{lin2003, aghabozorgi2015}.\par
+Challenges for time series analysis include the often very large data sets that
+are difficult for humans to analyze and take up considerable digital storage
+space. Analyzing very large data sets requires a large amount of computational 
+power because most time series analysis algorithms do not scale well for large
+data sets \mycite{lin2003}. To mitigate this issue, time series dimension
+reduction (also known as dimensionality reduction and time series
+representation) is used. Dimension reduction transforms a ``raw" (unmodified) 
+time series into a representation that is simpler but nonetheless resembles the 
+raw time series. This can be achieved by either using a method that reduces the
+number of values in a time series, or by extracting only the relevant features
+from the time series \mycite{aghabozorgi2015}. According to 
+\mycite{aghabozorgi2015}, there are four types of dimension reduction methods:
+\begin{enumerate*}
+    \item non-data adaptive,
+    \item data adaptive,
+    \item model-based, and
+    \item data dictated.
+\end{enumerate*}
+\TODO{fix this next segment, add more citations, maybe short descriptions}
+\TODO{turn these into subsections?}
+\TODO{also cite shieh2008 here, has table and explanations too}
+\TODO{maybe just mention the categories, explain what they mean, then do a ``in
+this research the focus is on SAX, a \ldots"}
+Non-data adaptive methods operate on time series segments with a fixed size to
+reduce the dimension, they are useful for comparing multiple time series with
+each other. These methods include wavelets, the Discrete Wavelet Transform, and 
+the Piecewise Aggregate Approximation (PAA). Data adaptive methods use
+non-fixed size segments and aim to fit the raw data more closely. Examples of
+data adaptive methods are the Piecewise Polynomial Approximation, Piecewise
+Linear Approximation, and Piecewise Constant Approximation. Model based methods
+use stochastic methods such as Markov Models and Hidden Markov Models,
+including the Auto-Regressive Moving Average (ARMA). All three methods
+mentioned above have varying compression ratios, based on user-given input. 
+Data dictated methods derive their compression ratios from the data
+automatically, e.g. Clipped \mycite{aghabozorgi2015}.
+
+
+\TODO{to put in:
+\\- previous research in this area
+\\- current research in the area
+\\- show why more work is still important
+\\- enough background to really clear up the problem
+\\- stuff relevant to question, and some background}
+
 \TODO{Sections:
     \\- overview of methods for ECG analysis
     \\- main elements
