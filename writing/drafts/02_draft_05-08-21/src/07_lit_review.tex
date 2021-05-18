@@ -7,9 +7,12 @@
 This section provides background information on time series and ECGs, as well
 as their analysis.
 
+\TODO{make time series section a bit shorter and focus on stuff from first lit
+review and on ECGs}
+
 \subsection{Time Series and Time Series Analysis}
 
-\TODO{insert some formulas and symbols, make sure that they are consistent}
+\TODO{insert some formulas and symbols, make sure that they are consistent}\\
 
 A time series is a set of values recorded at specific times. A common form of
 time series are discrete-time time series (often simply called discrete time
@@ -55,11 +58,11 @@ from the time series \mycite{aghabozorgi2015}. According to
     \item model-based, and
     \item data dictated.
 \end{enumerate*}
-\TODO{fix this next segment, add more citations, maybe short descriptions}
-\TODO{turn these into subsections?}
-\TODO{also cite shieh2008 here, has table and explanations too}
+\TODO{fix this next segment, add more citations, maybe short descriptions}\\
+\TODO{turn these into subsections}\\
+\TODO{also cite shieh2008 here, has table and explanations too}\\
 \TODO{maybe just mention the categories, explain what they mean, then do a ``in
-this research the focus is on SAX, a \ldots"}
+this research the focus is on SAX, a \ldots"}\\
 Non-data adaptive methods operate on time series segments with a fixed size to
 reduce the dimension, they are useful for comparing multiple time series with
 each other. These methods include wavelets, the Discrete Wavelet Transform, and 
@@ -71,8 +74,69 @@ use stochastic methods such as Markov Models and Hidden Markov Models,
 including the Auto-Regressive Moving Average (ARMA). All three methods
 mentioned above have varying compression ratios, based on user-given input. 
 Data dictated methods derive their compression ratios from the data
-automatically, e.g. Clipped \mycite{aghabozorgi2015}.
+automatically, e.g. Clipped \mycite{aghabozorgi2015}.\par
 
+\TODO{cite all this shit and rephrase}\\
+\TODO{add more information, maybe cut the sax thing short by referring to the
+methods section}\\
+A particular dimension reduction method is the Symbolic Aggregate Approximation
+(SAX). Introduced by \citeauthor{lin2003}, SAX is a symbolic time series
+representation method. The authors felt that the methods available at the time
+did not provide the desired dimension reduction, were not symbolic, or did not
+correspond to the raw data accurately enough. SAX relies on PAA for the
+dimension reduction regarding the number of data points and on a breakpoint
+system to group PAA values into sections which are labeled by a lowercase
+letter. The distance measure of SAX lower bounds the Euclidean distance,
+meaning that the distances between SAX-represented data correspond to the
+distances between the raw data. Since its creation, SAX has found many
+applications in the data mining field, with many researchers working to improve
+it and apply it to different problems. ESAX was developed to better represent
+a time series by not just incorporating the PAA values into the representation,
+but the minimum and maximum values of each segment as well. SAX\_TD implemented
+a measure of the trend of the segment into the representation to make the shape
+of each segment more defined. The authors themselves created iSAX and iSAX 2.0
+as improvements to their method that make is faster and more efficient.
+Multiple researchers have found improvements to the lower bounding of the SAX
+distance, making the method more accurate. 
+\TODO{mention some of the other SAX methods}\\
+Anacleto et al. developed MSAX as an extension of SAX to multivariate data,
+incorporating methods that take the features of such data into account.
+HOT SAX is a method used for time series anomaly detection, it uses SAX as its
+representation and heuristically orders time series segments by their distance
+to the nearest neighbor, effectively identifying the most discordant elements
+in a time series. HOT SAX has also been improved by various researchers to make
+it faster and more efficient. HOT SAX has not been used with MSAX.
+\citeauthor{zhang2019} used the SAX method with an additional measure for
+divergence from the mean to evaluate ECGs. 
+\TODO{look up what exactly the authors did}\\
+\citeauthor{ordonez2008} used SAX to visualize medical data for easier
+diagnosis.
+\TODO{add information on this}
+
+\subsection{ECGs and ECG Analysis}
+
+ECGs were first used by \ldots
+\TODO{what is an ecg}\\
+\TODO{who developed it, how does it work, what are its parts, annotated ecg}\\
+\TODO{look at which ECG methods were covered in first lit review and take some
+of those}\\
+As mentioned above, SAX has already successfully been applied to ECGs, but
+there has not been much use of the method in that respect?
+\TODO{is that true?}\\
+MSAX has not yet been applied to ECG analysis.
+
+\subsubsection{ECG databases}
+
+\TODO{cite this shit}\\
+\TODO{turn this into at least one full paragraph}\\
+ECG data is patient data and thus not freely accessible in most cases. Online
+databases, most of them on Physionet, are an exception to this rule. Physionet
+provides databases on many types of medical data. They are all freely available
+and licensed for research and educational use. 
+
+
+
+\newpage
 
 \TODO{to put in:
 \\- previous research in this area
