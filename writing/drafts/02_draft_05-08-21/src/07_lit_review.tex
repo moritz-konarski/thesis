@@ -10,8 +10,9 @@ as methods to analyze them.
 \subsection{Time Series and Time Series Analysis}
 
 \TODO{explain what univariate and multivariate time series are}
-
-A time series is a set of values recorded at specific times. A common form of
+This subsection will provide background information on time series and time series
+analysis methods. A time series is a set of values recorded at specific times. 
+A common form of
 time series are discrete-time time series (often simply called discrete time
 series). Discrete time series are time series whose values are recorded at
 discrete points in time, the most common example of this are time series with
@@ -80,6 +81,12 @@ Non-data adaptive methods operate on time series segments with a fixed size to
 reduce the dimension and they are useful for comparing multiple time series with
 each other. These methods include wavelets, the Discrete Wavelet Transform, and 
 the Piecewise Aggregate Approximation (PAA) \mycite{aghabozorgi2015}.
+- DFT
+- DWT
+- DCT
+- PAA
+- PIP
+- IPLA
 
 \subsubsection{Data adaptive representation}
 
@@ -87,6 +94,10 @@ Data adaptive methods use non-fixed size segments and aim to fit the raw data
 most closely. Examples of data adaptive methods are the Piecewise Polynomial 
 Approximation, Piecewise Linear Approximation, and Piecewise Constant 
 Approximation \mycite{aghabozorgi2015}.
+- SVD
+- PLA
+- APCA
+- SAX
 
 \subsubsection{Model-based representation}
 
@@ -99,6 +110,7 @@ Markov Models, and the Auto-Regressive Moving Average (ARMA)
 Data dictated methods derive their compression ratios from the data 
 automatically, the most common form of this method is Clipped 
 \mycite{aghabozorgi2015}.
+- Clipped Data
 
 \TODO{create some type of transition here}
 
@@ -107,7 +119,8 @@ automatically, the most common form of this method is Clipped
 \TODO{add some paragraphs to this mess}\\
 
 A particular dimension reduction method is SAX. Introduced by 
-\citeauthor{lin2003}, SAX is a symbolic time series representation method. 
+\citeauthor{lin2003}, SAX is a symbolic time series representation method for
+univariate time series.
 The authors felt that the symbolic methods available in \citeyear{lin2003} did 
 not provide the desired dimension reduction, did not correspond to the raw data 
 accurately enough, and could not be applied to a subset of the total data. 
@@ -118,8 +131,8 @@ influences the dimension reduction. The
 distance between two time series in the SAX representation is guaranteed to 
 resemble the distance between the two raw time series, this is called the
 distance measure. Since its creation, SAX has found widespread use in data 
-mining and many researchers have attempted to modify and improve it. The SAX
-distance measure has been improved to include the standard deviation
+mining and many researchers have attempted to modify and improve it.\par
+The SAX distance measure has been improved to include the standard deviation
 \mycite{zan2016} and a measure of the trend of each averaged segment
 \mycite{sun2014,yu2019}. Extended SAX modifies SAX to include the minimum and 
 maximum values of each segment for improved representation of the raw data
@@ -136,8 +149,10 @@ series that has one billion elements, something that SAX or iSAX cannot do
 anomaly detection using SAX, Heuristically Ordered Time series using SAX (HOT
 SAX) was introduced. HOT SAX sorts segments of a SAX-represented time series by
 their distance to other segments, effectively identifying the most abnormal
-segments of a time series \mycite{keogh2005}. SAX-ARM combines the SAX
-representation with association rule mining (identifying rules and implications
+segments of a time series \mycite{keogh2005}.\par
+SAX and its variants have also been used for the analysis of multivariate time
+series. SAX-ARM combines the SAX representation with association rule mining 
+(identifying rules and implications
 found in the data, i.e. parameter a influences parameter b) to analyze
 multivariate time series and discover the rules underlying the data
 \mycite{park2020}. MSAX expanded the use of SAX to multivariate time series 
@@ -154,13 +169,21 @@ each segment to detect ECG anomalies, achieving a recall value of 98\%.
 
 \subsection{ECGs and ECG Analysis}
 
-In the year 1786, Luigi Galvani noted the electrical activity in muscles and in
-1842, Carlo Matteucci showed the electrical activity of a frog's heartbeat. In
-1901, Willem Einthoven first created an ECG recording of a human heartbeat and
-received the Nobel Prize in medicine in medicine in 1924 for his invention of
-the electrocariograph. As a result of further development, the American Heart
-Association published a standardization of the 12-lead ECG that we know today
-\mycite{alghatrif2012}. 
+The following subsection covers the ECG and methods used in its analysis.
+Luigi Galvani noted the electrical activity in muscles 1786, but the history of 
+the ECG only started in 1842, when Carlo Matteucci showed the electrical 
+activity of a frog's heartbeat. In the 1870s, it was discovered that each
+heartbeat is characterized by electrical changes. Willem Einthoven was the
+first to publish an ECG waveform with the now standard annotations P, Q, R, S,
+and T for the different features. Then, in 
+\TODO{refer to the figure of the heart beat here}\\
+In 1901-1902, Einthoven created the first ECG recording of a human heartbeat
+using using 3 leads connected to the limbs of the patient.
+He would receive the 1924 Nobel Prize in medicine for his invention of
+the electrocardiograph. As a result of further development,  12-lead ECG that 
+we know today was created \mycite{alghatrif2012,fye1994}.\par
+
+\TODO{cite becker2006 on how ECGs work}\\
 \TODO{write a section on how the 12 leads work}\\
 \TODO{how does it work}\\
 \TODO{different methods of recording ECGs}\\
