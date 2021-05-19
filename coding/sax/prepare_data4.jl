@@ -145,7 +145,10 @@ end
 function multithread_processing(paa::Vector{Int64}, alphabet::Vector{Int64}, ks::Vector{Int64}, path::String)::Nothing
     for paa_seg::Int64 ∈ paa
         for subseq_len::Int64 ∈ paa
-            @info "Computing\n  paa_count=$paa_seg, subseq_len"
+            if paa_seg % subseq_len != 0
+                continue
+            end
+            @info "Computing\n  paa_count=$paa_seg, subseq_len=$subseq_len"
             Threads.@threads for alph::Int64 ∈ alphabet
                 println("       $(Dates.format(now(), "HH:MM:SS"))  alphabet=$alph")
                 param = Parameters(

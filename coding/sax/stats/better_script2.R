@@ -134,7 +134,7 @@ prepare_data <- function(with_beat_types, single_sax, is_first_sax, dirname) {
                paste0("./data_summarized/data-beat_types-", with_beat_types, "--single-", single_sax, "--first_sax-", is_first_sax, ".csv"))
 }
 
-dirname <- "test_number_2/"
+dirname <- "test_number_3/"
 
 #prepare_data(T, T, T, dirname) 
 
