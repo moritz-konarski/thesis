@@ -5,119 +5,167 @@
 \section{Background and Related Work}
 
 This section provides background information on time series and ECGs, as well
-as their analysis.
-
-\TODO{make time series section a bit shorter and focus on stuff from first lit
-review and on ECGs}
+as methods to analyze them.
 
 \subsection{Time Series and Time Series Analysis}
 
-\TODO{insert some formulas and symbols, make sure that they are consistent}\\
+\TODO{explain what univariate and multivariate time series are}
 
 A time series is a set of values recorded at specific times. A common form of
 time series are discrete-time time series (often simply called discrete time
 series). Discrete time series are time series whose values are recorded at
 discrete points in time, the most common example of this are time series with
 values recorded at fixed intervals. Continuous-time time series are time series
-that are recorded continuously over an interval \mycite{brockwell2016}. Time
-series are used in many disciplines to record information on time-dependent 
-processes, e.g. stock prices in economics, the sun's activity in physics, and 
+that are recorded continuously over a certain interval \mycite{brockwell2016}. 
+Time series are used in many disciplines to record information on time-dependent 
+processes, e.g. stock prices in economics, the sun's activity in physics, or 
 the heart's activity in medicine. Time series can be recorded digitally,
-physically, or physically recorded and then digitized. The recorded data can 
-then be used to gain insight into the underlying processes. To gain insight 
-from time series, 
-the relevant information needs to be extracted from the time series, a process 
-that is often called data mining. Data mining of time series is a vast 
-discipline that includes the visualization, forecasting, indexing, clustering, 
-anomaly detection, classification, and summarization of time series. 
-Time series indexing is the 
-\TODO{insert some symbols here}
-process of finding the most similar time series to a given time series. The
-division of time series into groups of similar time series is called clustering.
-Identifying parts of a time series that are not ``normal" (don't fit
-certain parameters) constitutes anomaly detection. To classify a time series
-means to assign it a label based on its features, e.g. ``sick" or ``healthy".
-Finally, summarization is the reduction of the complexity (often length) of
-a time series while preserving its main features 
-\mycite{lin2003, aghabozorgi2015}.\par
+physically, or, if they were recorded physically, can later be digitized. The 
+recorded data can then be used to gain insight into the processes that were
+studied. To gain insight using a time series, the relevant information needs to 
+be extracted from it--a process that is often called data mining. Data mining 
+of time series is a vast discipline that, among others, includes 
+\mycite{lin2003,aghabozorgi2015}: 
+\begin{itemize}
+    \item visualization (graphical representation),
+    \item forecasting (predicting future behavior), 
+    \item indexing (finding the most similar time series to a given one), 
+    \item clustering (dividing time series into groups of similar ones), 
+    \item anomaly detection (detecting parts that are not ``normal" or do not
+        fit certain parameters), 
+    \item classification (assigning a label based on its features, e.g. ``sick"
+        and ``not sick"), and
+    \item summarization (reducing the complexity--often length--while
+        preserving important features).
+\end{itemize}
+\noindent
 Challenges for time series analysis include the often very large data sets that
 are difficult for humans to analyze and take up considerable digital storage
 space. Analyzing very large data sets requires a large amount of computational 
-power because most time series analysis algorithms do not scale well for large
+power because most data mining algorithms become less efficient with larger
 data sets \mycite{lin2003}. To mitigate this issue, time series dimension
-reduction (also known as dimensionality reduction and time series
+reduction (also known as dimensionality reduction or time series
 representation) is used. Dimension reduction transforms a ``raw" (unmodified) 
 time series into a representation that is simpler but nonetheless resembles the 
 raw time series. This can be achieved by either using a method that reduces the
 number of values in a time series, or by extracting only the relevant features
-from the time series \mycite{aghabozorgi2015}. According to 
-\mycite{aghabozorgi2015}, there are four types of dimension reduction methods:
-\begin{enumerate*}
-    \item non-data adaptive,
+from the time series. According to \mycite{aghabozorgi2015}, there are four 
+types of dimension reduction methods:
+\begin{enumerate}
+    \item \label{07-dr-methods:01} non-data adaptive,
     \item data adaptive,
-    \item model-based, and
+    \item \label{07-dr-methods:03} model-based, and
     \item data dictated.
-\end{enumerate*}
+\end{enumerate}
+Methods \ref{07-dr-methods:01}--\ref{07-dr-methods:03} have their dimension
+reduction factors set by user-defined parameters. This means that the user can
+determine how much the dimension of the data should be reduced
+\mycite{aghabozorgi2015}.
+
+mentioned above have varying compression ratios, based on user-given input. 
+
 \TODO{fix this next segment, add more citations, maybe short descriptions}\\
 \TODO{turn these into subsections}\\
 \TODO{also cite shieh2008 here, has table and explanations too}\\
 \TODO{maybe just mention the categories, explain what they mean, then do a ``in
 this research the focus is on SAX, a \ldots"}\\
-Non-data adaptive methods operate on time series segments with a fixed size to
-reduce the dimension, they are useful for comparing multiple time series with
-each other. These methods include wavelets, the Discrete Wavelet Transform, and 
-the Piecewise Aggregate Approximation (PAA). Data adaptive methods use
-non-fixed size segments and aim to fit the raw data more closely. Examples of
-data adaptive methods are the Piecewise Polynomial Approximation, Piecewise
-Linear Approximation, and Piecewise Constant Approximation. Model based methods
-use stochastic methods such as Markov Models and Hidden Markov Models,
-including the Auto-Regressive Moving Average (ARMA). All three methods
-mentioned above have varying compression ratios, based on user-given input. 
-Data dictated methods derive their compression ratios from the data
-automatically, e.g. Clipped \mycite{aghabozorgi2015}.\par
 
 \TODO{cite all this shit and rephrase}\\
 \TODO{add more information, maybe cut the sax thing short by referring to the
 methods section}\\
-A particular dimension reduction method is the Symbolic Aggregate Approximation
-(SAX). Introduced by \citeauthor{lin2003}, SAX is a symbolic time series
-representation method. The authors felt that the methods available at the time
-did not provide the desired dimension reduction, were not symbolic, or did not
-correspond to the raw data accurately enough. SAX relies on PAA for the
-dimension reduction regarding the number of data points and on a breakpoint
-system to group PAA values into sections which are labeled by a lowercase
-letter. The distance measure of SAX lower bounds the Euclidean distance,
-meaning that the distances between SAX-represented data correspond to the
-distances between the raw data. Since its creation, SAX has found many
-applications in the data mining field, with many researchers working to improve
-it and apply it to different problems. ESAX was developed to better represent
-a time series by not just incorporating the PAA values into the representation,
-but the minimum and maximum values of each segment as well. SAX\_TD implemented
-a measure of the trend of the segment into the representation to make the shape
-of each segment more defined. The authors themselves created iSAX and iSAX 2.0
-as improvements to their method that make is faster and more efficient.
-Multiple researchers have found improvements to the lower bounding of the SAX
-distance, making the method more accurate. 
-\TODO{mention some of the other SAX methods}\\
-Anacleto et al. developed MSAX as an extension of SAX to multivariate data,
-incorporating methods that take the features of such data into account.
-HOT SAX is a method used for time series anomaly detection, it uses SAX as its
-representation and heuristically orders time series segments by their distance
-to the nearest neighbor, effectively identifying the most discordant elements
-in a time series. HOT SAX has also been improved by various researchers to make
-it faster and more efficient. HOT SAX has not been used with MSAX.
-\citeauthor{zhang2019} used the SAX method with an additional measure for
-divergence from the mean to evaluate ECGs. 
-\TODO{look up what exactly the authors did}\\
-\citeauthor{ordonez2008} used SAX to visualize medical data for easier
-diagnosis.
-\TODO{add information on this}
+
+\subsubsection{Non-data adaptive representation}
+
+Non-data adaptive methods operate on time series segments with a fixed size to
+reduce the dimension and they are useful for comparing multiple time series with
+each other. These methods include wavelets, the Discrete Wavelet Transform, and 
+the Piecewise Aggregate Approximation (PAA) \mycite{aghabozorgi2015}.
+
+\subsubsection{Data adaptive representation}
+
+Data adaptive methods use non-fixed size segments and aim to fit the raw data 
+most closely. Examples of data adaptive methods are the Piecewise Polynomial 
+Approximation, Piecewise Linear Approximation, and Piecewise Constant 
+Approximation \mycite{aghabozorgi2015}.
+
+\subsubsection{Model-based representation}
+
+Model based methods use stochastic methods such as Markov Models and Hidden 
+Markov Models, and the Auto-Regressive Moving Average (ARMA) 
+\mycite{aghabozorgi2015}.
+
+\subsubsection{Data dictated representation}
+
+Data dictated methods derive their compression ratios from the data 
+automatically, the most common form of this method is Clipped 
+\mycite{aghabozorgi2015}.
+
+\TODO{create some type of transition here}
+
+\subsubsection{The SAX representation}\label{07:section_sax}
+
+\TODO{add some paragraphs to this mess}\\
+
+A particular dimension reduction method is SAX. Introduced by 
+\citeauthor{lin2003}, SAX is a symbolic time series representation method. 
+The authors felt that the symbolic methods available in \citeyear{lin2003} did 
+not provide the desired dimension reduction, did not correspond to the raw data 
+accurately enough, and could not be applied to a subset of the total data. 
+SAX uses the averaging of a user-defined number of segments and the labeling of
+segments with letters to reduce the dimension of the time series data. The
+number of letters, called the alphabet size, can also be chosen by the user and
+influences the dimension reduction. The
+distance between two time series in the SAX representation is guaranteed to 
+resemble the distance between the two raw time series, this is called the
+distance measure. Since its creation, SAX has found widespread use in data 
+mining and many researchers have attempted to modify and improve it. The SAX
+distance measure has been improved to include the standard deviation
+\mycite{zan2016} and a measure of the trend of each averaged segment
+\mycite{sun2014,yu2019}. Extended SAX modifies SAX to include the minimum and 
+maximum values of each segment for improved representation of the raw data
+\mycite{lkhagva2006} while 1d-SAX incorporates a linear regression over each
+segment into SAX \mycite{malinowski2013}. A combination of SAX and a polynomial
+approximation was used to speed up the SAX method \mycite{fuad2010}. To improve 
+the indexing performance of SAX, iSAX introduced convertible alphabet sizes, 
+allowing SAX
+representations with different alphabet sizes to compared with each other and
+indexed into a tree structure \mycite{shieh2008}. iSAX 2.0 improves the iSAX
+index by reducing its computational complexity, enabling it to index a time
+series that has one billion elements, something that SAX or iSAX cannot do
+\mycite{camerra2010a}. To perform time series
+anomaly detection using SAX, Heuristically Ordered Time series using SAX (HOT
+SAX) was introduced. HOT SAX sorts segments of a SAX-represented time series by
+their distance to other segments, effectively identifying the most abnormal
+segments of a time series \mycite{keogh2005}. SAX-ARM combines the SAX
+representation with association rule mining (identifying rules and implications
+found in the data, i.e. parameter a influences parameter b) to analyze
+multivariate time series and discover the rules underlying the data
+\mycite{park2020}. MSAX expanded the use of SAX to multivariate time series 
+by utilizing multivariate normalization with the help of a covariance matrix
+and a modified distance measure \mycite{anacleto2020}. SAX has also been used
+to visualize multivariate medical test results and enable their analysis
+\mycite{ordonez, 2008}.
+Resource-aware SAX is a SAX variant developed to analyze ECG using a mobile
+device like a mobile phone. The method takes advantage of the computational
+efficiency of SAX to perform the ECG analysis on the device and even preserve
+its battery life. Another application of the SAX method to ECGs is
+\mycite{zhang2019}, which uses SAX with an added binary measure of the trend of
+each segment to detect ECG anomalies, achieving a recall value of 98\%. 
 
 \subsection{ECGs and ECG Analysis}
 
-ECGs were first used by \ldots
-\TODO{what is an ecg}\\
-\TODO{who developed it, how does it work, what are its parts, annotated ecg}\\
+In the year 1786, Luigi Galvani noted the electrical activity in muscles and in
+1842, Carlo Matteucci showed the electrical activity of a frog's heartbeat. In
+1901, Willem Einthoven first created an ECG recording of a human heartbeat and
+received the Nobel Prize in medicine in medicine in 1924 for his invention of
+the electrocariograph. As a result of further development, the American Heart
+Association published a standardization of the 12-lead ECG that we know today
+\mycite{alghatrif2012}. 
+\TODO{write a section on how the 12 leads work}\\
+\TODO{how does it work}\\
+\TODO{different methods of recording ECGs}\\
+\TODO{annotated ecg for parts, which diseases are apparent}\\
+
 \TODO{look at which ECG methods were covered in first lit review and take some
 of those}\\
 As mentioned above, SAX has already successfully been applied to ECGs, but
