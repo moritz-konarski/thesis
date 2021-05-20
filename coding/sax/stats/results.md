@@ -22,3 +22,13 @@ works better
 => important: eliminate the subsequence length from the calculations, delete
 the old raw data, and then rerun the whole thing with more segment length and
 ks, but without different subsequence lengths
+
+1. compare across all parameters
+2. concat the SAXs into one to be able to compare both of them
+3. find top 5 optimal recall parameters across all 48 ECGs for SAX and  MSAX
+   each
+4. investigate which one is better and what that means
+5. test the best parameters on ST-T data base and see if the results are
+   similar or not
+6. analyze the subsequence data set first because the other one can be cut down
+   to match these parameters, while I cannot extend it 

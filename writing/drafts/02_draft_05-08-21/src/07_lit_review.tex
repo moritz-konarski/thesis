@@ -12,13 +12,16 @@ as methods to analyze them.
 \TODO{explain what univariate and multivariate time series are}
 This subsection will provide background information on time series and time series
 analysis methods. A time series is a set of values recorded at specific times. 
-A common form of
-time series are discrete-time time series (often simply called discrete time
-series). Discrete time series are time series whose values are recorded at
-discrete points in time, the most common example of this are time series with
-values recorded at fixed intervals. Continuous-time time series are time series
-that are recorded continuously over a certain interval \mycite{brockwell2016}. 
-Time series are used in many disciplines to record information on time-dependent 
+A common form of time series are discrete-time time series (often simply called 
+discrete time series). Discrete time series are time series whose values are 
+recorded at discrete points in time, the most common example of this are time 
+series with values recorded at fixed intervals. Continuous-time time series are 
+time series that are recorded continuously over a certain interval 
+\mycite{brockwell2016}. Time series that contain a single value for each moment
+in time are called univariate time series, while time series that record
+multiple values at each moment in time are called multivariate time series
+\mycite{anacleto2020}. Time series are used in many disciplines to record 
+information on time-dependent 
 processes, e.g. stock prices in economics, the sun's activity in physics, or 
 the heart's activity in medicine. Time series can be recorded digitally,
 physically, or, if they were recorded physically, can later be digitized. The 
@@ -53,17 +56,15 @@ number of values in a time series, or by extracting only the relevant features
 from the time series. According to \mycite{aghabozorgi2015}, there are four 
 types of dimension reduction methods:
 \begin{enumerate}
-    \item \label{07-dr-methods:01} non-data adaptive,
-    \item data adaptive,
-    \item \label{07-dr-methods:03} model-based, and
     \item data dictated.
+    \item \label{07-dr-methods:01} non-data adaptive,
+    \item model-based, and
+    \item \label{07-dr-methods:03} data adaptive,
 \end{enumerate}
 Methods \ref{07-dr-methods:01}--\ref{07-dr-methods:03} have their dimension
 reduction factors set by user-defined parameters. This means that the user can
 determine how much the dimension of the data should be reduced
 \mycite{aghabozorgi2015}.
-
-mentioned above have varying compression ratios, based on user-given input. 
 
 \TODO{fix this next segment, add more citations, maybe short descriptions}\\
 \TODO{turn these into subsections}\\
@@ -75,48 +76,59 @@ this research the focus is on SAX, a \ldots"}\\
 \TODO{add more information, maybe cut the sax thing short by referring to the
 methods section}\\
 
+\subsubsection{Data dictated representation}
+
+Data dictated methods derive their compression ratios from the data 
+automatically, the most common form of this method is the clipped
+representation \mycite{aghabozorgi2015}. This representation simply transforms
+the raw time series into a sequence of 1s and 0s. A data points is assigned
+a 1 if its values is larger than the mean value of the time series, and
+a 0 otherwise. A sequence of 1s and 0s can be further compressed using various
+methods from computer science, finally yielding a very large compression ratio
+of 1057:1 \mycite{ratanamahatana2005}.
+
 \subsubsection{Non-data adaptive representation}
 
 Non-data adaptive methods operate on time series segments with a fixed size to
 reduce the dimension and they are useful for comparing multiple time series with
-each other. These methods include wavelets, the Discrete Wavelet Transform, and 
-the Piecewise Aggregate Approximation (PAA) \mycite{aghabozorgi2015}.
-- DFT
-- DWT
-- DCT
-- PAA
-- PIP
-- IPLA
+each other. These methods include the Discrete Wavelet Transform (DWT), the 
+Discrete Fourier Transform (DFT), and the Piecewise Aggregate Approximation
+(PAA) \mycite{aghabozorgi2015}. The DWT uses wavelets, a limited-duration wave
+with an average value of 0, which represents both time 
+and frequency information. The DWT is calculated using a series of filters
+applied to the signal. In \mycite{kaur2016}, the DWT is used to
+detect beats in ECG signals and achieves a 0.221\% detection error rate. The
+Fast Fourier Transform, an optimized form of the DFT, decomposes the its input
+signal into many sinus waves of different frequencies. In \mycite{prasad2018} 
+it is used in conjunction with a machine learning model to achieve a beat 
+classification accuracy of 98.7\%. The PAA is part of the process of the SAX
+representation, thus it will be covered in \TODO{refer to the appropriate 
+methods section}
+
+\subsubsection{Model-based representation}
+
+Model based methods use stochastic methods such as Markov Models (MM) and 
+Hidden Markov Models (HMM), and the Auto-Regressive Moving Average (ARMA) 
+\mycite{aghabozorgi2015}.
 
 \subsubsection{Data adaptive representation}
 
 Data adaptive methods use non-fixed size segments and aim to fit the raw data 
 most closely. Examples of data adaptive methods are the Piecewise Polynomial 
-Approximation, Piecewise Linear Approximation, and Piecewise Constant 
-Approximation \mycite{aghabozorgi2015}.
-- SVD
-- PLA
-- APCA
-- SAX
+Approximation (PPA), Piecewise Linear Approximation (PLA), Piecewise Constant 
+Approximation (PCA), and SAX \mycite{aghabozorgi2015}. PPA can be used to 
+compress and ECG by approximating it using polynomials. With second-order 
+polynomials, ECGs can be compressed with a minimal level of distortion 
+\mycite{nygaard1998}. The authors of \mycite{zhu2018} use a modified PLA 
+representation with adaptive ECG segmentation to successfully reconstruct the 
+12 standard leads of an ECG from only 3 leads. Using adaptive PCA as the
+dimension reduction method, the preprocessing and segmentation of ECGs can be
+significantly sped up while maintaining accuracy comparable to precious methods
+\mycite{zifan2006}. The SAX representation will be covered in detail in 
+\TODO{refer to the SAX section} and the following subsection 
+\ref{07:section_sax} will provide background on the method and its variations.
 
-\subsubsection{Model-based representation}
-
-Model based methods use stochastic methods such as Markov Models and Hidden 
-Markov Models, and the Auto-Regressive Moving Average (ARMA) 
-\mycite{aghabozorgi2015}.
-
-\subsubsection{Data dictated representation}
-
-Data dictated methods derive their compression ratios from the data 
-automatically, the most common form of this method is Clipped 
-\mycite{aghabozorgi2015}.
-- Clipped Data
-
-\TODO{create some type of transition here}
-
-\subsubsection{The SAX representation}\label{07:section_sax}
-
-\TODO{add some paragraphs to this mess}\\
+\subsubsection{SAX representation background}\label{07:section_sax}
 
 A particular dimension reduction method is SAX. Introduced by 
 \citeauthor{lin2003}, SAX is a symbolic time series representation method for
@@ -132,6 +144,7 @@ distance between two time series in the SAX representation is guaranteed to
 resemble the distance between the two raw time series, this is called the
 distance measure. Since its creation, SAX has found widespread use in data 
 mining and many researchers have attempted to modify and improve it.\par
+
 The SAX distance measure has been improved to include the standard deviation
 \mycite{zan2016} and a measure of the trend of each averaged segment
 \mycite{sun2014,yu2019}. Extended SAX modifies SAX to include the minimum and 
@@ -150,6 +163,7 @@ anomaly detection using SAX, Heuristically Ordered Time series using SAX (HOT
 SAX) was introduced. HOT SAX sorts segments of a SAX-represented time series by
 their distance to other segments, effectively identifying the most abnormal
 segments of a time series \mycite{keogh2005}.\par
+
 SAX and its variants have also been used for the analysis of multivariate time
 series. SAX-ARM combines the SAX representation with association rule mining 
 (identifying rules and implications
@@ -159,15 +173,17 @@ multivariate time series and discover the rules underlying the data
 by utilizing multivariate normalization with the help of a covariance matrix
 and a modified distance measure \mycite{anacleto2020}. SAX has also been used
 to visualize multivariate medical test results and enable their analysis
-\mycite{ordonez, 2008}.
+\mycite{ordonez2008}.
 Resource-aware SAX is a SAX variant developed to analyze ECG using a mobile
 device like a mobile phone. The method takes advantage of the computational
 efficiency of SAX to perform the ECG analysis on the device and even preserve
 its battery life. Another application of the SAX method to ECGs is
 \mycite{zhang2019}, which uses SAX with an added binary measure of the trend of
-each segment to detect ECG anomalies, achieving a recall value of 98\%. 
+each segment to detect ECG anomalies, achieving a recall value of 98\%. The
+section \ref{07:section_ecg} below will elaborate on ECGs and methods of their
+analysis. 
 
-\subsection{ECGs and ECG Analysis}
+\subsection{ECGs and ECG Analysis}\label{07:section_ecg}
 
 The following subsection covers the ECG and methods used in its analysis.
 Luigi Galvani noted the electrical activity in muscles 1786, but the history of 
@@ -206,6 +222,7 @@ provides databases on many types of medical data. They are all freely available
 and licensed for research and educational use. 
 
 
+\end{document}
 
 \newpage
 
@@ -352,7 +369,6 @@ wavelet transform outperformed principal component analysis for the detection
 of heart beats in an ECG. Their model achieved an error rate of 0.221\% of 
 incorrectly classified heart beats .
 
-\end{document}
 
 - Since the 1910s people have been using the ECG to diagnose IHD.
 - Since 1954, the American Heart Association has recommended a standardized
