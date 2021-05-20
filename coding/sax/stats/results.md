@@ -32,3 +32,18 @@ ks, but without different subsequence lengths
    similar or not
 6. analyze the subsequence data set first because the other one can be cut down
    to match these parameters, while I cannot extend it 
+
+# Plan
+
+- rename and concatenate all the relevant files
+
+1. analyze for single and multi
+2. analyze for beat type and not -- or decide which one to use
+3. analyze for best and for realistic
+4. try to quantify how msax first outperforms sax, but sax later catches up
+
+- do a run of data prep with some of the best parameters and count what k=-1
+means in terms of count of points -> get idea of how many this generates
+- experiment with putting them into categories of longer segments, maybe
+5 seconds, and then analyze
+
