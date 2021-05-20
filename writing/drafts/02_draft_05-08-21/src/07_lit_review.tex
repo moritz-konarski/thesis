@@ -9,7 +9,6 @@ as methods to analyze them.
 
 \subsection{Time Series and Time Series Analysis}
 
-\TODO{explain what univariate and multivariate time series are}
 This subsection will provide background information on time series and time series
 analysis methods. A time series is a set of values recorded at specific times. 
 A common form of time series are discrete-time time series (often simply called 
@@ -53,28 +52,18 @@ representation) is used. Dimension reduction transforms a ``raw" (unmodified)
 time series into a representation that is simpler but nonetheless resembles the 
 raw time series. This can be achieved by either using a method that reduces the
 number of values in a time series, or by extracting only the relevant features
-from the time series. According to \mycite{aghabozorgi2015}, there are four 
-types of dimension reduction methods:
+from the time series. According to \mycite{aghabozorgi2015,shieh2008}, there 
+are four types of dimension reduction methods:
 \begin{enumerate}
-    \item data dictated.
+    \item data dictated,
     \item \label{07-dr-methods:01} non-data adaptive,
     \item model-based, and
-    \item \label{07-dr-methods:03} data adaptive,
+    \item \label{07-dr-methods:03} data adaptive.
 \end{enumerate}
 Methods \ref{07-dr-methods:01}--\ref{07-dr-methods:03} have their dimension
 reduction factors set by user-defined parameters. This means that the user can
 determine how much the dimension of the data should be reduced
 \mycite{aghabozorgi2015}.
-
-\TODO{fix this next segment, add more citations, maybe short descriptions}\\
-\TODO{turn these into subsections}\\
-\TODO{also cite shieh2008 here, has table and explanations too}\\
-\TODO{maybe just mention the categories, explain what they mean, then do a ``in
-this research the focus is on SAX, a \ldots"}\\
-
-\TODO{cite all this shit and rephrase}\\
-\TODO{add more information, maybe cut the sax thing short by referring to the
-methods section}\\
 
 \subsubsection{Data dictated representation}
 
@@ -107,9 +96,14 @@ methods section}
 
 \subsubsection{Model-based representation}
 
-Model based methods use stochastic methods such as Markov Models (MM) and 
-Hidden Markov Models (HMM), and the Auto-Regressive Moving Average (ARMA) 
-\mycite{aghabozorgi2015}.
+Model based methods use stochastic methods such as Hidden Markov Models (HMM) 
+and the Auto-Regressive Moving Average (ARMA) \mycite{aghabozorgi2015}. A HMM
+was used in \mycite{panuccio2002} to cluster electroencephalograph recordings 
+(measuring the brain's electrical activity). It was found that their methods
+was competitive with other established methods in classifying 
+electroencephalograph signals. An auto-regressive model can be used to
+correctly identify a specific type of arrhythmia in an ECG and to group the
+occurrences of this arrhythmia together \mycite{corduas2008}.
 
 \subsubsection{Data adaptive representation}
 
@@ -158,22 +152,47 @@ representations with different alphabet sizes to compared with each other and
 indexed into a tree structure \mycite{shieh2008}. iSAX 2.0 improves the iSAX
 index by reducing its computational complexity, enabling it to index a time
 series that has one billion elements, something that SAX or iSAX cannot do
-\mycite{camerra2010a}. To perform time series
-anomaly detection using SAX, Heuristically Ordered Time series using SAX (HOT
-SAX) was introduced. HOT SAX sorts segments of a SAX-represented time series by
-their distance to other segments, effectively identifying the most abnormal
-segments of a time series \mycite{keogh2005}.\par
+\mycite{camerra2010a}. To perform time series anomaly detection using SAX, 
+\citeauthor{keogh2005}
+introduced Heuristically Ordered Time series using SAX (HOT SAX) in
+\citeyear{keogh2005}. Specifically, the authors attempt to detect time series
+``discords", a subsequence of a time series that is most different from other
+segments of the time series. This can theoretically be done by simply
+comparing all subsequences of the raw time series to all other segments, but
+this approach is not feasible for long time series because of its complexity. 
+Thus, HOT SAX utilizes SAX to reduce the dimensionality and complexity of the
+time series and then sorts the resulting SAX segments to speed up the discord
+detection. The authors suggest further research to investigate the use HOT SAX
+on multivariate time series \mycite{keogh2005}. For an in-depth description of 
+this method, please refer to \TODO{refer to the methodology section of HOT 
+SAX}.\par
+\TODO{mention this in the methodology section as supporting information}
 
 SAX and its variants have also been used for the analysis of multivariate time
 series. SAX-ARM combines the SAX representation with association rule mining 
 (identifying rules and implications
 found in the data, i.e. parameter a influences parameter b) to analyze
 multivariate time series and discover the rules underlying the data
-\mycite{park2020}. MSAX expanded the use of SAX to multivariate time series 
-by utilizing multivariate normalization with the help of a covariance matrix
-and a modified distance measure \mycite{anacleto2020}. SAX has also been used
-to visualize multivariate medical test results and enable their analysis
-\mycite{ordonez2008}.
+\mycite{park2020}. \citeauthor{anacleto2020} introduced MSAX in
+\citeyear{anacleto2020} and thus expanded the use of SAX to multivariate time 
+series. They utilize multivariate normalization with a covariance matrix and a 
+modified distance measure to achieve this. To analyze their method, the authors
+use MSAX and SAX in a classification task based on multiple multivariate time
+series data sets. For these multivariate data sets, SAX was applied to each of
+their individual time series and those results were combined. Their analysis 
+found that, overall, SAX applied in this way is superior to MSAX when it comes
+to classification accuracy. In 6 of the 14 tested data sets, SAX was
+significantly more accurate, in 2 of the MSAX was more accuarate, and in the
+remaining 6 their performance was not significantly different. It should be
+noted that in the ECG data set they tested, the accuracy of SAX
+($\sim$87\%) was slightly higher than that of MSAX ($\sim$84\%), but not significantly so. \citeauthor{anacleto2020}
+suggest that in future research MSAX should be applied to electronic health
+records (e.g. ECGs) and that it should be applied to other time series data
+mining applications besides classification \mycite{anacleto2020}. MSAX will be
+thoroughly presented in \TODO{refer to methods section}.
+\TODO{mention this in the methodology section as supporting information}
+Another application of SAX to multivariate data used it to visualize multivariate 
+medical test results and enable their analysis \mycite{ordonez2008}.
 Resource-aware SAX is a SAX variant developed to analyze ECG using a mobile
 device like a mobile phone. The method takes advantage of the computational
 efficiency of SAX to perform the ECG analysis on the device and even preserve
@@ -189,19 +208,71 @@ The following subsection covers the ECG and methods used in its analysis.
 Luigi Galvani noted the electrical activity in muscles 1786, but the history of 
 the ECG only started in 1842, when Carlo Matteucci showed the electrical 
 activity of a frog's heartbeat. In the 1870s, it was discovered that each
-heartbeat is characterized by electrical changes. Willem Einthoven was the
-first to publish an ECG waveform with the now standard annotations P, Q, R, S,
-and T for the different features. Then, in 
-\TODO{refer to the figure of the heart beat here}\\
-In 1901-1902, Einthoven created the first ECG recording of a human heartbeat
+heartbeat is characterized by electrical changes.   
+Then, in 1901-1902, Willem Einthoven created the first ECG recording of a human 
+heartbeat
 using using 3 leads connected to the limbs of the patient.
+Einthoven was the
+first to publish an ECG waveform with the now standard annotations P, Q, R, S,
+and T for the different features (see \figref{07:fig:ecg_ann}).
 He would receive the 1924 Nobel Prize in medicine for his invention of
-the electrocardiograph. As a result of further development,  12-lead ECG that 
+the electrocardiograph. As a result of further development, the 12-lead ECG that 
 we know today was created \mycite{alghatrif2012,fye1994}.\par
+\TODO{add a list of the leads and where they are}
 
-\TODO{cite becker2006 on how ECGs work}\\
-\TODO{write a section on how the 12 leads work}\\
-\TODO{how does it work}\\
+An ECG records the electrical activity that accompanies the contraction and
+relaxation of the heart muscle. The sinuatrial node, which can spontaneously
+give off an electrical pulse, initiates the heart beat. Its pulse is conducted
+through the heart by other specialized fibers, causing the heart to beat. The
+conduction of electricity is facilitated by Sodium, Calcium, and Potassium ions
+flowing in and out of cardiac cells \mycite{becker2006}. 
+\figref{07:fig:ecg_ann} shows a ECG wave of a single heartbeat from record 103
+of the MIT-BIH data base \mycite{moody2001,goldberger2000} (for more 
+information on the data base, see section \TODO{refer to the ECG data base 
+section}).
+The P wave is caused by the depolarization of the atrial node, which allows
+blood to flow into the heart. The QRS complex, as it is called, is the result
+of ventricular depolarization and represents the action of pumping blood out of
+the heart. The T wave is caused by ventricular repolarization in preparation
+for the next heartbeat. The U wave, only present in about 25\% of people, is
+thought to he caused by mechanical-electric feedback 
+\mycite{wasilewski2012,becker2006}. The last P wave is part of the next 
+heartbeat, which is not shown in \figref{07:fig:ecg_ann}. 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth,height=0.7\textwidth]{07_ecg_ann}%
+    \caption{Annotated ECG of one heartbeat. This graph is based on lead II, 
+    data points 2031--2390 of recording 103 of the MIT-BIH data base 
+    \mycite{moody2001,goldberger2000}.}
+    \label{07:fig:ecg_ann}
+\end{figure}
+
+The waves and complexes shown in \figref{07:fig:ecg_ann} are the object of ECG
+analysis. Changes in their shape, duration, or height can indicate heart
+conditions. \citeauthor{becker2006} list some of the features relevant for ECG
+analysis \mycite{becker2006}:
+\begin{itemize}
+    \item The regularity of the rhythm: are the intervals between the QRS
+        complexes and P waves regular?
+    \item The shape of the QRS complex: do they have similar shape and
+        duration?
+    \item The regularity of the P waves: are the P waves similar and is the
+        interval between P wave and QRS complex similar?
+    \item Is the heart rate regular: measuring the time between QRS complexes
+        can be used to calculate the heart rate, is this heart rate in the normal
+        range?
+    \item Do the waves and complexes come in the same order each time: each
+        cycle should consist of a P wave, QRS complex, T wave.
+\end{itemize}
+Using an ECG to diagnose a cardiac condition is difficult in practice. Small 
+changes in the components of the ECG can be indicators of diseases and those 
+changes can be overlooked, even by trained and specialized physicians. The 
+chance to make a mistake is even higher for non-specialized physicians and 
+trainees \mycite{alghatrif2012,xie2020}. 
+
+\TODO{inset some stuff on arrhythmia and ihd, insert stuff from first lit
+review on ecg methods.}
+
 \TODO{different methods of recording ECGs}\\
 \TODO{annotated ecg for parts, which diseases are apparent}\\
 
