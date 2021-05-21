@@ -4,6 +4,435 @@
 
 \section{Methods}
 
+This section details the methods used in this paper to investigate its
+hypothesis: does the use of the MSAX representation improve the performance of
+the HOT SAX anomaly detection algorithm applied to ECGs compared to the SAX
+representation? \TODO{fix this and make congruent with hypothesis}. The
+following section will first cover the mathematical foundations of SAX, MSAX,
+and HOT SAX. Then, the statistical methods used to analyze the results will be
+presented, followed by a note on the implementation of the mathematical methods
+and statistical analysis, and the data used in this research. Lastly, the 
+limitations of these methods will be discussed. \TODO{make sure this fits the 
+actual structure}\par
+
+While MSAX and SAX both are time series representation methods, they can be
+applied to ECGs, as EGCs are discrete multivariate time series. Mathematically,
+a discrete time series is a series of $T$ observations made at discrete points 
+in time, with $n$ values recorded at each moment in time. Following 
+\mycite{anacleto2020}, 
+\begin{equation}\label{08:eq:ts}
+    \left\{ \mathbf{v} [t] \right\}_{t \in \{1, \ldots, T\}}
+\end{equation}
+is a $n$-variate time series where, for each time point $t$,
+\begin{equation}\label{08:eq:ts-point}
+    \mathbf{v} [t] = \left(v_1[t], \ldots, v_n[t] \right)
+\end{equation}
+represents the values of the time series. If the time series has $n=1$ values
+at each time point, it is called univariate, if $n>1$, it is called
+multivariate.
+For ECGs, the discrete points in 
+time are dictated by the sampling frequency, which is the number of
+observations made in one second. The number of leads in an ECG is equivalent to
+the variable $n$ in \eqref{08:eq:ts-point}. As virtually all ECGs consist of
+more than one lead ($n>1$), ECGs are multivariate time series.
+
+\subsection{Mathematical Foundations}
+
+The main method used in this research is the SAX representation. It will be
+compared to MSAX, a multivariate version of the representation. Both
+representations will be used with the HOT SAX algorithm to detect ECG
+anomalies.
+\TODO{make sure this is accurate}
+
+\subsubsection{SAX}
+
+The Symbolic Aggregate Approximation, introduced in \citeyear{lin2003} by 
+\citeauthor{lin2003}, is a symbolic time series representation 
+\mycite{lin2003}. Its main features are the symbolic representation and
+dimension reduction of time series data, and the lower bounding of the
+Euclidean Distance. A lower bound (or infimum) in set theory is a value that is 
+the largest element in a set $S$ that is smaller than all elements in a certain 
+subset of $S$. For SAX, lower bounding the Euclidean Distance can be understood
+as stating that the SAX distance between two SAX representations is guaranteed
+to be smaller than or equal to the ``true" or Euclidean Distance between the
+original time series. Accordingly, the distance between two SAX representations
+is guaranteed to be representative of the Euclidean Distance between the raw
+time series. The SAX representation only works for time series $\mathbf{v}[t]$
+for which $n=1$, i.e. which are univariate. Thus \eqref{08:eq:ts} becomes
+$\mathbf{v}[t] = v_1[t]$. Using
+the SAX representation is a three-step process. Firstly, the raw time series is
+normalized. Secondly, the dimension of the normalized time series is reduced 
+using PAA. Thirdly, the PAA-represented time series is discretized.
+Additionally, a distance measure between two SAX representations is defined.
+
+\paragraph{Normalization.}
+
+The normalization for the SAX representation is necessary because, to compare
+two time series, it is standard practice to normalize both of them because
+otherwise comparisons between them are not useful \mycite{lin2003}. SAX is
+normalized by applying standard Z-normalization, resulting in a time series
+with sample mean equal to 0 and sample standard deviation equal to 1. To do 
+this, the mean and standard deviation of the univariate time series 
+$\mathbf{v}[t]$ needs to be calculated. The sample mean of a list of values is
+\begin{equation}\nonumber
+    \bar x = \frac{1}{T} \sum_{t=1}^T{\mathbf{v}[t]}.
+\end{equation}
+The sample standard deviation can be found with the formula
+\begin{equation}\nonumber
+    s = \sqrt{\frac{1}{T-1} \sum_{t=1}^T{\left(\mathbf{v}[t] - \bar
+    x \right)^2}}
+\end{equation}
+(It should be noted that for applications to whole ECGs, the sample standard
+deviation and population standard deviation are very similar, as $T$ is often
+$>100.000$). Finally, the normalized time series values can be obtained by
+computing
+\begin{equation}\nonumber
+    \mathbf{v}[t] = \frac{\mathbf{v}[t] - \bar x}{s}, \qquad \forall t \in 
+    \{1,\ldots,T\}.
+\end{equation}
+The resulting time series will have the same shape as the raw time series, but
+it will have no unit and be normalized.
+
+\TODO{insert figure here}
+
+\paragraph{Dimension reduction with PAA.}
+
+The dimension reduction of the SAX representation is due to the use of PAA. The
+PAA method takes a univariate time series $\mathbf{v}[t]$ of length $T$ and an
+integer $w$ and segments $\mathbf{v}[t]$ into $w$ segments, taking the average
+of each. Following \mycite{lin2003}, the resulting representation is denoted as
+$\bar \mathbf{v}[t]$ and now has length $w$. The PAA representation of
+$\mathbf{v}[t]$ can be calculated by using the following formula 
+\mycite{lin2003}
+\begin{equation}\nonumber
+    \bar \mathbf{v}[t] = \frac{w}{T} \sum_{j
+    = \frac{n}{w}(t-1)+1}^{\frac{n}{w}t}{\mathbf{v}[t]},\qquad \forall t \in
+    \{1,\ldots,w\}.
+\end{equation}
+Now $\mathbf{v}[t]$ has been converted to the PAA representation $\bar
+\mathbf{v}[t]$.
+This process reduces the length of the time series from $T$ to $w$, with the
+dimension reduction ratio depending on the choice of $w$.
+\TODO{insert figure here}
+
+\paragraph{Discretization of PAA representation.}
+
+This last step in the SAX representation process involves transforming the PAA
+representation $\bar \mathbf{v}[t]$ into a sequence of equiprobable symbols. Here it is assumed that
+a normalized time series has a Gaussian normal distribution ($\mathcal{N}(0,
+1)$). The number symbols used is denoted by $a$--the alphabet size. To create 
+the equiprobable 
+symbols, \textcite{lin2003} use so-called ``breakpoints". These breakpoints are 
+a sorted list of numbers $B = \beta_1,\ldots,\beta_{a-1}$. The area under the
+normal curve $\mathcal{N}(0,1)$ (i.e. the probability) between two consecutive
+segments $\beta_i$ and $\beta_{i+1}=1/a$. This creates $a$ segments ($a-1$
+breakpoints) of $\mathcal{N}(0,1)$ that have the same area, i.e. the same 
+probability. The values of the breakpoints in $B$ can be found in a Z-table. 
+For illustration, \tabref{08:tab:B} shows the breakpoint values for $a=3$ to 
+$a=6$.
+\begin{table}[t]
+    \centering
+    \caption{Breakpoint values for numbers of breakpoints $a$ from 3 to 6. The
+    parameter $a$ determines into how many equally-sized areas the normal curve 
+    $\mathcal{N}(0,1)$ is split. The breakpoints $\beta_i$ delimit the areas.
+    Table contents are quoted from \mycite{lin2003}.}
+    \label{08:tab:B}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r |}\hline
+        \rowcolor{tablegray}
+        {\centering\diagbox{$\beta_i$}{$a$}}& \multicolumn{1}{c|}{3} & 
+        \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{5}  & 
+        \multicolumn{1}{c|}{6}   \\\hline
+        $\beta_1$   & -0.43 & -0.67  & -0.84 & -0.97    \\\hline
+        $\beta_2$   &  0.43 &   0  & -0.25 & -0.43    \\\hline
+        $\beta_3$   & \multicolumn{1}{c|}{---} &  0.67  &  0.25 &   0    \\\hline
+        $\beta_4$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&  
+        0.84 &  0.43    \\\hline
+        $\beta_5$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&
+        \multicolumn{1}{c|}{---}&  0.97    \\\hline
+    \end{tabular}
+\end{table}
+
+Once the breakpoint values have been determined, the discretization process
+begins. The process assigns all PAA segments whose value is below $\beta_1$
+the symbol ``a". The PAA segments falling in the area $\beta_1 \le$ and $<
+\beta_2$ are assigned ``b". This mapping process is continued, until all PAA
+segments are symbolized. Now we have arrived at the SAX representation. The SAX 
+representation of $\bar \mathbf{v}[t]$ is denoted $\hat \mathbf{v}[t]$ and has 
+the same length as $\bar \mathbf{v}[t]$ ($w$). Mathematically, the
+discretization process is formulated in \mycite{lin2003} as
+\begin{equation}\nonumber
+    \hat \mathbf{v}[t] = \text{alpha}_j \quad \text{if  } \beta_{j-1} \le \hat 
+    \mathbf{v}[t] < \beta_j, \qquad \forall t \in \{1,\ldots,w\}.
+\end{equation}
+Here $\text{alpha}_j$ is the $j$th letter of the alphabet, i.e.
+$\text{alpha}_1=$ ``a", $\text{alpha}_2=$ ``b" \ldots{}
+The resulting time series representation has an even more reduced dimension than
+PAA because instead of infinitely many possible values for the real-valued PAA 
+values, now there are only $a$ different, equiprobable symbols. Thus, the SAX
+representation $\hat \mathbf{v}[t]$ has been obtained.
+\TODO{insert graph here}
+
+\paragraph{SAX distance measure.}
+
+A distance measure between two SAX representations of the same length is
+required to be able to compare them with each other. The SAX distance function
+is based on the Euclidean Distance between two time series $\mathbf{v}[t]$ and 
+$\mathbf{u}[t]$ is \mycite{lin2003}
+\begin{equation}\nonumber
+    \text{D}\left(\mathbf{u}[t],\mathbf{v}[t] \right) \equiv \sqrt{\sum_{t=1}^{T}
+    {\left(\mathbf{u}[t] - \mathbf{v}[t] \right)^2}}.
+\end{equation}
+Through the PAA distance as an intermediate step, the authors arrive at
+$\text{MINDIST}$ in \eqref{08:eq:sax-mindist}, the SAX distance function that 
+returns the minimum distance between the two original time series. It is 
+defined as \mycite{lin2003}
+\begin{equation}\label{08:eq:sax-mindist}
+    \text{MINDIST}\left(\hat \mathbf{u}[t], \hat \mathbf{v}[t] \right) \equiv 
+    \sqrt{\frac{T}{w}} \sqrt{\sum_{t=1}^{w}{\left(\text{dist}(\hat \mathbf{u}[t], 
+    \hat \mathbf{v}[t]) \right)^2}}.
+\end{equation}
+The function $\text{dist}$ is based on a lookup table that contains the
+distances between two symbols. \tabref{08:tab:dist} shows the lookup table for
+$a=5$. The values of each table cell are 0 for symbols letters or the absolute
+difference of the breakpoints otherwise. The formula
+\begin{equation}\label{08:eq:dist-cell}
+    \text{cell}_{r,c} = \left\{ \, \begin{aligned}
+        0, &\quad \text{if}\,\, |r-c| \le 1 \\ 
+        \beta_{\text{max}(r,c)-1} - \beta_{\text{min}(r,c)},  &\quad \text{otherwise}
+                                \end{aligned} \right.
+\end{equation}
+is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
+(row) and $c$ (column) \mycite{lin2003}.
+\begin{table}[t]
+    \centering
+    \caption{A table for the $\text{dist}$ function for $a=5$. Each cell 
+    displays the distance between the symbols denoting its row and column. The
+    formula for the cell values is \eqref{08:eq:dist-cell}.}
+    \label{08:tab:dist}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r | r |}\hline
+        \rowcolor{tablegray}
+        & \multicolumn{1}{c|}{a} & 
+        \multicolumn{1}{c|}{b} & \multicolumn{1}{c|}{c}  & 
+        \multicolumn{1}{c|}{d} & \multicolumn{1}{c|}{e}   \\\hline
+        a   & -0.43 & -0.67  & -0.84 & -0.97  &  \\\hline
+        b   &  0.43 &   0  & -0.25 & -0.43  &  \\\hline
+        c   & 0 &  0.67  &  0.25 &   0  &  \\\hline
+        d   & 0 &0&      0.84 &  0.43  &  \\\hline
+        e   & 0&0& 0&  0.97  &  \\\hline
+    \end{tabular}
+\end{table}
+\TODO{inset example of distance between a short segment of SAX stuff, maybe two
+ecg segments}
+
+\subsubsection{MSAX}
+
+The Multivariate Symbolic Aggregate Approximation, introduced in \citeyear{lin2003} by 
+\citeauthor{lin2003}, is a symbolic time series representation 
+\mycite{lin2003}. Its main features are the symbolic representation and
+dimension reduction of time series data, and the lower bounding of the
+Euclidean Distance. A lower bound (or infimum) in set theory is a value that is 
+the largest element in a set $S$ that is smaller than all elements in a certain 
+subset of $S$. For SAX, lower bounding the Euclidean Distance can be understood
+as stating that the SAX distance between two SAX representations is guaranteed
+to be smaller than or equal to the ``true" or Euclidean Distance between the
+original time series. Accordingly, the distance between two SAX representations
+is guaranteed to be representative of the Euclidean Distance between the raw
+time series. The SAX representation only works for time series $\mathbf{v}[t]$
+for which $n=1$, i.e. which are univariate. Thus \eqref{08:eq:ts} becomes
+$\mathbf{v}[t] = v_1[t]$. Using
+the SAX representation is a three-step process. Firstly, the raw time series is
+normalized. Secondly, the dimension of the normalized time series is reduced 
+using PAA. Thirdly, the PAA-represented time series is discretized.
+Additionally, a distance measure between two SAX representations is defined.
+
+\paragraph{Normalization.}
+
+The normalization for the SAX representation is necessary because, to compare
+two time series, it is standard practice to normalize both of them because
+otherwise comparisons between them are not useful \mycite{lin2003}. SAX is
+normalized by applying standard Z-normalization, resulting in a time series
+with sample mean equal to 0 and sample standard deviation equal to 1. To do 
+this, the mean and standard deviation of the univariate time series 
+$\mathbf{v}[t]$ needs to be calculated. The sample mean of a list of values is
+\begin{equation}\nonumber
+    \bar x = \frac{1}{T} \sum_{t=1}^T{\mathbf{v}[t]}.
+\end{equation}
+The sample standard deviation can be found with the formula
+\begin{equation}\nonumber
+    s = \sqrt{\frac{1}{T-1} \sum_{t=1}^T{\left(\mathbf{v}[t] - \bar
+    x \right)^2}}
+\end{equation}
+(It should be noted that for applications to whole ECGs, the sample standard
+deviation and population standard deviation are very similar, as $T$ is often
+$>100.000$). Finally, the normalized time series values can be obtained by
+computing
+\begin{equation}\nonumber
+    \mathbf{v}[t] = \frac{\mathbf{v}[t] - \bar x}{s}, \qquad \forall t \in 
+    \{1,\ldots,T\}.
+\end{equation}
+The resulting time series will have the same shape as the raw time series, but
+it will have no unit and be normalized.
+
+\TODO{insert figure here}
+
+\paragraph{Dimension reduction with PAA.}
+
+The dimension reduction of the SAX representation is due to the use of PAA. The
+PAA method takes a univariate time series $\mathbf{v}[t]$ of length $T$ and an
+integer $w$ and segments $\mathbf{v}[t]$ into $w$ segments, taking the average
+of each. Following \mycite{lin2003}, the resulting representation is denoted as
+$\bar \mathbf{v}[t]$ and now has length $w$. The PAA representation of
+$\mathbf{v}[t]$ can be calculated by using the following formula 
+\mycite{lin2003}
+\begin{equation}\nonumber
+    \bar \mathbf{v}[t] = \frac{w}{T} \sum_{j
+    = \frac{n}{w}(t-1)+1}^{\frac{n}{w}t}{\mathbf{v}[t]},\qquad \forall t \in
+    \{1,\ldots,w\}.
+\end{equation}
+Now $\mathbf{v}[t]$ has been converted to the PAA representation $\bar
+\mathbf{v}[t]$.
+This process reduces the length of the time series from $T$ to $w$, with the
+dimension reduction ratio depending on the choice of $w$.
+\TODO{insert figure here}
+
+\paragraph{Discretization of PAA representation.}
+
+This last step in the SAX representation process involves transforming the PAA
+representation $\bar \mathbf{v}[t]$ into a sequence of equiprobable symbols. Here it is assumed that
+a normalized time series has a Gaussian normal distribution ($\mathcal{N}(0,
+1)$). The number symbols used is denoted by $a$--the alphabet size. To create 
+the equiprobable 
+symbols, \textcite{lin2003} use so-called ``breakpoints". These breakpoints are 
+a sorted list of numbers $B = \beta_1,\ldots,\beta_{a-1}$. The area under the
+normal curve $\mathcal{N}(0,1)$ (i.e. the probability) between two consecutive
+segments $\beta_i$ and $\beta_{i+1}=1/a$. This creates $a$ segments ($a-1$
+breakpoints) of $\mathcal{N}(0,1)$ that have the same area, i.e. the same 
+probability. The values of the breakpoints in $B$ can be found in a Z-table. 
+For illustration, \tabref{08:tab:B} shows the breakpoint values for $a=3$ to 
+$a=6$.
+\begin{table}[t]
+    \centering
+    \caption{Breakpoint values for numbers of breakpoints $a$ from 3 to 6. The
+    parameter $a$ determines into how many equally-sized areas the normal curve 
+    $\mathcal{N}(0,1)$ is split. The breakpoints $\beta_i$ delimit the areas.
+    Table contents are quoted from \mycite{lin2003}.}
+    \label{08:tab:B}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r |}\hline
+        \rowcolor{tablegray}
+        {\centering\diagbox{$\beta_i$}{$a$}}& \multicolumn{1}{c|}{3} & 
+        \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{5}  & 
+        \multicolumn{1}{c|}{6}   \\\hline
+        $\beta_1$   & -0.43 & -0.67  & -0.84 & -0.97    \\\hline
+        $\beta_2$   &  0.43 &   0  & -0.25 & -0.43    \\\hline
+        $\beta_3$   & \multicolumn{1}{c|}{---} &  0.67  &  0.25 &   0    \\\hline
+        $\beta_4$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&  
+        0.84 &  0.43    \\\hline
+        $\beta_5$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&
+        \multicolumn{1}{c|}{---}&  0.97    \\\hline
+    \end{tabular}
+\end{table}
+
+Once the breakpoint values have been determined, the discretization process
+begins. The process assigns all PAA segments whose value is below $\beta_1$
+the symbol ``a". The PAA segments falling in the area $\beta_1 \le$ and $<
+\beta_2$ are assigned ``b". This mapping process is continued, until all PAA
+segments are symbolized. Now we have arrived at the SAX representation. The SAX 
+representation of $\bar \mathbf{v}[t]$ is denoted $\hat \mathbf{v}[t]$ and has 
+the same length as $\bar \mathbf{v}[t]$ ($w$). Mathematically, the
+discretization process is formulated in \mycite{lin2003} as
+\begin{equation}\nonumber
+    \hat \mathbf{v}[t] = \text{alpha}_j \quad \text{if  } \beta_{j-1} \le \hat 
+    \mathbf{v}[t] < \beta_j, \qquad \forall t \in \{1,\ldots,w\}.
+\end{equation}
+Here $\text{alpha}_j$ is the $j$th letter of the alphabet, i.e.
+$\text{alpha}_1=$ ``a", $\text{alpha}_2=$ ``b" \ldots{}
+The resulting time series representation has an even more reduced dimension than
+PAA because instead of infinitely many possible values for the real-valued PAA 
+values, now there are only $a$ different, equiprobable symbols. Thus, the SAX
+representation $\hat \mathbf{v}[t]$ has been obtained.
+\TODO{insert graph here}
+
+\paragraph{SAX distance measure.}
+
+A distance measure between two SAX representations of the same length is
+required to be able to compare them with each other. The SAX distance function
+is based on the Euclidean Distance between two time series $\mathbf{v}[t]$ and 
+$\mathbf{u}[t]$ is \mycite{lin2003}
+\begin{equation}\nonumber
+    \text{D}\left(\mathbf{u}[t],\mathbf{v}[t] \right) \equiv \sqrt{\sum_{t=1}^{T}
+    {\left(\mathbf{u}[t] - \mathbf{v}[t] \right)^2}}.
+\end{equation}
+Through the PAA distance as an intermediate step, the authors arrive at
+$\text{MINDIST}$ in \eqref{08:eq:sax-mindist}, the SAX distance function that 
+returns the minimum distance between the two original time series. It is 
+defined as \mycite{lin2003}
+\begin{equation}\label{08:eq:sax-mindist}
+    \text{MINDIST}\left(\hat \mathbf{u}[t], \hat \mathbf{v}[t] \right) \equiv 
+    \sqrt{\frac{T}{w}} \sqrt{\sum_{t=1}^{w}{\left(\text{dist}(\hat \mathbf{u}[t], 
+    \hat \mathbf{v}[t]) \right)^2}}.
+\end{equation}
+The function $\text{dist}$ is based on a lookup table that contains the
+distances between two symbols. \tabref{08:tab:dist} shows the lookup table for
+$a=5$. The values of each table cell are 0 for symbols letters or the absolute
+difference of the breakpoints otherwise. The formula
+\begin{equation}\label{08:eq:dist-cell}
+    \text{cell}_{r,c} = \left\{ \, \begin{aligned}
+        0, &\quad \text{if}\,\, |r-c| \le 1 \\ 
+        \beta_{\text{max}(r,c)-1} - \beta_{\text{min}(r,c)},  &\quad \text{otherwise}
+                                \end{aligned} \right.
+\end{equation}
+is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
+(row) and $c$ (column) \mycite{lin2003}.
+\begin{table}[t]
+    \centering
+    \caption{A table for the $\text{dist}$ function for $a=5$. Each cell 
+    displays the distance between the symbols denoting its row and column. The
+    formula for the cell values is \eqref{08:eq:dist-cell}.}
+    \label{08:tab:dist}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r | r |}\hline
+        \rowcolor{tablegray}
+        & \multicolumn{1}{c|}{a} & 
+        \multicolumn{1}{c|}{b} & \multicolumn{1}{c|}{c}  & 
+        \multicolumn{1}{c|}{d} & \multicolumn{1}{c|}{e}   \\\hline
+        a   & -0.43 & -0.67  & -0.84 & -0.97  &  \\\hline
+        b   &  0.43 &   0  & -0.25 & -0.43  &  \\\hline
+        c   & 0 &  0.67  &  0.25 &   0  &  \\\hline
+        d   & 0 &0&      0.84 &  0.43  &  \\\hline
+        e   & 0&0& 0&  0.97  &  \\\hline
+    \end{tabular}
+\end{table}
+\TODO{inset example of distance between a short segment of SAX stuff, maybe two
+ecg segments}
+
+
+
+\subsubsection{MSAX}
+
+\begin{itemize}
+    \item idea
+    \item normalization
+    \item dimensionality reduction
+    \item discretization
+    \item distance measure
+    \item \TODO{all with graphs and formulas}
+    \item \TODO{points out differences to SAX}
+\end{itemize}
+
+\subsubsection{HOTSAX}
+
+\begin{itemize}
+    \item what is hotsax
+    \item its theoretical foundations
+    \item advantages, disadvantages
+    \item how does it work
+\end{itemize}
+
+
+
 \TODO{the idea is to use the ECG as it would be recorded or digitized by
 anyone, without filtering. see zhang2019 if they did filtering}
 
@@ -51,45 +480,6 @@ This section explains the methods used in this research. \TODO{create flow
 charts for all this shit to make it simpler}. First methods section for the
 analytical methods in a mathematical way.
 
-\subsection{Mathematical Foundations}
-
-\begin{itemize}
-    \item section for the workings
-    \item explain theoretical foundations of the approach
-    \item what is it grounded in, who, what, when
-\end{itemize}
-
-\subsection{SAX}
-
-\begin{itemize}
-    \item idea
-    \item normalization
-    \item dimensionality reduction
-    \item discretization
-    \item distance measure
-    \item \TODO{all with graphs and formulas}
-\end{itemize}
-
-\subsection{MSAX}
-
-\begin{itemize}
-    \item idea
-    \item normalization
-    \item dimensionality reduction
-    \item discretization
-    \item distance measure
-    \item \TODO{all with graphs and formulas}
-    \item \TODO{points out differences to SAX}
-\end{itemize}
-
-\subsection{HOTSAX}
-
-\begin{itemize}
-    \item what is hotsax
-    \item its theoretical foundations
-    \item advantages, disadvantages
-    \item how does it work
-\end{itemize}
 
 \subsection{Statistical Analysis of Results}
 

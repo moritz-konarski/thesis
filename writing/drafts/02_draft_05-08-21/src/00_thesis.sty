@@ -18,25 +18,26 @@ for ECG Analysis}
 }
 \newcommand{\thesissubject}{SAX and MSAX for ECG abnormality detection}
 
-%\newcommand{\mycite}[1]{[#1]}
-\newcommand{\mycite}[1]{\cite{#1}}
+\newcommand{\mycite}[1]{[#1]}
+%\newcommand{\mycite}[1]{\cite{#1}}
 %\newcommand{\mycite}[1]{\nocite{#1}}
 
 \RequirePackage{fixmetodonotes}
 
 \RequirePackage[american]{babel}
 \RequirePackage[
-%    showframe,
+    showframe,
     left=3cm,
     right=1.5cm,
     top=2cm,
     bottom=2cm
 ]{geometry}
 
-%\RequirePackage{showkeys}
+\RequirePackage{showkeys}
 
 \RequirePackage{xcolor}
 \definecolor{aucablue}{RGB}{34, 80, 169}
+\definecolor{tablegray}{gray}{0.85}
 \RequirePackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -102,9 +103,8 @@ for ECG Analysis}
 
 \RequirePackage{float}
 
-\RequirePackage{color}
+%\RequirePackage{color}
 \RequirePackage{colortbl}
-\definecolor{Gray}{gray}{0.85}
 
 \RequirePackage[titles]{tocloft}
 \setlength{\cftsubsecindent}{0.5\parindent}
@@ -127,6 +127,8 @@ for ECG Analysis}
 
 \RequirePackage[inline]{enumitem}
 \setlist{nosep}
+
+\RequirePackage{diagbox}
 
 \RequirePackage{subfiles}
 
