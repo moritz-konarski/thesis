@@ -4,6 +4,8 @@
 
 \section{Methods}
 
+\TODO{fix sectioning and verbal toc}
+
 This section details the methods used in this paper to investigate its
 hypothesis: does the use of the MSAX representation improve the performance of
 the HOT SAX anomaly detection algorithm applied to ECGs compared to the SAX
@@ -35,14 +37,6 @@ time are dictated by the sampling frequency, which is the number of
 observations made in one second. The number of leads in an ECG is equivalent to
 the variable $n$ in \eqref{08:eq:ts-point}. As virtually all ECGs consist of
 more than one lead ($n>1$), ECGs are multivariate time series.
-
-\subsection{Mathematical Foundations}
-
-The main method used in this research is the SAX representation. It will be
-compared to MSAX, a multivariate version of the representation. Both
-representations will be used with the HOT SAX algorithm to detect ECG
-anomalies.
-\TODO{make sure this is accurate}
 
 \subsubsection{SAX}
 
@@ -397,14 +391,292 @@ identifying subsections of a time series that are most different to other
 segments of the time series, i.e. that have the largest distance to other,
 non-intersecting subsegments \mycite{keogh2005}. The standard approach to
 discord discovery, comparing all segments to all other segments, is too slow
-for application to large datasets as it has a complexity of $O(n^2)$. This
-means that for $n$ subsegments, around $n^2$ operations need to be performed.
+for application to large datasets as it has a complexity of $O(m^2)$. This
+means that for $m$ subsegments, around $m^2$ operations need to be performed.
+This would be performed in two nested loops, the outer loop iterating over all
+subsegments. The inner loop also iterates over all subsegments; the subsegments
+from the outer and inner loop are compared if and only if they are not
+identical. An algorithm for this procedure can be found in Table 1 of
+\mycite{keogh2005}. As each of these loops would iterate over all of the $m$ 
+subsegments, resulting in the mentioned $m^2$ complexity.\par
+
+HOT SAX has the goal of speeding up this process and making discord discovery
+viable even for long time series. The authors theorize that a ``magic"
+heuristic would provide the time series subsegments first in order of their
+distance to their nearest neighbor, from largest to smallest. These would be
+iterated over by the outer loop. Then, the magic heuristic would provide an 
+ordering of the subsegments by their distance to the subsegment selected in the
+outer loop, in ascending order. Inside the inner loop, the subsegments are them
+compared, given that they are not identical. The logic behind the outer and
+inner magic heuristics is as follows: the outer heuristic orders the time series
+subsegments by their distance to their neighboring segments, descendingly. This
+effectively produces a list of subsegments that are most different from the
+other segments. Combined with the assumption that time series discords are very 
+different from the other segments, the outer heuristic effectively orders the
+subsegments by the likelihood that they are discords. The inner heuristic
+returns an ordering that produces subsegments with the smallest distances to
+the outer-loop subsegment, i.e. it returns the segments most similar to
+the outer-loop subsegment. If it is assumed that the outer-loop subsegment is
+likely a discord, other subsegments that are similar to it are also likely to
+be discords. With these two magic heuristics, discord discovery would be sped
+up significantly, as the discords are very likely found early on in the process
+and thus the process can be abandoned before exhausting all $m^2$ operations.
+Even if the magic heuristic were as bad as possible, returning orderings that
+slow down the process as much as possible, the brute force method mentioned in
+the previous paragraph would not be faster. In this case, both methods would
+require $m^2$ operations and be equal \mycite{keogh2003}.\par
+
+The magic heuristic can of course not exist, hence the name. But
+\citeauthor{keogh2005} approximate it to still achieve a significant speedup.
+The first step the authors take is to apply the SAX representation to the time
+series to reduce its complexity and dimension, while retaining an accurate
+representation of the data \mycite{lin2003}. To compare two subsegments, the
+SAX distance function $\text{MINDIST}$ is used. Then, a certain window size is
+chosen that represents the number of SAX segments that will make up one of the
+aforementioned time series subsegments. Now the magic heuristic can be
+approximated. The outer heuristic, which returns the subsegments of the time
+series in descending order by their distance to their neighbors. The authors
+approximate this by taking each SAX subsegment and insert them into an array,
+counting how many times each unique time series occurs. By sorting this array
+by the occurrence counts, the outer heuristic can be approximated. At the same
+time as the outer heuristic, the inner heuristic can be approximated. For its
+approximation, a digital tree (also known as trie or prefix tree) is used. In
+this tree, the SAX representation is used as an index to locate a leaf node.
+This node contains the locations in the time series where the particular
+subsequence occurs. Effectively, this prefix tree can be used to locate all SAX 
+subsequences that are identical to a given one. So, if one as the subsegment 
+``abc", it is possible to find all other locations of the ``abc" subsegment in
+the time series using this tree.
+\TODO{use Figure 4 from [keogh2005] here}
+By default, HOT SAX only returns the most discordant time series subsegment.
+Because more than one time series discord can be present in a time series (as
+in an ECG), it is useful to extract more than one. The number of discords to be
+extracted is called $k$. If $k>1$, each newly found discord is compared to the
+other already found discords, and only the $k$ discords with the largest
+distance values are saved. In this way, it is possible to extract an exact
+number of discords. Another modification is to save all discords that the
+method detects \mycite{keogh2005}.\par
+
+The authors find that HOT SAX can effectively detect time series discords and
+speed up the process when compared to the brute force method. A strength of the
+method is, in their opinion, the fact that it only requires the user to
+determine a single parameter, the length of the subsequence (the parameter $k$
+has no influence on the method itself, it simply determines how many of the
+results should be used) \mycite{keogh2005}. The authors apply HOT SAX to ECG
+time series and, in anecdotal tests, find success in determining discords in
+ECGs. They further suggest the application of HOT SAX to multivariate time
+series \mycite{keogh2005}. For these reasons, HOT SAX was chosen as this 
+research's discord discovery method. While HOT SAX was designed to work with
+SAX, all it requires is a time series representation and a lower-bounding
+distance measure defined on it. MSAX exhibits both of those traits and can thus
+be used with HOT SAX. Doing this expands HOT SAX to multivariate time series,
+as MSAX can represent those. Using HOT SAX with the MSAX representation is
+novel and a contribution of this research.
+
+\end{document}
+
+\subsection{Implementation}
+
+This subsection is concerned with the implementation of the methods discussed
+in the previous section. \TODO{spell out what will be covered in which order}
+
+All code used in the implementation of these methods is available upon request
+via email at \begin{verbatim}konarski_m@auca.kg\end{verbatim}.
+
+How I implemented the above stuff. Languages, approaches, hurdles, all the
+details needed to reproduce this research. Also mention the simplifications
+I chose to make and why: no sliding window, only even divisors, only divisors
+within sampling frequency and cutting ECG to even multiple of sampling
+frequency.
+
+\subsubsection{The ECG Data}
+
+The ECG data used in this research is the MIT-BIH Arrhythmia Database
+\mycite{moody2001,goldberger2000}. This database contains 48 ECG recordings
+that are each 30 minutes long. For each of the ECGs, this database contains two
+ECG leads and is thus multivariate data. The leads chosen are not the same in
+each ECG, they were chosen based on which of the 12 originally recorded ones
+best represent the condition of the ECG. A team of cardiologists annotated each 
+heartbeat in each ECG and determined if it is a normal heartbeat or not. For
+example, a beat with the annotation ``N" is a normal beat, while ``A" denotes
+an atrial premature beat. The annotations also include non-beat features such
+as a change in signal quality, denoted by ``$\sim$", or a rhythm change, which
+is denoted as ``+". A full list of annotations and their meaning is available
+at \url{https://archive.physionet.org/physiobank/annotations.shtml}. These 
+annotations make it possible to judge the performance of a discord detection 
+algorithm, as each detected discord can be checked for correctness using the
+provided annotations. While the MIT-BIH database is not the only database that
+possesses such annotations, it is one of the most commonly used ones in the
+literature (see \mycite{prasad2018,kanani2020,kaur2016,nygaard1998,sivaraks2015,
+valupadasu2012,zhang2019}) and it represents a middle ground in a couple
+important respects. The databases 48 ECGs are a manageable number, falling in
+between the extremes of around 10 and over 100 ECGs. Furthermore, the 30
+minutes length represent real-world ECGs better than 10 second excerpts, but
+are not as long and analysis-intensive as 24 hour recordings. Lastly, the
+MIT-BIH database has a sampling frequency of 360 samples per second, which is
+an adequate value \mycite{kligfield2007}. The ECG data in this database is
+unfiltered.\par
+
+The ECG data can be downloaded using the PhysioNet website at the url
+\url{https://www.physionet.org/content/mitdb/1.0.0/}, or, alternatively, using 
+the PhysionNet-developed WFDB applications package. This package provides
+command line applications to work with PhysionNet data. For each of the
+individually numbered ECG records, 4 files exist. The 
+\begin{verbatim}.hea\end{verbatim} files contain metadata on the ECG record,
+including anonymized patient information and the lead names. The 
+\begin{verbatim}.dat\end{verbatim} files contain the actual ECG recording and
+the other two files contain additional information, including the annotations.
+Once the ECG recording has been downloaded, the
+\begin{verbatim}rdsamp\end{verbatim} command is used to convert the binary ECG
+recording files into a more user-friendly comma separated value (CSV) file. 
+The \begin{verbatim}rdann\end{verbatim} command is then used to create a CSV
+file containing the annotations for each of the ECG records. Finally, the ECG
+recording data and the annotations can be merged into a single file by using
+the time stamps contained in both files. This yields full ECG recordings with
+added beat annotations in one file. These files are the basis of all further
+methods and analysis performed in this research. The author created a script in
+the Julia programming language that performs this process.
+
+\subsubsection{SAX, MSAX, HOT SAX Implementation}
+
+The main program for this research was developed using the Julia programming
+language. Julia is a scientific programming language that has similarities to
+R, MATLAB, and Python. Julia possesses a rich ecosystem of libraries for
+visualization, computation, and data manipulation. For more information, visit
+the Julia website at \url{https://julialang.org/}. The following subsection
+will detail the steps comprising the discord discovery program.\par
+
+The first step is the selection of the important parameters for the methods.
+The user defined parameters are:
+\begin{itemize}
+    \item the sampling frequency of the ECG data to be analyzed;
+    \item the number of PAA segments $w$ used for SAX and MSAX;
+    \item the alphabet size $a$ used for SAX and MSAX;
+    \item the subsequence length that determines HOT SAX;
+    \item the variable $k$ indicating how many discords should be found.
+\end{itemize}
+These parameters determine all actions the program performs afterward. The
+second step is to load a CSV file containing the ECG data and annotations into
+the program. Once the ECG file is loaded, it is transformed into a data frame.
+A data frame is a type of data structure that can hold heterogeneous data
+types, e.g. text and numbers. This step adds important information to the ECG
+data. The ECG data frame contains the parameters itemized above to enable
+reproduction and analysis of the results, an index range for each PAA segment
+so it can be located in the raw ECG, the beat annotations for each PAA segment,
+and empty data fields for the results of the analysis with HOT SAX. The next
+step is the application of the SAX and MSAX representations. The transformation
+of the raw time series data to the symbolic representations is performed in the
+same order as discussed earlier in this section, and thanks to the Julia
+programming language's ecosystem of libraries, can be easily translated into
+code. SAX is applied to each of the ECG leads individually, while MSAX is
+applied as designed to both at once. HOT SAX comprises the next step. For MSAX,
+the HOT SAX process is performed using the MSAX representation and distance
+measure. The method returns a list of distances as well as a list of indices
+that indicate which PAA segment has which distance. Depending on the parameter
+$k$, only the top $k$ of these discords are returned. These results are then
+added to the respective PAA segments in the ECG data frame, adding both the
+MSAX distance of the segment as well as a binary indicator of whether or not
+the segment was detected as a discord. For SAX the process slightly different.
+Because SAX is a univariate representation, it cannot be directly applied to
+a bivariate ECG. Thus, SAX is applied to each lead of the ECG separately and
+HOT SAX is performed for each representation of each lead. Each set of results
+is, like MSAX, a list of indices of PAA segments and a list of their distances.
+Each sets of results is also added to the ECG data frame. This time the
+detection indicator is quaternary, it represents no detection, detection on the
+first lead, detection on the second lead, or detection on both leads. After
+both of these processes are completed, the ECG data frame is written to a CSV
+file for further analysis. This process can be repeated thousands of times to
+create data of different values for the parameters to determine optimal values
+and their influence.
+
+\subsubsection{Statistical Analysis of Results}
+
+After completing the computations for different sets of parameters, the results
+need to be analyzed. While HOT SAX is not a classifier in the sense of
+classifying heartbeats by medical standards, it does classify them into
+discords and non-discords. Thus, it is a binary classifier. Binary classifiers
+can be evaluated using the well-known True Positive, True Negative, False
+Negative, and False Positive values. \tabref{08:tab:bin-class} shows their
+relationship.
+\begin{table}[t]
+    \centering
+    \caption{Contingency table showing the relationship between detected
+    discords and actual annotated values.}
+    \label{08:tab:bin-class}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | c | c |}\hline
+        \rowcolor{tablegray}
+        {\centering\diagbox{Actual}{Assigned}}& Discord Detected & Non-Discord
+        Detected \\\hline
+        Is Discord      & True Positive     & False Negative \\\hline
+        Is Non-Discord  & False Positive    & True Negative  \\\hline
+    \end{tabular}
+\end{table}
+The values in \tabref{08:tab:bin-class} can be used to calculate many useful
+ratios that assist the evaluation of the HOT SAX algorithm. This research uses
+the recall value (also known as sensitivity), the accuracy, and the precision.
+These ratios are calculated as follows: recall value is defined as
+\begin{equation}\nonumber
+    \text{Recall} = \frac{\text{True Positive}}{\text{True Positive}
+    + \text{False Negative}},
+\end{equation}
+the accuracy as
+\begin{equation}\nonumber
+    \text{Accuracy} = \frac{\text{True Positive} + \text{True Negative}}
+        {\text{True Positive} + \text{True Negative} + \text{False Positive} + 
+        \text{False Negative}},
+\end{equation}
+and the precision as 
+\begin{equation}\nonumber
+    \text{Precision} = \frac{\text{True Positive}}{\text{True Positive}
+    + \text{False Positive}}.
+\end{equation}
+Recall can be understood as a measure of how many of the actual discords were
+correctly assigned the label discord. This is the most important measure for the
+analysis of HOT SAX applied to ECGs because in a medical scenario, identifying
+as many possibly relevant sections of the ECG is more important than being
+100\% accurate in their identification. The second most important value is
+precision, which can be understood as a measure of how many of the detected
+discords are actually discords. While it is more important to identify as many
+discords as possible, a 100\% recall rate could be achieved simply by assigning
+the label of discord to every element in the time series. Furthermore,
+detecting too many non-discords as discords makes it harder to analyze the
+actual discords that were highlighted. This of course is not useful, and thus 
+the precision of HOT SAX needs to be incorporated into the analysis. Lastly, 
+accuracy is not a very good measure for this particular application, as the
+majority of the segments in an ECG are non-discords and HOT SAX only detects
+a minority of the segments in an ECG. This leads to a high True Negative rate
+and thus a relatively high accuracy, even if HOT SAX did not actually detect
+any actual discords. Nonetheless, accuracy is a very common indicator of
+classifier performance and will thus be considered.\par
+
+The analysis of the methods was performed using the data whose generation was
+discussed above. The analysis was performed using the R programming language.
+R is an established statistical and mathematical programming language with
+great support for statistical methods and tests. The first step in the analysis
+was the processing of the data generated using the Julia program. This
+consisted of calculating the True Positive, True Negative, False Negative, and 
+False Positive values for each parameter combination and each method.
+A segment was considered a ``non-discord" if its annotation consisted of an
+``N" or nothing ``". The former is obvious; the decision to consider no
+annotation (``") a non-discord was made because for certain segments of the
+ECGs, no annotations were available. This can happen when the subsequence
+length for HOT SAX 
+
+All files were analyzed with
+respect to the performance of MSAX.
+
+
+To analyze the performance of HOT SAX with SAX and MSAX as representations, 
 
 \begin{itemize}
-    \item what is hotsax
-    \item its theoretical foundations
-    \item advantages, disadvantages
-    \item how does it work
+    \item explain true positive, true negative, and so on
+    \item explain recall, accuracy, precision, f1
+    \item explain why recall was chosen and if that is fair
+    \item introduce the correlations that we would expect to find if my
+        hypothesis is true and also the ones that would disprove it
+    \item which types of correlation, significance testing, and modeling will
+        be used and why; what are the justifications
 \end{itemize}
 
 
@@ -456,75 +728,7 @@ charts for all this shit to make it simpler}. First methods section for the
 analytical methods in a mathematical way.
 
 
-\subsection{Statistical Analysis of Results}
 
-\begin{itemize}
-    \item explain true positive, true negative, and so on
-    \item explain recall, accuracy, precision, f1
-    \item explain why recall was chosen and if that is fair
-    \item introduce the correlations that we would expect to find if my
-        hypothesis is true and also the ones that would disprove it
-    \item which types of correlation, significance testing, and modeling will
-        be used and why; what are the justifications
-\end{itemize}
-
-\subsection{Implementation}
-
-How I implemented the above stuff. Languages, approaches, hurdles, all the
-details needed to reproduce this research. Also mention the simplifications
-I chose to make and why: no sliding window, only even divisors, only divisors
-within sampling frequency and cutting ECG to even multiple of sampling
-frequency.
-
-\subsubsection{ECG acquisition}
-
-flow chart for process
-
-\begin{itemize}
-    \item where to download
-    \item what exactly are the ECGs
-    \item where do they come from
-    \item technical parameters of them
-    \item the physionet suite
-    \item annotations, what they mean, how I can get them, etc
-\end{itemize}
-
-\subsubsection{preprocessing}
-
-flow chart for process
-
-\TODO{the codes and constants given for each thing}
-
-\begin{itemize}
-    \item how were they preprocessed
-    \item physionet suite
-    \item my script and what it does and why
-    \item problems and limitations of this 
-    \item libraries used
-\end{itemize}
-
-\subsubsection{SAX}
-
-\TODO{how was the whole data thing handled, how is the data created}
-
-flow chart for process
-
-\begin{itemize}
-    \item how was sax implemented
-    \item how does HOTSAX work here
-    \item libraries used
-\end{itemize}
-
-\subsubsection{MSAX}
-
-flow chart for process
-
-\begin{itemize}
-    \item how was sax implemented
-    \item how does HOTSAX work here
-    \item \TODO{point out differences to SAX}
-    \item libraries used
-\end{itemize}
 
 \subsection{Statistical Evaluation}
 
