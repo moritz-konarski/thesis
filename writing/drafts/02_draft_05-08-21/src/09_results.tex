@@ -7,6 +7,9 @@
 \TODO{fix up this section, set proper headers, etc}
 \TODO{add in some information on how much data, which parameter combinations,
 etc were used}
+\TODO{make this free of interpretation}
+\TODO{mention ECG filtering}
+\TODO{fix verbatim environments, make them inline}
 
 \subsection{Implementation}
 
@@ -227,6 +230,101 @@ step in the analysis was the calculation of the average recall, precision, and
 accuracy across all 48 ECGs for SAX and MSAX. This allows for a simpler
 comparison of the results for different parameters and enables pruning of
 certain parameter combinations before more sophisticated analysis begins.
+
+\subsection{Limitations}
+
+The limitations of this research are the following: HOT SAX is not a classifier
+based on medically relevant information, it classifies discords and not beat
+types. This means that its applications to diagnosing heart conditions is
+limited. HOT SAX can be used to pre-select specific ECG segments to look at and
+analyze because they exhibit discords, but it cannot, by itself, perform any
+type of diagnosis. The previous paragraph explains why empty annotations have
+to be counted as normal beats and while the author believes that this is 
+necessary, it does negatively influence the results. The implementation of the
+representation only allows the use of PAA segment numbers that evenly divide
+the sampling frequency of the ECG database. This was done so that the whole
+ECG, being an even multiple of the sampling frequency itself, can be evenly
+divided into PAA segments. This decision prohibits certain numbers of PAA
+segments as there may be numbers that do not evenly divide into the sampling
+frequency but that do evenly divide the number of raw data points in the ECG.
+A further simplification step in the same vein is the restriction of
+subsequence values to numbers that evenly divide the number of PAA segments
+$w$. This was also done to simplify the process and to guarantee that the whole
+ECG would be evenly divisible into subsequences.
+
+\TODO{finish this}\\
+\TODO{move this to somewhere else?}
+\TODO{mention the 1 second interval connection to the sampling frequency and
+why it works}
+
+\subsection{Data Generation 1}
+
+The first round of data generation involved the creation of 126,720 files which
+corresponds to 2,640 unique sets of parameters. For the parameter $k$ the
+values $\{-1,  25,  50, 100, 150, 200, 300, 500\}$ were used. The value $k=-1$
+corresponds to the situation that all detected discords are returned,
+regardless of how many are detected. The number of PAA segments ranged $w$ was
+$\{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$. The subsequence lengths considered
+were also in this set, and it was made sure that the subsequence length $m$ 
+evenly divides the number of PAA segments $w$. The alphabet sizes $a$ were part 
+of the
+set $\{ 4,  5,  6,  7,  8,  9, 10, 12, 14, 17, 20\}$. These sets of parameters
+\begin{itemize}
+    \item $k \in \{-1,  25,  50, 100, 150, 200, 300, 500\}$
+    \item $w \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
+    \item $m \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
+    \item $a \in \{ 4,  5,  6,  7,  8,  9, 10, 12, 14, 17, 20\}$
+\end{itemize}
+can be combined into 2640 unique combinations that were analyzed. For HOT SAX
+with MSAX, the highest recall value was 99.98\% on average across all 48 ECGs
+for the parameters $k=-1,\,w=60,\,m=60,\,a=20$. These results seem to
+indicate a few important things:
+\begin{itemize}
+    \item the recall value is correlated strongly to $k$, the number of discords
+        considered;
+    \item the recall value is correlated to the length of the subsequence, the
+        longer the subsequence, the higher the recall value is.
+\end{itemize}
+The second observation is most important. As the addition of different
+subsequence length smaller than the 1 second interval does not improve the
+recall value, it was decided to generate a second set of data that did not have
+subsequence lengths smaller than the interval of 1 second. This dataset will
+have more diversity when it comes to the parameters and thus that dataset will
+be used for analysis.\TODO{expand this statement to SAX as well, make
+subsections}
+
+\subsection{Data Generation 2}
+
+The second round of data generation yielded 238,464 files corresponding to
+4,968 unique parameter combinations, each for 48 ECGs. The parameters used in
+this are: $k\in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$, $w \in \{  2,
+3,   4,   5,   6,   8,   9,  10,  12,  15,  18,  20,  24,  30,  36,  40,  45,
+60,  72,  90, 120, 180, 360 \}$, and $a \in \{ 2,  3,  4 , 5,
+6 , 7 , 8 , 9 ,10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+25\}$. 
+\begin{itemize}
+    \item $k \in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$
+    \item $w \in \{  2, 3,   4,   5,   6,   8,   9,  10,  12,  15,  18,  20,  
+        24,  30,  36,  40,  45, 60,  72,  90, 120, 180, 360 \}$
+    \item $m = w$
+    \item $a \in \{ 2,  3,  4 , 5, 6 , 7 , 8 , 9 ,10, 11, 12, 13, 14, 15, 16, 
+        17, 18, 19, 20, 21, 22, 23, 24, 25\}$
+\end{itemize}
+To analyze the performance of MSAX and SAX for this dataset, first the
+parameter combinations with an average recall value of 95\% were selected.
+Then, these values were sorted by their precision. This is meant to represent
+a compromise between recall and precision. The top 10 results showed parameter
+sets with $k=-1$. The best parameter sets under these conditions had values of
+$w$ that were $\le 12$. Only the 7th to 10th best parameter combinations had $w
+\ge 12$. \TODO{make a table here}\TODO{do this for single and dual SAX}. As
+these values are average values, they have to investigated more closely with
+regards to their outliers and interquartile range. The following boxplot can
+illustrate the recall and precision rates for these parameter combinations.
+
+\TODO{boxplots of each of the result sections}
+\TODO{top 10 table for each of the methods}
+\TODO{investigate correlation between sax and msax for those and see if it is
+significant}
 
 \end{document}
 

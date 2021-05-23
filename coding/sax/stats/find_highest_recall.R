@@ -61,3 +61,20 @@ test <- data.frame(test, is_msax = c(rep(0, dim(sm1)[1]), rep(1, dim(st1)[1])))
 cor(test$recall, test$is_msax)
 cor.test(test$recall, test$is_msax)
 
+data <- read.csv2("./data/sub-dual_sax-summary_msax.csv")
+unique(data$k)
+unique(data$paa_count)
+unique(data$subsequence)
+unique(data$alphabet_size)
+
+data <- data[order(data$recall, decreasing = T), ]
+s2 <- data[data$k > 0, ]
+cor(s2$recall, s2$k)
+s1 <- data[order(data$recall, decreasing = T), ]
+s3 <- s1[s1$paa_count != s1$subsequence, ]
+cor(s2$recall, s2$subsequence)
+
+data <- read.csv2("./data/no_sub-single_sax-summary_msax.csv")
+# 
+s1 <- data[data$recall >= 0.95, ]
+s1 <- s1[order(s1$precision, decreasing = T), ]
