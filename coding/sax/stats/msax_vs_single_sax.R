@@ -50,9 +50,9 @@ actual_data <- read.csv2("./real_test_1/data-beat_types-FALSE--single-TRUE--firs
 actual_ssax <- rbind(actual_ssax, actual_data[actual_data$is_msax == 0, ])
 actual_data <- NA
 
-actual_data <- actual_ssax
+actual_data <- actual_msax
 ran <- 1:10
-summary <- ssax_data[ran, 1:4]
+summary <- msax_data[ran, 1:4]
 d <- data.frame()
 for (i in ran) {
     d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
@@ -69,6 +69,31 @@ boxplot(precision ~ rank, data = d)
 # this means that we can pick one that has the highest dim reduction
 # or something
 
+ssax_test <- ssax_data[1, 1:4]
+dsax_test <- dsax_data[1, 1:4]
+msax_test <- msax_data[1, 1:4]
+
+outlier_data <- read.csv2("./outlier_data/data-beat_types-FALSE--single-FALSE--first_sax-FALSE.csv")
+outlier_msax <- outlier_data[outlier_data$is_msax == 1, ]
+outlier_dsax <- outlier_data[outlier_data$is_msax == 0, ]
+outlier_data <- read.csv2("./outlier_data/data-beat_types-FALSE--single-TRUE--first_sax-FALSE.csv")
+outlier_ssax <- outlier_data[outlier_data$is_msax == 0, ]
+outlier_data <- read.csv2("./outlier_data/data-beat_types-FALSE--single-TRUE--first_sax-TRUE.csv")
+outlier_ssax <- rbind(outlier_ssax, outlier_data[outlier_data$is_msax == 0, ])
+
+ssax_outliers <- get_ecgs(outlier_ssax, ssax_test)
+ssax_outliers <- (ssax_outliers[order(ssax_outliers$recall), ])[1:9, ]
+dsax_outliers <- get_ecgs(outlier_dsax, dsax_test)
+dsax_outliers <- (dsax_outliers[order(dsax_outliers$recall), ])[1:3, ]
+msax_outliers <- get_ecgs(outlier_msax, msax_test)
+msax_outliers <- (msax_outliers[order(msax_outliers$recall), ])[1:5, ]
+
+# top 9 outliers for ssax: 102 117 200 122 109 103 121 109 101
+# top 3 outliers for dsax: 109 119 207
+# top 5 outliers for msax: 117 109 102 119 200
+
+# look at all the things and try to find explanations. especially the 
+# ones shared between more than one approach.
 
 
 
