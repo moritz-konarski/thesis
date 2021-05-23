@@ -5,6 +5,8 @@
 \section{Results}
 
 \TODO{fix up this section, set proper headers, etc}
+\TODO{add in some information on how much data, which parameter combinations,
+etc were used}
 
 \subsection{Implementation}
 
@@ -191,8 +193,42 @@ False Positive values for each parameter combination and each method.
 A segment was considered a ``non-discord" if its annotation consisted of an
 ``N" or nothing ``". The former is obvious; the decision to consider no
 annotation (``") a non-discord was made because for certain segments of the
-ECGs, no annotations were available. This can happen when the subsequence
-length for HOT SAX
+ECGs, no annotations were available. This can happen if, for example, the 
+subsequence length for HOT SAX is much smaller than one heartbeat. In that
+situation, one heartbeat might be represented by 5 or more subsegments. The
+heartbeat annotation, given for a specific point in time, will only fall into
+one of the 5 segments and can thus only be counted for that one segment. The
+same is true for an annotation showing a discord. This method of analysis puts
+HOT SAX at a disadvantage because a discord located in one subsegment might
+influence its neighboring segments and thus lead to their detection. This
+detection might be an actual discord being detected, but counting it as one
+would incorrectly inflate the True Positive rate by assuming something about
+the data that it itself does not support without some inference. Thus the
+decision was made to accept lower True Positive values than may be accurate.
+\TODO{explain why? or do so later in limitations section}. Any annotation that
+was not empty or ``N" was considered a discord. This includes the medical
+annotation for arrhythmia but also the annotations for changes in signal
+quality or noise. This is done because HOT SAX is not meant to classify
+heartbeats by medical significance, but by how different they are from other
+heartbeats. A very noisy normal heartbeat will be detected the same as
+a arrhythmic beat. The classification of the detected discords into medically
+normal and abnormal heartbeats is left to more sophisticated analysis methods
+or human experts. The purpose of the HOT SAX methods is merely to reduce the
+number of ECG segments that need to be analyzed by pre-selecting the beats
+likely to contain useful information. After calculating the True Positive, 
+True Negative, False Negative, and False Positive value for each parameter
+combination, they were collected in a data frame also containing information on 
+the parameters that lead to them. These data frames are then saved as CSV files
+for further analysis. The contingency values were analyzed for the HOT SAX with 
+MSAX method, for HOT SAX with individual SAX (only considering a single ECG 
+lead), and for a HOT SAX with combined SAX method where the detected discords 
+of the individual HOT SAX with SAX computations were combined. The very last
+step in the analysis was the calculation of the average recall, precision, and
+accuracy across all 48 ECGs for SAX and MSAX. This allows for a simpler
+comparison of the results for different parameters and enables pruning of
+certain parameter combinations before more sophisticated analysis begins.
+
+\end{document}
 
 All files were analyzed with
 respect to the performance of MSAX.
