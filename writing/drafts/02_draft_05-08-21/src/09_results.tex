@@ -2,30 +2,26 @@
 
 \begin{document}
 
-\section{Results}
+\section{Results and Discussion}
 
 \TODO{fix up this section, set proper headers, etc}
 \TODO{add in some information on how much data, which parameter combinations,
 etc were used}
 \TODO{make this free of interpretation}
 \TODO{mention ECG filtering}
-\TODO{fix verbatim environments, make them inline}
 
-\subsection{Implementation}
+\subsection{Results}
+
+\subsubsection{Implementation}
 
 This subsection is concerned with the implementation of the methods discussed
-in the previous section. \TODO{spell out what will be covered in which order}
-
+in the previous section. First, the ECG data and its preparation will be
+discussed, followed by notes on the implementation of the SAX, MSAX, and HOT
+SAX methods. Lastly, the process used to analyze the results is discussed.
 All code used in the implementation of these methods is available upon request
-via email at \begin{verbatim}konarski_m@auca.kg\end{verbatim}.
+via email at \Verb+konarski_m@auca.kg+.
 
-How I implemented the above stuff. Languages, approaches, hurdles, all the
-details needed to reproduce this research. Also mention the simplifications
-I chose to make and why: no sliding window, only even divisors, only divisors
-within sampling frequency and cutting ECG to even multiple of sampling
-frequency.
-
-\subsubsection{The ECG Data}
+\paragraph{The ECG Data}
 
 The ECG data used in this research is the MIT-BIH Arrhythmia Database
 \mycite{moody2001,goldberger2000}. This database contains 48 ECG recordings
@@ -58,22 +54,31 @@ The ECG data can be downloaded using the PhysioNet website at the url
 the PhysionNet-developed WFDB applications package. This package provides
 command line applications to work with PhysionNet data. For each of the
 individually numbered ECG records, 4 files exist. The
-\begin{verbatim}.hea\end{verbatim} files contain metadata on the ECG record,
+\Verb_.hea_ files contain metadata on the ECG record,
 including anonymized patient information and the lead names. The
-\begin{verbatim}.dat\end{verbatim} files contain the actual ECG recording and
+\Verb_.dat_ files contain the actual ECG recording and
 the other two files contain additional information, including the annotations.
 Once the ECG recording has been downloaded, the
-\begin{verbatim}rdsamp\end{verbatim} command is used to convert the binary ECG
+\Verb_rdsamp_ command is used to convert the binary ECG
 recording files into a more user-friendly comma separated value (CSV) file.
-The \begin{verbatim}rdann\end{verbatim} command is then used to create a CSV
+The \Verb_rdann_ command is then used to create a CSV
 file containing the annotations for each of the ECG records. Finally, the ECG
 recording data and the annotations can be merged into a single file by using
 the time stamps contained in both files. This yields full ECG recordings with
 added beat annotations in one file. These files are the basis of all further
 methods and analysis performed in this research. The author created a script in
-the Julia programming language that performs this process.
+the Julia programming language that performs this process. Filtering of the ECG
+data is not performed. The rationale behind this is twofold. Firstly, the
+combination of PAA and discretization in SAX and MSAX has a smooting effect
+that exhibits some of the same properties as filtering. Additionally, filtering
+of ECGs adds many more parameters that can be modified to improve the
+performance of the methods, which is not desirable for this research as the
+methods should depend on the least possible number of parameters for
+simplicity. As additional support for this approach, \mycite{zhang2019} can be
+considered, which successfully uses SAX in their ECG analysis without
+mentioning any filtering performed on the ECG data.
 
-\subsubsection{SAX, MSAX, HOT SAX Implementation}
+\paragraph{SAX, MSAX, HOT SAX Implementation}
 
 The main program for this research was developed using the Julia programming
 language. Julia is a scientific programming language that has similarities to
@@ -125,7 +130,7 @@ file for further analysis. This process can be repeated thousands of times to
 create data of different values for the parameters to determine optimal values
 and their influence.
 
-\subsubsection{Statistical Analysis of Results}
+\paragraph{Statistical Analysis of Results}
 
 After completing the computations for different sets of parameters, the results
 need to be analyzed. While HOT SAX is not a classifier in the sense of
@@ -260,25 +265,25 @@ why it works}
 \subsection{Data Generation 1}
 
 The first round of data generation involved the creation of 126,720 files which
-corresponds to 2,640 unique sets of parameters. For the parameter $k$ the
-values $\{-1,  25,  50, 100, 150, 200, 300, 500\}$ were used. The value $k=-1$
-corresponds to the situation that all detected discords are returned,
-regardless of how many are detected. The number of PAA segments ranged $w$ was
-$\{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$. The subsequence lengths considered
-were also in this set, and it was made sure that the subsequence length $m$ 
-evenly divides the number of PAA segments $w$. The alphabet sizes $a$ were part 
-of the
-set $\{ 4,  5,  6,  7,  8,  9, 10, 12, 14, 17, 20\}$. These sets of parameters
+corresponds to 2,640 unique sets of parameters. The following itemization shows
+the different parameters that were used in this data generation. Parameter $k$
+is number of discords returned by HOT SAX, $w$ the number of PAA segments in
+one second of 360 data points; $w$ has to evenly divide 360. Parameter $m$ is
+chosen after parameter $w$ and represent the number of PAA segments that are
+grouped together to form a HOT SAX subsequence. This parameter must evenly
+divide $w$. Lastly, $a$ is the alphabet size which determines the number of
+different symbols used in the SAX and MSAX discretization processes.
 \begin{itemize}
     \item $k \in \{-1,  25,  50, 100, 150, 200, 300, 500\}$
     \item $w \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
     \item $m \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
     \item $a \in \{ 4,  5,  6,  7,  8,  9, 10, 12, 14, 17, 20\}$
 \end{itemize}
-can be combined into 2640 unique combinations that were analyzed. For HOT SAX
-with MSAX, the highest recall value was 99.98\% on average across all 48 ECGs
-for the parameters $k=-1,\,w=60,\,m=60,\,a=20$. These results seem to
-indicate a few important things:
+Analyzing the 126,720 data files by calculating the mean values of the
+statistical measures for each set of unique parameters yields, for HOT SAX with 
+MSAX, the recall value was 99.98\% for the parameters 
+$k=-1,\,w=60,\,m=60,\,a=20$. Further analysis of rhese results indicate a few 
+important things:
 \begin{itemize}
     \item the recall value is correlated strongly to $k$, the number of discords
         considered;
@@ -288,20 +293,15 @@ indicate a few important things:
 The second observation is most important. As the addition of different
 subsequence length smaller than the 1 second interval does not improve the
 recall value, it was decided to generate a second set of data that did not have
-subsequence lengths smaller than the interval of 1 second. This dataset will
-have more diversity when it comes to the parameters and thus that dataset will
-be used for analysis.\TODO{expand this statement to SAX as well, make
-subsections}
+subsequence lengths smaller than the interval of 1 second. Instead, a larger
+set of the other parameters would be considered. 
+\TODO{expand this statement to SAX as well, make subsections}
 
 \subsection{Data Generation 2}
 
 The second round of data generation yielded 238,464 files corresponding to
-4,968 unique parameter combinations, each for 48 ECGs. The parameters used in
-this are: $k\in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$, $w \in \{  2,
-3,   4,   5,   6,   8,   9,  10,  12,  15,  18,  20,  24,  30,  36,  40,  45,
-60,  72,  90, 120, 180, 360 \}$, and $a \in \{ 2,  3,  4 , 5,
-6 , 7 , 8 , 9 ,10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-25\}$. 
+4,968 unique parameter combinations, each for 48 ECGs. The following list shows
+the sets of possible parameters:
 \begin{itemize}
     \item $k \in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$
     \item $w \in \{  2, 3,   4,   5,   6,   8,   9,  10,  12,  15,  18,  20,  
@@ -312,8 +312,68 @@ this are: $k\in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$, $w \in \{  2,
 \end{itemize}
 To analyze the performance of MSAX and SAX for this dataset, first the
 parameter combinations with an average recall value of 95\% were selected.
-Then, these values were sorted by their precision. This is meant to represent
-a compromise between recall and precision. The top 10 results showed parameter
+For MSAX, this set has 255 values, for single SAX it has 99, and for
+combined SAX 192. Then, these values were sorted by their precision. This is 
+meant to represent a compromise between recall and precision. 
+
+The top 10 results for each method were chosen for further analysis. For MSAX,
+the best precision value is 36.24\% for $k=-1,\,w=m=6,\,a=24$ at a recall value
+of 95.37\%. For single SAX, the best precision value is 35.94\% for the
+parameters $k=-1,\,w=m=40,\,a=19$ at a recall value of 95.21\%, and for dual
+SAX the best precision value is 36.56\% for $k=-1,\,w=m=12,\,a=22$ at a recall
+value of 95.28\%. At first glance dual SAX seems to have a slightly higher
+precision that MSAX, while MSAX has a slighly higher recall value. Single SAX
+performs worse than both other methods. Besides the average value, the 
+distribution of recall and precision values are important.
+\figref{09:fig:recall} shows a boxplot comparing MSAX and dual SAX with
+respect to their recall values. It can be observed that they are virtually
+identical, with MSAX having a slightly higher value and being slightly more
+tightly grouped than dual SAX. MSAX has more outliers. 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{recall}
+    \caption{Boxplot comparing the recall value for MSAX and SAX for their
+    respective best parameters. A slightly tighter grouping of can be observed
+    for the MSAX, while it also has more outliers than the SAX method.}
+    \label{09:fig:recall}
+\end{figure}
+\figref{09:fig:precision} shows a boxplot comparing MSAX and dual SAX with
+respect to their precision values. It can be observed that these, too, are 
+virtually identical. Dual SAX has a slighly higher precision, while MSAX has
+a slighly tighter grouping. There are no outliers.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{precision}
+    \caption{Boxplot comparing the precision value for MSAX and SAX for their
+    respective best parameters. A slightly tighter grouping of can be observed
+    for the MSAX, while its average is slighly lower than that of the SAX method.}
+    \label{09:fig:precision}
+\end{figure}
+Performing Pearson correlation analysis with respect to the correlation between
+precision and the used method yields a correlation coefficient of 0.006. This
+very clearly indicates that there is no significant difference between the two
+recall values being influenced by the methods. Performing the same test with
+respect to precision yields a correlation coefficient of -0.004, also
+indicating no correlation between the methods used analyzed here.
+
+\subsection{Discussion}                                                            
+                                                                                
+\TODO{expand on this, potentially merge with results section}                   
+                                                                                
+In the previous section the results of the data analysis were presented. It was 
+found that when the optimal parameters for MSAX and dual SAX are used, there is 
+no significant difference between the two methods.                              
+                                                                                
+The most important result is the one mentioned above, as it indicates that, we  
+infer, the MSAX representation is equal in performance to the dual SAX method   
+when applied to ECGs using HOT SAX. This is congruent with the results of       
+\mycite{anacleto2020}, where the authors found only a slight difference between 
+the dual SAX method and MSAX. Discussing the actual parameters, MSAX used a PAA 
+segment count of 6, representing 60 times reduction in dimension, while dual    
+SAX performed best for $w=12$, a 30 times reduction in dimension.    
+
+\end{document}
+showed parameter
 sets with $k=-1$. The best parameter sets under these conditions had values of
 $w$ that were $\le 12$. Only the 7th to 10th best parameter combinations had $w
 \ge 12$. \TODO{make a table here}\TODO{do this for single and dual SAX}. As

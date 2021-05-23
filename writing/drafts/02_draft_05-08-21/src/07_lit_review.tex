@@ -5,10 +5,10 @@
 \section{Background and Related Work}
 
 This section provides background information on time series and ECGs, as well
-as methods to analyze them.
-
-\TODO{make this a more complete introduction, give a verbal table of contents
-with reference to the different sections}
+as methods to analyze them. First, time series analysis will be covered,
+focusing on different time series representation methods and the SAX
+representation. Then, ECGs and their analysis will be discussed, focusing on
+what an ECG is, computerized ECG analysis, and ECG databases.
 
 \subsection{Time Series and Time Series Analysis}\label{07:time-series-intro}
 
@@ -94,8 +94,7 @@ Fast Fourier Transform, an optimized form of the DFT, decomposes the its input
 signal into many sinus waves of different frequencies. In \mycite{prasad2018} 
 it is used in conjunction with a machine learning model to achieve a beat 
 classification accuracy of 98.7\%. The PAA is part of the process of the SAX
-representation, thus it will be covered in \TODO{refer to the appropriate 
-methods section}
+representation, thus it will be covered in section \ref{08:paa-proc}.
 
 \subsubsection{Model-based representation}
 
@@ -122,7 +121,7 @@ representation with adaptive ECG segmentation to successfully reconstruct the
 dimension reduction method, the preprocessing and segmentation of ECGs can be
 significantly sped up while maintaining accuracy comparable to precious methods
 \mycite{zifan2006}. The SAX representation will be covered in detail in 
-\TODO{refer to the SAX section} and the following subsection 
+section \ref{08:sax} and the following subsection 
 \ref{07:section_sax} will provide background on the method and its variations.
 
 \subsubsection{SAX representation background}\label{07:section_sax}
@@ -167,9 +166,7 @@ Thus, HOT SAX utilizes SAX to reduce the dimensionality and complexity of the
 time series and then sorts the resulting SAX segments to speed up the discord
 detection. The authors suggest further research to investigate the use HOT SAX
 on multivariate time series \mycite{keogh2005}. For an in-depth description of 
-this method, please refer to \TODO{refer to the methodology section of HOT 
-SAX}.\par
-\TODO{mention this in the methodology section as supporting information}
+this method, please refer to section \ref{08:hot-sax}.\par
 
 SAX and its variants have also been used for the analysis of multivariate time
 series. SAX-ARM combines the SAX representation with association rule mining 
@@ -192,8 +189,7 @@ noted that in the ECG dataset they tested, the accuracy of SAX
 suggest that in future research MSAX should be applied to electronic health
 records (e.g. ECGs) and that it should be applied to other time series data
 mining applications besides classification \mycite{anacleto2020}. MSAX will be
-thoroughly presented in \TODO{refer to methods section}.
-\TODO{mention this in the methodology section as supporting information}
+thoroughly presented in section \ref{08:msax}.
 Another application of SAX to multivariate data used it to visualize multivariate 
 medical test results and enable their analysis \mycite{ordonez2008}.
 Resource-aware SAX is a SAX variant developed to analyze ECG using a mobile

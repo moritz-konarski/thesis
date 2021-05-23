@@ -78,3 +78,7 @@ data <- read.csv2("./data/no_sub-single_sax-summary_msax.csv")
 # 
 s1 <- data[data$recall >= 0.95, ]
 s1 <- s1[order(s1$precision, decreasing = T), ]
+
+
+
+# https://www.tutorialspoint.com/r/r_boxplots.htm

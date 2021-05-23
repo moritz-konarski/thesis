@@ -4,18 +4,13 @@
 
 \section{Methods}
 
-\TODO{fix sectioning and verbal toc}
-
 This section details the methods used in this paper to investigate its
 hypothesis: does the use of the MSAX representation improve the performance of
 the HOT SAX anomaly detection algorithm applied to ECGs compared to the SAX
-representation? \TODO{fix this and make congruent with hypothesis}. The
-following section will first cover the mathematical foundations of SAX, MSAX,
-and HOT SAX. Then, the statistical methods used to analyze the results will be
-presented, followed by a note on the implementation of the mathematical methods
-and statistical analysis, and the data used in this research. Lastly, the 
-limitations of these methods will be discussed. \TODO{make sure this fits the 
-actual structure}\par
+representation? \TODO{fix this and make congruent with hypothesis}. Below,
+a short introduction to time series will be given. Following that, the SAX
+representation will be discussed, followed by the MSAX reresentation and then
+the HOT SAX algorithm.\par
 
 While MSAX and SAX both are time series representation methods, they can be
 applied to ECGs, as EGCs are discrete multivariate time series. Mathematically,
@@ -38,7 +33,7 @@ observations made in one second. The number of leads in an ECG is equivalent to
 the variable $n$ in \eqref{08:eq:ts-point}. As virtually all ECGs consist of
 more than one lead ($n>1$), ECGs are multivariate time series.
 
-\subsubsection{SAX}
+\subsection{SAX}\label{08:sax}
 
 The Symbolic Aggregate Approximation, introduced in \citeyear{lin2003} by 
 \citeauthor{lin2003}, is a symbolic time series representation 
@@ -91,8 +86,6 @@ computing
 The resulting time series will have the same shape as the raw time series, but
 it will have no unit and be normalized.
 
-\TODO{insert figure here}
-
 \paragraph{Dimension reduction with PAA.}\label{08:paa-proc}
 
 The dimension reduction of the SAX representation is due to the use of PAA. The
@@ -110,8 +103,19 @@ $\mathbf{v}[t]$ can be calculated by using the following formula
 Now $\mathbf{v}[t]$ has been converted to the PAA representation
 $\overline{\mathbf{v}}[t]$.
 This process reduces the length of the time series from $T$ to $w$, with the
-dimension reduction ratio depending on the choice of $w$.
-\TODO{insert figure here}
+dimension reduction ratio depending on the choice of $w$. In
+\figref{08:fig:paa}, the PAA representation is shown overlaid onto ECG 103 of
+the MIT-BIH database. It is apparent that the dimension of the ECG has been
+reduced. The original ECG section of one second contains 360 data points, while
+its PAA representation only contains 18 values--a dimension reduction of 20.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{paa_graph}
+    \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
+    representation. Here $w=18$, meaning there are 18 PAA segments. The
+    dimension reduction through PAA is 20.}
+    \label{08:fig:paa}
+\end{figure}
 
 \paragraph{Discretization of PAA representation.}
 
@@ -168,8 +172,22 @@ $\text{alpha}_1=$ ``a", $\text{alpha}_2=$ ``b" \ldots{}
 The resulting time series representation has an even more reduced dimension than
 PAA because instead of infinitely many possible values for the real-valued PAA 
 values, now there are only $a$ different, equiprobable symbols. Thus, the SAX
-representation $\widehat{\mathbf{v}}[t]$ has been obtained.
-\TODO{insert graph here}
+representation $\widehat{\mathbf{v}}[t]$ has been obtained. In
+\figref{08:fig:sax} ECG 103 of the MIT-BIH database is shown with $w=18$ and
+$a=4$. The three breakpoints are indicated by the dashed horizontal lines.
+\figref{08:fig:sax} illustrates how an ECG can be reduced from 360 real-valued
+points to 18 symbols. The SAX representation of this ECG section is
+``bbbbb\textbf{d}bbbc\textbf{d}cbddbbb". Both the QRS complex (the first ``d") 
+and the T wave (second ``d") can be seen in the representation.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{sax_graph}
+    \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
+    representation and the SAX discretization. Here $w=18$, a dimension
+    reduction of 20, and $a=4$, meaning there are 3 breakpoints (indicated by
+    the dashed lines) and 4 symbols.}
+    \label{08:fig:sax}
+\end{figure}
 
 \paragraph{SAX distance measure.}
 
@@ -219,17 +237,18 @@ is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
         \rowcolor{tablegray} & \multicolumn{1}{c|}{a} & \multicolumn{1}{c|}{b} 
             & \multicolumn{1}{c|}{c} & \multicolumn{1}{c|}{d} & 
             \multicolumn{1}{c|}{e} \\\hline
-        a & -0.43 & -0.67 & -0.84 & -0.97 &  \\\hline
-        b &  0.43 &     0 & -0.25 & -0.43 &  \\\hline
-        c &     0 &  0.67 &  0.25 &     0 &  \\\hline
-        d &     0 &     0 &  0.84 &  0.43 &  \\\hline
-        e &     0 &     0 &     0 &  0.97 &  \\\hline
+        a & 0       & 0        &0.59     &1.09     &1.68  \\\hline
+        b & 0       & 0        &0        &0.51     &1.09  \\\hline
+        c & 0.589   & 0        &0        &0        &0.59  \\\hline 
+        d & 1.09    & 0.51     &0        &0        &0     \\\hline 
+        e & 1.68    & 1.09     &0.59     &0        &0     \\\hline 
     \end{tabular}
 \end{table}
-\TODO{inset example of distance between a short segment of SAX stuff, maybe two
-ecg segments}
+For example, if $a=5$, the $\text{MINDIST}$ between ``a" and ``a" is 0, just 
+like the distance between ``b" and ``a". The distance between ``d" and ``a" is 
+1.09.
 
-\subsubsection{MSAX}
+\subsection{MSAX}\label{08:msax}
 
 The Multivariate Symbolic Aggregate Approximation was introduced by
 \citeauthor{anacleto2020} in \citeyear{anacleto2020}. It is an extension of SAX
@@ -312,9 +331,6 @@ $\mathbf{V}[t]$ can be normalized by the following formula
 The result will have a mean of zero and uncorrelated variables
 \mycite{anacleto2020}.
 
-\TODO{insert figure here, use both leads in both graphs; may turn out a little
-large}
-
 \paragraph{Dimension reduction with PAA.}
 
 Dimension reduction using PAA for MSAX is performed in exactly the same way as
@@ -325,8 +341,9 @@ results in
 a PAA representation of the original time series $\overline{\mathbf{V}}[t] = \left(
 \overline{V_1}[t], \ldots, \overline{V_n}[t]\right)^T$. This process also reduces the length 
 of the time series from $T$ to $w$ for each sub-series, with the
-dimension reduction ratio depending on the choice of $w$ \mycite{anacleto2020}
-\TODO{insert figure here}
+dimension reduction ratio depending on the choice of $w$ \mycite{anacleto2020}.
+The \figref{08:fig:paa}, while showing the PAA representation for SAX, is also
+applicable here, as the process is identical for SAX and MSAX.
 
 \paragraph{Discretization of PAA representation.}
 
@@ -344,7 +361,27 @@ distinguish the values. The final MSAX representation $\widehat{\mathbf{V}}[t]$
 will
 consist of one long list of symbols because for each moment $t$ all generated
 symbols are combined into a list for this time that represent all sub-time
-series at that time.\TODO{add a graph and example here for illustration}
+series at that time. \figref{08:fig:msax} shows the MSAX representation of one
+second of ECG 100 from the MIT-BIH database. As MSAX is a multivariate
+representation, both leads of the ECG are shown. The symbols of the second lead
+have been capitalized to distinguish them from the symbols of the first lead.
+The parameters for the graph are $w=18$ and $a=4$, leading to a dimension
+reduction of 20 and the use of 3 breakpoints (indicated by the dashed lines).
+Using the MSAX representation, the two ECG leads, which have 360 data points
+each in raw form, can be represented by 36 symbols. The ECG section displayed
+below can be expressed as the series of symbols ``cCcCbC \textbf{dD}bCbC bCbBbA 
+bBcCcC cBcBcB cBcBbB". In the MSAX representation, the features of the raw data
+are still present, which can be seen in the visible QRS complex indicated by
+``dD".
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{msax}
+    \caption{Graph of ECG 100 of the MIT-BIH database overlaid with its PAA
+    representation and the MSAX discretization, for both leads. Here $w=18$, a 
+    dimension reduction of 20, and $a=4$, meaning there are 3 breakpoints 
+    (indicated by the dashed lines) and 4 symbols.}
+    \label{08:fig:msax}
+\end{figure}
 
 \paragraph{MSAX distance measure.}
 
@@ -379,10 +416,11 @@ The function $\text{dist}$ is the same as the SAX function, being based on
 equation \eqref{08:eq:dist-cell} and lookup tables like \tabref{08:tab:dist}.
 Like $\text{MINDIST}$, $\text{MINDIST\_MSAX}$ also lower bounds the Euclidean
 Distance and derives all the same benefits from that.
-\TODO{inset example of distance between a short segment of SAX stuff, maybe two
-ecg segments}
+The distances between individual MSAX symbols the same as between SAX symbols
+(see \tabref{08:tab:dist}). Distances between groups of more than 1 symbol can
+be calculated using \eqref{08:eq:msax-mindist}.
 
-\subsubsection{HOT SAX}
+\subsection{HOT SAX}\label{08:hot-sax}
 
 The Heuristically Ordered Time series using Symbolic Aggregate Approximation is
 a discord discovery algorithm introduced by \citeauthor{keogh2005} in 
@@ -446,8 +484,19 @@ This node contains the locations in the time series where the particular
 subsequence occurs. Effectively, this prefix tree can be used to locate all SAX 
 subsequences that are identical to a given one. So, if one as the subsegment 
 ``abc", it is possible to find all other locations of the ``abc" subsegment in
-the time series using this tree.
-\TODO{use Figure 4 from [keogh2005] here}
+the time series using this tree. \figref{08:fig:hot-sax} (quoted from
+\mycite{keogh2005}) provides a visual representation of the HOT SAX process.
+\begin{figure}[t]
+    \centering
+    \includegraphics[height=0.4\textheight]{fig4}
+    \caption{Illustration of the HOT SAX heuristic creation process. This
+    figure illustrates how each unique time series subsegment is recorded in an 
+    array together with the count of its occurrence. The augmented trie stores
+    the locations of the segments in the time series. The indices can be
+    retrived by indexing the trie using a SAX subsequence. This figure is
+    quoted from Figure 4 on p. 5 of \mycite{keogh2005}.}
+    \label{08:fig:hot-sax}
+\end{figure}
 By default, HOT SAX only returns the most discordant time series subsegment.
 Because more than one time series discord can be present in a time series (as
 in an ECG), it is useful to extract more than one. The number of discords to be
