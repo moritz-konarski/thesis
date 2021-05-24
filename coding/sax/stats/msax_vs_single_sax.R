@@ -23,7 +23,7 @@ ssax_data <- ssax_data[order(ssax_data$precision, decreasing = T), ]
 # for these there are only 3 for sax, 13 for dual sax, and 23 for msax
 # out of all 4968 the files only those -> bad
 # this is why new data was needed.
-# if all segments for where paa = m are removed, ssax has 0, dsax has 0, msax has 3
+# if all segments for where paa = m are removed, ssax has 0, dsax has 0, msax has    3
 
 # no subsequences
 
