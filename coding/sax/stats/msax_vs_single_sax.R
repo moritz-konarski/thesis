@@ -60,6 +60,66 @@ for (i in ran) {
 boxplot(recall ~ rank, data = d)
 boxplot(precision ~ rank, data = d)
 
+
+# SSAX BOXPLOT
+actual_data <- actual_ssax
+ran <- 1:10
+summary <- ssax_data[ran, 1:4]
+d <- data.frame()
+for (i in ran) {
+    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+}
+boxplot(recall ~ as.factor(rank), 
+        data = d,
+        main = "Boxplot of Recall for 10 best S-SAX Parameter Sets",
+        xlab = "Rank",
+        ylab = "Recall",
+        ylim = c(0, 1)
+        )
+
+best_ssax <- ssax_data[2, ]
+
+# DSAX BOXPLOT
+actual_data <- actual_dsax
+ran <- 1:10
+summary <- dsax_data[ran, 1:4]
+d <- data.frame()
+for (i in ran) {
+    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+}
+boxplot(recall ~ as.factor(rank), 
+        data = d,
+        main = "Boxplot of Recall for 10 best D-SAX Parameter Sets",
+        xlab = "Rank",
+        ylab = "Recall",
+        ylim = c(0, 1)
+        )
+
+best_dsax <- dsax_data[2, ]
+
+
+# MSAX BOXPLOT
+actual_data <- actual_msax
+ran <- 1:10
+summary <- msax_data[ran, 1:4]
+d <- data.frame()
+for (i in ran) {
+    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+}
+boxplot(recall ~ as.factor(rank), 
+        data = d,
+        main = "Boxplot of Recall for 10 best MSAX Parameter Sets",
+        xlab = "Rank",
+        ylab = "Recall",
+        ylim = c(0, 1)
+        )
+
+best_msax <- msax_data[2, ]
+
+
+
+
+
 # outliers occur ssax, msax, dsax
 # very clear pattern to them -> needs investigation
 # -> write ECG code into files and then check?

@@ -2,6 +2,10 @@
 
 \begin{document}
 
+\TODO{call it HOT MSAX throughout}
+\TODO{mention the low number of parameters as a strength}
+\TODO{mention and introduce ssax, dsax, msax and what they mean}
+
 \section{Methods}
 
 This section details the methods used in this paper to investigate its
@@ -108,7 +112,7 @@ dimension reduction ratio depending on the choice of $w$. In
 the MIT-BIH database. It is apparent that the dimension of the ECG has been
 reduced. The original ECG section of one second contains 360 data points, while
 its PAA representation only contains 18 values--a dimension reduction of 20.
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{paa_graph}
     \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
@@ -132,7 +136,7 @@ breakpoints) of $\mathcal{N}(0,1)$ that have the same area, i.e. the same
 probability. The values of the breakpoints in $B$ can be found in a Z-table. 
 For illustration, \tabref{08:tab:B} shows the breakpoint values for $a=3$ to 
 $a=6$.
-\begin{table}[t]
+\begin{table}[h]
     \centering
     \caption{Breakpoint values for numbers of breakpoints $a$ from 3 to 6. The
     parameter $a$ determines into how many equally-sized areas the normal curve 
@@ -179,7 +183,7 @@ $a=4$. The three breakpoints are indicated by the dashed horizontal lines.
 points to 18 symbols. The SAX representation of this ECG section is
 ``bbbbb\textbf{d}bbbc\textbf{d}cbddbbb". Both the QRS complex (the first ``d") 
 and the T wave (second ``d") can be seen in the representation.
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{sax_graph}
     \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
@@ -200,16 +204,16 @@ $\mathbf{u}[t]$ is \mycite{lin2003}
     {\left(\mathbf{u}[t] - \mathbf{v}[t] \right)^2}}.
 \end{equation}
 Through the PAA distance as an intermediate step, the authors arrive at
-$\text{MINDIST}$ in \eqref{08:eq:sax-mindist}, the SAX distance function that 
+$MINDIST$ in \eqref{08:eq:sax-mindist}, the SAX distance function that 
 returns the minimum distance between the two original time series. It is 
 defined as \mycite{lin2003}
 \begin{equation}\label{08:eq:sax-mindist}
-    \text{MINDIST}\left(\widehat{\mathbf{u}}[t], \widehat{\mathbf{v}}[t] \right) \equiv 
+    MINDIST\left(\widehat{\mathbf{u}}[t], \widehat{\mathbf{v}}[t] \right) \equiv 
     \sqrt{\frac{T}{w}}
-    \sqrt{\sum_{t=1}^{w}{\left(\text{dist}(\widehat{\mathbf{u}}[t], 
+    \sqrt{\sum_{t=1}^{w}{\left(dist(\widehat{\mathbf{u}}[t], 
     \widehat{\mathbf{v}}[t]) \right)^2}}.
 \end{equation}
-The function $\text{dist}$ is based on a lookup table that contains the
+The function $dist$ is based on a lookup table that contains the
 distances between two symbols. \tabref{08:tab:dist} shows the lookup table for
 $a=5$. The values of each table cell are 0 for symbols letters or the absolute
 difference of the breakpoints otherwise. The formula
@@ -226,9 +230,9 @@ difference of the breakpoints otherwise. The formula
 \end{equation}
 is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
 (row) and $c$ (column) \mycite{lin2003}.
-\begin{table}[t]
+\begin{table}[h]
     \centering
-    \caption{A table for the $\text{dist}$ function for $a=5$. Each cell 
+    \caption{A table for the $dist$ function for $a=5$. Each cell 
     displays the distance between the symbols denoting its row and column. The
     formula for the cell values is \eqref{08:eq:dist-cell}.}
     \label{08:tab:dist}
@@ -239,12 +243,12 @@ is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
             \multicolumn{1}{c|}{e} \\\hline
         a & 0       & 0        &0.59     &1.09     &1.68  \\\hline
         b & 0       & 0        &0        &0.51     &1.09  \\\hline
-        c & 0.589   & 0        &0        &0        &0.59  \\\hline 
+        c & 0.59    & 0        &0        &0        &0.59  \\\hline 
         d & 1.09    & 0.51     &0        &0        &0     \\\hline 
         e & 1.68    & 1.09     &0.59     &0        &0     \\\hline 
     \end{tabular}
 \end{table}
-For example, if $a=5$, the $\text{MINDIST}$ between ``a" and ``a" is 0, just 
+For example, if $a=5$, the $MINDIST$ between ``a" and ``a" is 0, just 
 like the distance between ``b" and ``a". The distance between ``d" and ``a" is 
 1.09.
 
@@ -265,7 +269,7 @@ similar performance the authors observed between SAX and MSAX in ECG
 applications motivate further research in this area as they note in their
 conclusion \mycite{anacleto2020}. Using the MSAX 
 representation has the same steps as SAX: normalization, PAA-based dimension
-reduction, and discretization. A variation of the $\text{MINDIST}$ function
+reduction, and discretization. A variation of the $MINDIST$ function
 exists, too.
 
 \paragraph{Normalization.}
@@ -373,7 +377,7 @@ below can be expressed as the series of symbols ``cCcCbC \textbf{dD}bCbC bCbBbA
 bBcCcC cBcBcB cBcBbB". In the MSAX representation, the features of the raw data
 are still present, which can be seen in the visible QRS complex indicated by
 ``dD".
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{msax}
     \caption{Graph of ECG 100 of the MIT-BIH database overlaid with its PAA
@@ -385,16 +389,16 @@ are still present, which can be seen in the visible QRS complex indicated by
 
 \paragraph{MSAX distance measure.}
 
-The MSAX distance measure expands $\text{MINDIST}$ to multivariate time series.
-This is done by adding an additional summarization step to the $\text{MINDIST}$
-function. The MSAX distance $\text{MINDIST\_MSAX}$ operates on two MSAX 
+The MSAX distance measure expands $MINDIST$ to multivariate time series.
+This is done by adding an additional summarization step to the $MINDIST$
+function. The MSAX distance $MINDIST\_MSAX$ operates on two MSAX 
 representations $\widehat{\mathbf{U}}[t],\widehat{\mathbf{V}}[t]$. Both
 representations must have the same length $w$ and same number $n$.
-$\text{MINDIST\_MSAX}$ sums the distances between the individual elements
+$MINDIST\_MSAX$ sums the distances between the individual elements
 $U_i[t], V_i[t]$ for $i = \overline{1,\ldots,n}$. The following equations
-expresses $\text{MINDIST\_MSAX}$ \mycite{anacleto2020}.
+expresses $MINDIST\_MSAX$ \mycite{anacleto2020}.
 \begin{equation}\label{08:eq:msax-mindist}
-    \text{MINDIST\_MSAX}
+    MINDIST\_MSAX
         \left(
             \widehat{\mathbf{U}}[t], \widehat{\mathbf{V}}[t] 
         \right) 
@@ -405,20 +409,23 @@ expresses $\text{MINDIST\_MSAX}$ \mycite{anacleto2020}.
             \left(
                 \sum_{i=1}^{n}{
                     \left(
-                        \text{dist}(\widehat{U_i}[t],\widehat{V_i}[t]) 
+                        dist(\widehat{U_i}[t],\widehat{V_i}[t]) 
                     \right)^2
                 }
             \right)
         }
     }.
 \end{equation}
-The function $\text{dist}$ is the same as the SAX function, being based on
+The function $dist$ is the same as the SAX function, being based on
 equation \eqref{08:eq:dist-cell} and lookup tables like \tabref{08:tab:dist}.
-Like $\text{MINDIST}$, $\text{MINDIST\_MSAX}$ also lower bounds the Euclidean
+Like $MINDIST$, $MINDIST\_MSAX$ also lower bounds the Euclidean
 Distance and derives all the same benefits from that.
 The distances between individual MSAX symbols the same as between SAX symbols
 (see \tabref{08:tab:dist}). Distances between groups of more than 1 symbol can
 be calculated using \eqref{08:eq:msax-mindist}.
+
+\TODO{try to make this more understandable. introduce inner and outer loop verb
+env?}
 
 \subsection{HOT SAX}\label{08:hot-sax}
 
@@ -469,7 +476,7 @@ The magic heuristic can of course not exist, hence the name. But
 The first step the authors take is to apply the SAX representation to the time
 series to reduce its complexity and dimension, while retaining an accurate
 representation of the data \mycite{lin2003}. To compare two subsegments, the
-SAX distance function $\text{MINDIST}$ is used. Then, a certain window size is
+SAX distance function $MINDIST$ is used. Then, a certain window size is
 chosen that represents the number of SAX segments that will make up one of the
 aforementioned time series subsegments. Now the magic heuristic can be
 approximated. The outer heuristic, which returns the subsegments of the time
@@ -506,7 +513,8 @@ distance values are saved. In this way, it is possible to extract an exact
 number of discords. Another modification is to save all discords that the
 method detects \mycite{keogh2005}.\par
 
-The authors find that HOT SAX can effectively detect time series discords and
+\citeauthor{keogh2005} find that HOT SAX can effectively detect time series 
+discords and
 speed up the process when compared to the brute force method. A strength of the
 method is, in their opinion, the fact that it only requires the user to
 determine a single parameter, the length of the subsequence (the parameter $k$
@@ -521,5 +529,175 @@ distance measure defined on it. MSAX exhibits both of those traits and can thus
 be used with HOT SAX. Doing this expands HOT SAX to multivariate time series,
 as MSAX can represent those. Using HOT SAX with the MSAX representation is
 novel and a contribution of this research.
+
+\TODO{subsection on HOT MSAX}
+
+\subsection{Data}
+
+The ECG data used in this research is the MIT-BIH Arrhythmia Database
+\mycite{moody2001,goldberger2000}. This database contains 48 ECG recordings
+that are each 30 minutes long. For each of the ECGs, this database contains two
+ECG leads and is thus multivariate data. The leads chosen are not the same in
+each ECG, they were chosen based on which of the 12 originally recorded ones
+best represent the condition of the ECG. A team of cardiologists annotated each
+heartbeat in each ECG and determined if it is a normal heartbeat or not. For
+example, a beat with the annotation ``N" is a normal beat, while ``A" denotes
+an atrial premature beat. The annotations also include non-beat features such
+as a change in signal quality, denoted by ``$\sim$", or a rhythm change, which
+is denoted as ``+". A full list of annotations and their meaning is available
+at \url{https://archive.physionet.org/physiobank/annotations.shtml}. These
+annotations make it possible to judge the performance of a discord detection
+algorithm, as each detected discord can be checked for correctness using the
+provided annotations. While the MIT-BIH database is not the only database that
+possesses such annotations, it is one of the most commonly used ones in the
+literature (see \mycite{prasad2018,kanani2020,kaur2016,nygaard1998,sivaraks2015,
+valupadasu2012,zhang2019}) and it represents a middle ground in a couple
+important respects. The databases 48 ECGs are a manageable number, falling in
+between the extremes of around 10 and over 100 ECGs. Furthermore, the 30
+minutes length represent real-world ECGs better than 10 second excerpts, but
+are not as long and analysis-intensive as 24 hour recordings. Lastly, the
+MIT-BIH database has a sampling frequency of 360 samples per second, which is
+an adequate value \mycite{kligfield2007}. The ECG data in this database is
+unfiltered.\par
+
+\subsection{Implementation}
+
+The main program for this research was developed using the Julia programming    
+language. Julia is a scientific programming language that has similarities to   
+R, MATLAB, and Python. Julia possesses a rich ecosystem of libraries for        
+visualization, computation, and data manipulation. For more information, visit  
+the Julia website at \url{https://julialang.org/}. The following subsection     
+will detail the steps comprising the discord discovery program.\par             
+                                                                                
+The first step is the selection of the important parameters for the methods.    
+The user defined parameters are:                                                
+\begin{itemize}                                                                 
+    \item the sampling frequency of the ECG data to be analyzed;                
+    \item the number of PAA segments $w$ used for SAX and MSAX;                 
+    \item the alphabet size $a$ used for SAX and MSAX;                          
+    \item the subsequence length that determines HOT SAX;                       
+    \item the variable $k$ indicating how many discords should be found.        
+\end{itemize}                                                                   
+\TODO{introduce s-sax, d-sax, msax}
+These parameters determine all actions the program performs afterward. The
+second step is to load a CSV file containing the ECG data and annotations into
+the program. Once the ECG file is loaded, it is transformed into a data frame.
+A data frame is a type of data structure that can hold heterogeneous data
+types, e.g. text and numbers. This step adds important information to the ECG
+data. The ECG data frame contains the parameters itemized above to enable
+reproduction and analysis of the results, an index range for each PAA segment
+so it can be located in the raw ECG, the beat annotations for each PAA segment,
+and empty data fields for the results of the analysis with HOT SAX. The next
+step is the application of the SAX and MSAX representations. The transformation
+of the raw time series data to the symbolic representations is performed in the
+same order as discussed earlier in this section, and thanks to the Julia
+programming language's ecosystem of libraries, can be easily translated into
+code. SAX is applied to each of the ECG leads individually, while MSAX is
+applied as designed to both at once. HOT SAX comprises the next step. For MSAX,
+the HOT SAX process is performed using the MSAX representation and distance
+measure. The method returns a list of distances as well as a list of indices
+that indicate which PAA segment has which distance. Depending on the parameter
+$k$, only the top $k$ of these discords are returned. These results are then
+added to the respective PAA segments in the ECG data frame, adding both the
+MSAX distance of the segment as well as a binary indicator of whether or not
+the segment was detected as a discord. For SAX the process slightly different.
+Because SAX is a univariate representation, it cannot be directly applied to
+a bivariate ECG. Thus, SAX is applied to each lead of the ECG separately and
+HOT SAX is performed for each representation of each lead. Each set of results
+is, like MSAX, a list of indices of PAA segments and a list of their distances.
+Each sets of results is also added to the ECG data frame. This time the
+detection indicator is quaternary, it represents no detection, detection on the
+first lead, detection on the second lead, or detection on both leads. After
+both of these processes are completed, the ECG data frame is written to a CSV
+file for further analysis. This process can be repeated thousands of times to
+create data of different values for the parameters to determine optimal values
+and their influence.
+
+\subsection{Statistical Analysis}
+
+After completing the computations for different sets of parameters, the results
+need to be analyzed. While HOT SAX is not a classifier in the sense of
+classifying heartbeats by medical standards, it does classify them into
+discords and non-discords. Thus, it is a binary classifier. Binary classifiers
+can be evaluated using the well-known True Positive, True Negative, False
+Negative, and False Positive values. \tabref{08:tab:bin-class} shows their
+relationship.
+\begin{table}[t]
+    \centering
+    \caption{Contingency table showing the relationship between detected
+    discords and actual annotated values.}
+    \label{08:tab:bin-class}
+    \vspace{1em}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | c | c |}\hline
+        \rowcolor{tablegray}
+        {\centering\diagbox{Actual}{Assigned}}& Discord Detected & Non-Discord
+        Detected \\\hline
+        Is Discord      & True Positive     & False Negative \\\hline
+        Is Non-Discord  & False Positive    & True Negative  \\\hline
+    \end{tabular}
+\end{table}
+The values in \tabref{08:tab:bin-class} can be used to calculate many useful
+ratios that assist the evaluation of the HOT SAX algorithm. This research uses
+the recall value (also known as sensitivity), the accuracy, and the precision.
+These ratios are calculated as follows: recall value is defined as
+\begin{equation}\nonumber
+    \text{Recall} = \frac{\text{True Positive}}{\text{True Positive}
+    + \text{False Negative}},
+\end{equation}
+the accuracy as
+\begin{equation}\nonumber
+    \text{Accuracy} = \frac{\text{True Positive} + \text{True Negative}}
+        {\text{True Positive} + \text{True Negative} + \text{False Positive} +
+        \text{False Negative}},
+\end{equation}
+and the precision as
+\begin{equation}\nonumber
+    \text{Precision} = \frac{\text{True Positive}}{\text{True Positive}
+    + \text{False Positive}}.
+\end{equation}
+Recall can be understood as a measure of how many of the actual discords were
+correctly assigned the label discord. This is the most important measure for the
+analysis of HOT SAX applied to ECGs because in a medical scenario, identifying
+as many possibly relevant sections of the ECG is more important than being
+100\% accurate in their identification. The second most important value is
+precision, which can be understood as a measure of how many of the detected
+discords are actually discords. While it is more important to identify as many
+discords as possible, a 100\% recall rate could be achieved simply by assigning
+the label of discord to every element in the time series. Furthermore,
+detecting too many non-discords as discords makes it harder to analyze the
+actual discords that were highlighted. This of course is not useful, and thus
+the precision of HOT SAX needs to be incorporated into the analysis. Lastly,
+accuracy is not a very good measure for this particular application, as the
+majority of the segments in an ECG are non-discords and HOT SAX only detects
+a minority of the segments in an ECG. This leads to a high True Negative rate
+and thus a relatively high accuracy, even if HOT SAX did not actually detect
+any actual discords. Nonetheless, accuracy is a very common indicator of
+classifier performance and will thus be considered.\par
+
+\subsection{Limitations of the Methods}
+
+The limitations of this research are the following: HOT SAX is not a classifier
+based on medically relevant information, it classifies discords and not beat
+types. This means that its applications to diagnosing heart conditions is
+limited. HOT SAX can be used to pre-select specific ECG segments to look at and
+analyze because they exhibit discords, but it cannot, by itself, perform any
+type of diagnosis. The previous paragraph explains why empty annotations have
+to be counted as normal beats and while the author believes that this is
+necessary, it does negatively influence the results. The implementation of the
+representation only allows the use of PAA segment numbers that evenly divide
+the sampling frequency of the ECG database. This was done so that the whole
+ECG, being an even multiple of the sampling frequency itself, can be evenly
+divided into PAA segments. This decision prohibits certain numbers of PAA
+segments as there may be numbers that do not evenly divide into the sampling
+frequency but that do evenly divide the number of raw data points in the ECG.
+A further simplification step in the same vein is the restriction of
+subsequence values to numbers that evenly divide the number of PAA segments
+$w$. This was also done to simplify the process and to guarantee that the whole
+ECG would be evenly divisible into subsequences.
+
+\TODO{finish this}\\
+\TODO{move this to somewhere else?}
+\TODO{mention the 1 second interval connection to the sampling frequency and
+why it works}
 
 \end{document}

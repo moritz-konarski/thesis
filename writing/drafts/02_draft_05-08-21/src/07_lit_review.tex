@@ -2,6 +2,8 @@
 
 \begin{document}
 
+\TODO{fix the references to sections in the whole text}
+
 \section{Background and Related Work}
 
 This section provides background information on time series and ECGs, as well
@@ -68,7 +70,7 @@ reduction factors set by user-defined parameters. This means that the user can
 determine how much the dimension of the data should be reduced
 \mycite{aghabozorgi2015}.
 
-\subsubsection{Data dictated representation}\label{07:reduction-methods:01}
+\paragraph{Data dictated representation}\label{07:reduction-methods:01}
 
 Data dictated methods derive their compression ratios from the data 
 automatically, the most common form of this method is the clipped
@@ -79,7 +81,7 @@ a 0 otherwise. A sequence of 1s and 0s can be further compressed using various
 methods from computer science, finally yielding a very large compression ratio
 of 1057:1 \mycite{ratanamahatana2005}.
 
-\subsubsection{Non-data adaptive representation}\label{07:reduction-methods:02}
+\paragraph{Non-data adaptive representation}\label{07:reduction-methods:02}
 
 Non-data adaptive methods operate on time series segments with a fixed size to
 reduce the dimension and they are useful for comparing multiple time series with
@@ -96,7 +98,7 @@ it is used in conjunction with a machine learning model to achieve a beat
 classification accuracy of 98.7\%. The PAA is part of the process of the SAX
 representation, thus it will be covered in section \ref{08:paa-proc}.
 
-\subsubsection{Model-based representation}
+\paragraph{Model-based representation}
 
 Model based methods use stochastic methods such as Hidden Markov Models (HMM) 
 and the Auto-Regressive Moving Average (ARMA) \mycite{aghabozorgi2015}. A HMM
@@ -107,7 +109,7 @@ electroencephalograph signals. An auto-regressive model can be used to
 correctly identify a specific type of arrhythmia in an ECG and to group the
 occurrences of this arrhythmia together \mycite{corduas2008}.
 
-\subsubsection{Data adaptive representation}\label{07:reduction-methods:04}
+\paragraph{Data adaptive representation}\label{07:reduction-methods:04}
 
 Data adaptive methods use non-fixed size segments and aim to fit the raw data 
 most closely. Examples of data adaptive methods are the Piecewise Polynomial 
