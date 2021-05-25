@@ -2,198 +2,119 @@
 
 \begin{document}
 
-\section{Introduction}
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
 
-\TODO{UPDATE: In the year 2016, over 9.4 million people worldwide died of ischemic 
-heart disease (IHD). IHD is responsible for 16.6\% of all deaths, making
-it the most common cause of death globally. All forms of 
-cardiovascular disease make up 31.4\% of all deaths (17.9 million). 
-Death caused by IHD disproportionally affects people 
-over 50 years of age, with 91\% of deaths for men and 95\% of deaths for women 
-occurring in that age range. In Kyrgyzstan, 13\% of all deaths in 2016 were 
-caused by IHD \mycite{who2018}.}\par
+Heart diseases are the most deadly diseases on the planet, with 16\% of all
+annual global deaths being caused by ischaemic heart disease \mycite{who2020}. 
+Ischaemic heart disease is a condition caused by restricted blood flow to an
+area of the heart which causes the heart muscle to not receive enough blood.
+A restriction can be caused by a blood clot or by plaque buildup and if the
+flow of blood is restricted too much, cause myocardial ischaemia. Myocardial
+ischaemia, commonly known as a heart attack, is the result of oxygen-deprived
+heart tissue dying \mycite{ihd2010}. Fortunately, ischaemic heart disease can
+be diagnosed before it causes a heart attack. One method of diagnosis involves
+a stress test during which the hearts activity is recorded using an
+electrocardiograph. The resulting recording reflecting the hearts activity is
+called an electrocardiogram (ECG or EKG) \mycite{ihd2010}.\par
 
-% add statistical data about arrhythmia too, in case I need to cut the ihd data
-% use the new who data, take KG out of the picture
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.48\textwidth,height=0.48\textwidth]{06_ecg}
+    \caption{An ECG wave.}
+    \label{06:fig:ecg}
+\end{wrapfigure}
+The ECG is a diagnostic tool used to evaluate patients with (suspected) heart 
+problems. It is a non-invasive, real-time, and cost-effective method
+that may be used to diagnose IHD and other heart diseases like arrhythmia (the 
+presence of irregular heart beat rhythms). The ECG is the most common tool 
+used for cardiac analysis and diagnosis \mycite{alghatrif2012,kligfield2007,
+xie2020}. The electric measurements an ECG records are taken in in millivolts,
+which represents the electrical activity of the heart with each heart beat.
+\figref{06:fig:ecg} shows the electrical activity an ECG records for a single
+heartbeat. This is also called the ECG wave \mycite{kligfield2007,xie2020}.
+When a disease affects the way the heart beats, an ECG can record those changes
+and they can then be used to diagnose the disease.\par
 
-\TODO{FOCUS MORE ON MY ACTUAL TOPIC:\\
-Ischemic heart disease is characterized by restricted blood flow to an area 
-of the heart, causing it to not receive enough blood and oxygen. Blood flow
-restriction is caused by a blockage (or narrowing) in a blood vessel supplying the heart
-muscle. An artery can be blocked by a blood clot, but the most common cause is 
-plaque buildup, which is called atherosclerosis. If the circulation to the
-heart is completely blocked, the cells in the heart muscle begin to die. This
-is called myocardial infarction, more commonly known as a heart attack. The
-deprivation of oxygen the heart experiences leads to the characteristic chest
-pain commonly associated with heart attacks \mycite{iom2010}.}\par
-
-% stick to ischaemia a little less, add arrhythmia to the mix
-
-\TODO{mention arrhythmia too, it is what the mit database looks at}
-
-IHD can be diagnosed before it leads to a heart attack.
-The diagnosis can be performed based on a patient's medical history,
-pharmacologically induced stress, or stress induced by physical exercise.
-During an exercise stress test, an electrocardiograph (sometimes combined with
-other methods) records the patient's heart activity, resulting in an electrocardiogram
-(ECG) \mycite{iom2010}. 
-
-% also add that ecgs are performed when people present with unidentified chest
-% pains or something like that
-
-\TODO{make this its own paragraph section}
-
-\TODO{
-   \\- heart's electrical activity
-   \\- up to 12 leads
-   \\- common medical diagnostic tool
-   \\- electricity is what causes the contraction
-   \\- this can be measured on the skin
-   \\- a bit on ECG theory
-   \\- specific electrodes and positions
-   \\- mention ion flow
-}
-
-The ECG is a diagnostic tool used to evaluate patients 
-with (suspected) heart problems. It is a non-invasive, real-time, and 
-cost-effective method
-that may be used to diagnose IHD. It is the most common tool used for cardiac
-% and arrythmia
-analysis and diagnosis \mycite{alghatrif2012, kligfield2007, xie2020}. The most 
-common form of
-the ECG is the 12-lead variant. The 12-lead ECG consists of 6 leads connected to
-the limbs and 6 leads connected to the torso of the patient. 
-The leads record the differences in electrical potential
-between the places on the body that they are attached to. This reflects
-the differences in voltage that the heart experiences with each heart beat
-because those voltage differences are conducted by the body. The measurements
-% this is horribly worded; they record the electricity that makes the heart
-% beat
-are taken in millivolts (mV). The ECG represents the state of the heart; a 
-recorded ECG has the shape of a wave (the ECG wave) \mycite{kligfield2007,
-xie2020}.
-
-\TODO{datasets are available online, the most significant leads tend to be
-included}
-
-If the state of the heart beat changes  as the result of 
-a disease like IHD (changing the measurable potentials or their occurrence over 
-time), the ECG is able to record these changes.\par
-% it can record the electrical activity, so when it changes based on a disease,
-% the ECG reflects that
-
-The characteristic shape of an ECG for two heart beats is shown in
-\figref{fig:ecg-waveform}; the figure is taken from \mycite{wasilewski2012}. 
-The figure has been
-annotated to show the significant features of an ECG. The peaks (or waves) P, 
-Q, R, S, T, and U, as well as the segments between them, are the focus of ECG
-analysis. Multiple points together form what is called
-a complex; \TODO{FIX: the QRS complex is a good example of this. Using these waves, the
-heart activity can be described and analyzed. In an ECG, the P-wave is the result
-of the atria depolarizing, which is the process of blood entering the heart as the
-first step in a heart beat. The QRS complex represents ventricular 
-depolarization, the contraction of the heart causing it to pump blood.
-The T-wave is the return of the ventricle to its polarized state. The U-wave is
-only present in roughly 25\% of the population and may be caused by
-mechanical-electric feedback. The RR interval can be used to
-calculate the heart rate because it represents one complete heart beat
-\mycite{wasilewski2012}. The shape of the P, Q, R, S, T, and U waves as well as 
-the duration of various intervals between them are used as indicators of 
-cardiac diseases.}
-
-\TODO{UPDATE TO TIKZ FIGURE:}
-\begin{figure}[h]
-    \center
-    \fbox{\includegraphics[width=0.9\textwidth]{wasilewski2012}}
-    \caption{A schematic of an ECG waveform, annotated; from \mycite{wasilewski2012}}
-    \label{fig:ecg-waveform}
-    \vspace{-10pt}
-\end{figure}
-
-\TODO{also: lots of data, cannot be analyzed quickly}
-
-Using an ECG to diagnose a cardiac condition is difficult in practice. Small changes
-in the components of the ECG can be indicators of diseases and those changes
-can be overlooked, even by
-trained and specialized physicians. The chance to make a mistake is even higher for
-non-specialized physicians and trainees \mycite{alghatrif2012, xie2020}. 
-
-\TODO{make it about assisting in their diagnosis by pointing out important
-segments -> discords}
-% what can ECG analysis really add here?
-
-For the diagnosis of IHD, changes in the ST-segment and T-wave are of 
-particular interest. An elevation of the ST-segment compared to a normal heart
-beat is one of the main indications of IHD and myocardial infarction.
-A downward depression of the ST-segment, especially in combination with chest
-pain, is another indication of IHD. The changes in the ST-segment are thought
-to be caused by current flow between healthy heart muscle and ischemic heart
-muscle \mycite{rautaharju2009, wasilewski2012}.\par
-% add what can be done to arrhythmia and the like
-
-\TODO{after introducing idea of discord discovery, introduce ECGs as time
-series:
-    \\- ECGs are multivariate: 2-12 leads
-    \\- discrete: measured at discrete points
-    \\- ordered sequences: come one after another after equal time segments
-    \\- 
-}
-
-\TODO{then, time series analysis methods are ready to be applied to ECGs}
-
-\TODO{what is required of the method:\\
-    \\- fast
-    \\- accurate
-    \\- adaptable
-    \\- versatile\\
-The diagnosis of IHD on the basis of an ECG is time sensitive. If
-a patient has IHD or suffers from a heart attack, treatment has to be started
-as soon as possible. Some forms of treatment are most effective in the first
-3 hours after symptom onset and lose most of their effectiveness after 9 to 12
-hours. The diagnosis required for treatment to begin should thus be as quick as 
-possible. The ECG delivering information in real-time is an advantage here, 
-even though
-there are more time consuming methods that can deliver more accurate results
-than an ECG \mycite{herring2006}.}\par
-
-\TODO{WHY automated ECG analysis:\\
-The widespread use of ECGs and the time-sensitive nature of their application 
-as diagnostic tools makes errors, delays, or inconsistencies in their
-interpretation unacceptable. A recent approach to minimizing this problem
-is the application of computer technology in ECG recording, storage, and
-analysis. The main steps of computerized ECG analysis are}
-\mycite{kligfield2007}
-\TODO{fix this one, adapt to my writing}
-\begin{enumerate*}[label=(\arabic*)]
+Unfortunately, using an ECG to diagnose a cardiac condition is difficult. The
+changes caused by diseases are often small and can be easily missed.
+Furthermore, ECGs can be longer than 24 hours and analyzing such a large amount
+of data is very time intensive \mycite{alghatrif2012,xie2020}. To mitigate this
+issue, computers have been used to perform ECG analysis. Computers can be used 
+to perform some or all of the steps involved in ECG analysis, which are listed 
+below \mycite{kligfield2007}:
+\begin{enumerate}
     \item signal acquisition and filtering,
-    \item data transformation or preparation for processing,
-    \item \label{enum:3} waveform recognition,
-    \item \label{enum:4}feature extraction, and
-    \item classification or diagnosis.
-\end{enumerate*}
+    \item \label{06:enum:step2} data transformation or preparation for processing,
+    \item waveform recognition,
+    \item feature extraction, and
+    \item \label{06:enum:step5} classification or diagnosis.
+\end{enumerate}
 
-This research will investigate steps \ref{enum:3} and \ref{enum:4} through
-the use of different feature extraction algorithms. The ECG data will be
-retrieved from the European ST-T Database. This database provides ECG 
-recordings that can be used as trial data to test feature extraction algorithms. 
-The European ST-T Database contains annotations made by cardiologists 
-indicating the ST-segment, T-wave, and their changes. They also include
-information about the suspected disease \mycite{physionet, taddei1992}. This 
-information can be used to determine the effectiveness of the feature 
-extraction algorithms.
+Of the above steps, steps \label{06:enum:step2} and \label{06:enum:step5} are 
+particularly interesting. Step \ref{06:enum:step2} is
+important because, while computers can analyze data faster than humans, they,
+too, have trouble analyzing large amounts of data \mycite{lin2003}. As part of
+the data transformation step, the complexity and size of the ECG data can be
+reduced. The methods used for this step are called time series representation
+methods \mycite{aghabozorgi2015}. An established and widely used time series
+representation is the Symbolic Aggregate Approximation (SAX). It is possible 
+to apply time series representation methods to ECGs because ECGs are time 
+series. A time series is a set of values recorded at specific 
+times \mycite{brockwell2016} and ECGs are a special type of time series--a 
+multivariate time series. Multivariate time series record multiple values for
+each point in time \mycite{anacleto2020}, for ECGs these values are the
+different leads. There are also time series representation methods for
+multivariate time series. Multivariate SAX is an extension of SAX to
+multivariate time series that incorporates the relationships between the
+different elements, e.g. the ECG leads, and should make MSAX a better
+representation that SAX for multivariate data \mycite{anacleto2020}.\par
 
-add discords and non-discords
-Research Question:
-does the use of the MSAX representation improve the recall of  
-the HOT SAX anomaly detection algorithm applied to ECGs compared to the SAX     
-representation? What are the optimal parameters for the algorithm?
+ECG analysis step \ref{06:enum:step5} traditionally involves a cardiologist
+manually looking at the heartbeats of an ECG to determine if they are normal or
+if the heartbeat represents an anomaly \mycite{becker2006}. A type of time 
+series anomaly are discords. Discords are segments of a time series that are 
+very different from
+the other segments of the time series. These discords can represent important
+features of time series, e.g. possibly abnormal heart beats in an ECG.
+Accordingly, it is desirable to quickly find the discords in a time series.
+This is called classification, each segment of the ECG is either classified as
+a discord or as a non-discord.
+While this can be done by comparing all segments of a time series to all other
+segments, HOT SAX presents a more efficient solution. HOT SAX is a discord
+discovery algorithm that uses the SAX representation and intelligent heuristics
+to speed up the discord discovery process \mycite{keogh2005}. While HOT SAX
+uses the SAX representation, the only requirements of the algorithm are that
+two representations can be compared to each other. As MSAX is such
+a representation \mycite{anacleto2020}, HOT SAX could be used with MSAX.\par
 
-Hypothesis:
-HOT MSAX will have higher recall than HOT SAX because MSAX explicitly
-incorporates the multivariate nature of the ECG data.
+The aim of this work is to investigate how the use of the MSAX representation
+combined with the HOT SAX algorithm, called HOT MSAX hereinafter, will
+influence ECG discord discovery performance compared to the standard HOT SAX
+algorithm and which parameters achieve the best performance. The HOT SAX and 
+HOT MSAX algorithms will be compared experimentally
+using a well-known ECG database called the MIT-BIH Arrhythmia Database
+\mycite{moody2001,goldberger2000}. The performance of the algorithms will be
+primarily measured by their recall (also know as sensitivity). Recall is
+relevant here because when it comes to discovering potentially medically
+relevant discords, it is better to be a bit too diligent and mark too many
+segments, lowering the accuracy, if it means that more discords can be
+discovered. A robust and fast ECG discord discovery system could significantly 
+speed up and simplify the 
+work of a cardiologist by automatically classifying segments of an ECG into
+discords and non-discords. The discords could then be analyzed first and, if
+the method is sufficiently accurate, present the cardiologist with the
+medically relevant segments very quickly. Classifying ECG anomalies with the HOT 
+MSAX algorithm should achieve a greater recall value than with HOT SAX because,
+unlike SAX, MSAX is designed to work with multivariate data like ECGs.\par
+
+The following paper first contains a section reviewing the background and
+work related to time series, ECGs, and their analysis. Secondly, this work's
+methods, SAX, MSAX, and HOT SAX, are covered in detail. The third section
+presents the results of this research. Fourth is a discussion of the results,
+followed by a conclusion.
 
 \end{document}
-
 
 The most deadly disease in the world is IHD.
 

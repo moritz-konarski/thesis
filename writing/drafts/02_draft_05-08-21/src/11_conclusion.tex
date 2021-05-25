@@ -4,29 +4,29 @@
 
 \section{Conclusion}
 
-It has been demonstrated that the MSAX method performs identically to the SAX
-method when optimal parameters are selected for both. Considering that the
-creators of MSAX found that dual SAX is only marginally better than MSAX in ECG
-classification performance supports these results. Furthermore, this paper
-contributes and application of HOT SAX to multivariate time series and a usage
-of MSAX as a representation for HOT SAX.\par
+This work has investigated the use of the MSAX time series representation for 
+ECG discord discovery. This novel contribution is based on using the HOT SAX 
+algorithm with the MSAX representation, a process called HOT MSAX in this
+research. The MIT-BIH ECG database was used to evaluate the HOT SAX and HOT
+MSAX algorithms experimentally. Each algorithm's parameters were optimized
+based on the results of the evaluation. The recall value for HOT MSAX was 
+compared to the recall value for HOT SAX when both are using optimal
+parameters. A correlation test was performed to determine if HOT MSAX increases 
+the recall value compared to HOT SAX. No correlation was found between the
+methods used with optimal parameters and the resulting recall. Accordingly, 
+this work's 
+hypothesis cannot be supported because HOT MSAX did not significantly improve 
+discord discovery recall compared to HOT SAX.\par
 
-In future research, the methods used in this paper could be applied to
-different ECG dataset to test their performance in detecting different types of 
-discords, for example those caused by ischaemic heart disease. Furthermore, an
-application of this method to ECGs with a higher number of leads could give
-insight into the behavior of this method in an application where the
-multivariate nature of the data is more important.
-
+The application of the MSAX representation to ECG analysis is novel and follows
+the future applications mentioned in \mycite{anacleto2020}. A further
+contribution to the literature is the application of the HOT SAX algorithm to 
+the MSAX representation. This expands the use of HOT SAX to multivariate time
+series in the form of HOT MSAX. In possible future research, HOT MSAX can be
+applied to different and unknown datasets to test the optimality of the
+parameters determined in this work and judge its performance in discovering
+different types of ECG discords, for example those caused by ischaemic heart
+disease.
 
 \end{document}
-
-\TODO{content
-\\- strongest possible statement based on preceding sections
-\\- what should people remember about the paper
-\\- refer to research question, describe conclusions I reached
-\\- summarize new observations, insights through this work
-\\- broader implications of results
-\\- paragraph on recommendations / in future research / how to deal with
-limitations of this paper}
 
