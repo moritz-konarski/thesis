@@ -114,7 +114,7 @@ The parameter $w$ is one only two parameters that determine the SAX
 representation. A low number of parameters can be a great advantage in time
 series analysis because it is simpler to optimize few, understandable parameter
 compared to many unintuitive parameters.
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{paa_graph}
     \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
@@ -139,7 +139,7 @@ probability. The values of the breakpoints in $B$ can be found in a Z-table.
 For illustration, \tabref{08:tab:B} shows the breakpoint values for $a=3$ to 
 $a=6$. This parameter is the second and last parameter that influences the SAX
 representation.
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{Breakpoint values for numbers of breakpoints $a$ from 3 to 6. The
     parameter $a$ determines into how many equally-sized areas the normal curve 
@@ -186,7 +186,7 @@ $a=4$. The three breakpoints are indicated by the dashed horizontal lines.
 points to 18 symbols. The SAX representation of this ECG section is
 ``bbbbb\textbf{d}bbbc\textbf{d}cbddbbb". Both the QRS complex (the first ``d") 
 and the T wave (second ``d") can be seen in the representation.
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{sax_graph}
     \caption{Graph of ECG 103 of the MIT-BIH database overlaid with its PAA
@@ -233,7 +233,7 @@ difference of the breakpoints otherwise. The formula
 \end{equation}
 is used to calculate the values of each cell in \tabref{08:tab:dist} by $r$
 (row) and $c$ (column) \mycite{lin2003}.
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{A table for the $dist$ function for $a=5$. Each cell 
     displays the distance between the symbols denoting its row and column. The
@@ -381,7 +381,7 @@ each in raw form, can be represented by 36 symbols. The ECG section displayed
 below can be expressed as the series of symbols ``cCcCbC\textbf{dD}bCbCbCbBbAbBcCcC cBcBcBcBcBbB". In the MSAX representation, the features of the raw data
 are still present, which can be seen in the visible QRS complex indicated by
 ``dD".
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{msax}
     \caption{Graph of ECG 100 of the MIT-BIH database overlaid with its PAA
@@ -612,7 +612,7 @@ subsequence values $m$ to numbers that evenly divide the number of PAA segments
 $w$. This was also done to simplify the process and to guarantee that the whole
 ECG would be evenly divisible into subsequences.
 
-\subsection{Statistical Analysis}
+\subsection{Statistical Analysis Methods}\label{08:stat-analysis}
 
 After completing the computations of HOT SAX and HOT MSAX for different sets of 
 parameters, the results need to be analyzed. Neither HOT SAX nor HOT MSAX are 
