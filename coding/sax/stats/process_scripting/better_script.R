@@ -134,16 +134,10 @@ prepare_data <- function(with_beat_types, single_sax, is_first_sax, dirname) {
                paste0("./data_summarized/data-beat_types-", with_beat_types, "--single-", single_sax, "--first_sax-", is_first_sax, ".csv"))
 }
 
-dirname <- "test_number_2/"
-
-prepare_data(T, T, T, dirname) 
-
-prepare_data(T, T, F, dirname)
+dirname <- "find_outliers/"
 
 prepare_data(F, T, T, dirname)
 
 prepare_data(F, T, F, dirname)
-
-prepare_data(T, F, F, dirname)
 
 prepare_data(F, F, F, dirname)
