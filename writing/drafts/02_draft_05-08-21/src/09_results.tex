@@ -4,9 +4,11 @@
 
 \section{Results}
 
-\TODO{talking about outliers, make sure to mention how they are below}
+This section provides all the results obtained using the methods detailed in
+the section above. Firstly, the ECG analysis program will be discussed. Then,
+data analysis will be performed.
 
-\subsection{Implementation}
+\subsection{ECG Analysis Program}
 
 This subsection is concerned with the implementation of the methods discussed
 in the previous section. First, the ECG data and its preparation will be
@@ -15,15 +17,13 @@ SAX methods. Lastly, the process used to analyze the results is discussed.
 All code used in the implementation of these methods is available upon request
 via email at \Verb+konarski_m@auca.kg+.
 
-\subsection{ECG Analysis Program}
-
 \subsubsection{ECG Preprocessing}
 
 The ECG data used in this project can be downloaded using the PhysioNet 
-website at the url
+website at the URL
 \url{https://www.physionet.org/content/mitdb/1.0.0/}, or, alternatively, using
 the PhysioNet-developed WFDB applications package. This package provides
-command line applications to work with PhysioNet data. For each of the
+command-line applications to work with PhysioNet data. For each of the
 individually numbered ECG records, 4 files exist. The
 \Verb_.hea_ files contain metadata on the ECG record,
 including anonymized patient information and the lead names. The
@@ -31,16 +31,16 @@ including anonymized patient information and the lead names. The
 the other two files contain additional information, including the annotations.
 Once the ECG recording has been downloaded, the
 \Verb_rdsamp_ command is used to convert the binary ECG
-recording files into a more user-friendly comma separated value (CSV) file.
+recording files into a more user-friendly comma-separated value (CSV) file.
 The \Verb_rdann_ command is then used to create a CSV
 file containing the annotations for each of the ECG records. Finally, the ECG
 recording data and the annotations can be merged into a single file by using
-the time stamps contained in both files. This yields full ECG recordings with
+the timestamps contained in both files. This yields full ECG recordings with
 added beat annotations in one file. These files are the basis of all further
-methods and analysis performed in this research. The author created a script in
+methods and analyses performed in this research. The author created a script in
 the Julia programming language that performs this process. Filtering of the ECG
 data is not performed. The rationale behind this is twofold. Firstly, the
-combination of PAA and discretization in SAX and MSAX has a smooting effect
+combination of PAA and discretization in SAX and MSAX has a smoothing effect
 that exhibits some of the same properties as filtering. Additionally, filtering
 of ECGs adds many more parameters that can be modified to improve the
 performance of the methods, which is not desirable for this research as the
@@ -53,7 +53,7 @@ mentioning any filtering performed on the ECG data.
 
 For the analysis to start, a set of parameters $k$, $w$, $m$, and $a$ needs to
 be set. Then, the next step is to load a CSV file containing the ECG data and 
-annotations into the program. This files was generated in the preprocessing
+annotations into the program. These files were generated in the preprocessing
 step. Once the ECG file is loaded, it is transformed into a data frame.
 A data frame is a type of data structure that can hold heterogeneous data
 types, e.g. text and numbers. This step adds important information to the ECG
@@ -103,7 +103,7 @@ and is thus called Single SAX (S-SAX). For S-SAX, the discords which were
 discovered by HOT SAX on one lead are treated separately from the discords
 discovered on the second lead. This means that a segment is counted as
 a discord if it was discovered by one method or by both methods. Effectively
-this generates two sets of results which can be concatenated. S-SAX represents
+this generates two sets of results that can be concatenated. S-SAX represents
 the performance of applying SAX to just one lead of the ECG. The second option
 is a middle ground between S-SAX and MSAX. For this dataset, a discord was
 counted if it was discovered by either the first or the second lead or both. As
@@ -126,12 +126,12 @@ subsegment might
 influence its neighboring segments and thus lead to their detection. This
 detection might be an actual discord being detected, but counting it as one
 would incorrectly inflate the True Positive rate by assuming something about
-the data that it itself does not support without some inference. Thus the
+the data that it does not support without some inference. Thus the
 decision was made to accept lower True Positive values than may be
 accurate.\par
 
 Any annotation that
-was not normal as just defined  was considered a discord. This includes the 
+was not normal was just considered a discord. This includes the 
 medical annotations for arrhythmia but also the annotations for changes in signal
 quality or noise. This is done because, as mentioned, HOT SAX and HOT MSAX are 
 not meant to classify heartbeats by medical significance, but by how different 
@@ -144,16 +144,17 @@ likely to contain useful information.\par
 
 After calculating the True Positive, 
 True Negative, False Negative, and False Positive value for each parameter
-combination, they were collected in a data frame also containing information on 
+combination, the values were collected in a data frame also containing 
+information on 
 the parameters that lead to them. These data frames are then saved as CSV files
 for further analysis. The contingency values were analyzed for the three
 datasets mentioned above, S-SAX, D-SAX, and MSAX. The last
 step in the analysis was the calculation of the average recall, precision, and
 accuracy across all 48 ECGs for each parameter set.
 
-\subsection{Limitations of the Implementation}
+\subsubsection{Limitations of the ECG Analysis Program}
 
-The disussion of the definition of normal and abnormal heartbeats above 
+The discussion of the definition of normal and abnormal heartbeats above 
 explains why empty annotations have
 to be counted as normal beats and while the author believes that this is 
 necessary, it does negatively influence the results. Another limitation is that 
@@ -185,21 +186,21 @@ yet known. While the choice was arbitrary, it was attempted to spread the
 values out in a reasonable way. For each parameter, \tabref{09:tab:ds1-param} 
 shows the method that it influences, the values that were chosen for it, and
 the rationale behind choosing those values. 
-For SAX and MSAX, $w$ the number of PAA segments in one second which is 
+For SAX and MSAX, $w$ the number of PAA segments in one second is 
 equivalent to dividing 360 data points by $w$. Thus, $w$ has to be a factor of 
 360. These factors were chosen arbitrarily and kept small because it was not
-known how time intensive the computations would be. The second parameter is 
+known how time-intensive the computations would be. The second parameter is 
 $a$, the alphabet size which determines the number of different symbols used in 
 the SAX and MSAX discretization processes. Because the alphabet size is 
 constrained by the size of the English alphabet, numbers were chosen 
 arbitrarily in that range.
 For HOT SAX and HOT MSAX, the parameter $k$ is number of discords they return.
-Giving it the value $-1$ indicates that all available discords should be
+Giving it the value -1 indicates that all available discords should be
 returned, regardless of how many there are. The values for $k$ were chosen
 arbitrarily. This parameter does not affect the performance of the method, it
 just determines how many of the results are considered. Parameter $m$ is chosen 
 after parameter $w$ for SAX and MSAX and represents the number of PAA segments 
-that are grouped together to form a HOT SAX or HOT MSAX subsequence. This 
+that are grouped to form a HOT SAX or HOT MSAX subsequence. This 
 parameter must evenly divide $w$. 
 \begin{table}[H]
     \centering
@@ -212,14 +213,14 @@ parameter must evenly divide $w$.
         \rowcolor{tablegray}
         Method & Parameter & Rationale & Values \\\hline 
         \multirow{2}{*}{SAX/MSAX} & $w$ & arbitrary factors of 360 & 
-            $2,3,4,5,12,20,30,40,60$ \\\cline{2-4}
-        & $a$ & arbitrary, $2 \le a \le 25$ & $4,5,6,7,8,9,10,12,14,17,20$  
+            2,3,4,5,12,20,30,40,60 \\\cline{2-4}
+        & $a$ & arbitrary, 2$\le a \le$25 & 4,5,6,7,8,9,10,12,14,17,20  
         \\\hline
         \multirow{4}{*}{HOT SAX/MSAX} & \multirow{2}{*}{$k$} & \multirow{2}{*}
-        {arbitrary} & $-1,25,50,100,$ \\
-            & & & $150,200,300,500$ \\\cline{2-4} 
+        {arbitrary} & -1,25,50,100, \\
+            & & & 150,200,300,500 \\\cline{2-4} 
             & \multirow{2}{*}{$m$} & arbitrary factors of 360
-            & \multirow{2}{*}{$2,3,4,5,12,20,30,40,60$} \\
+            & \multirow{2}{*}{2,3,4,5,12,20,30,40,60} \\
             & & and of $w$ &\\\hline
     \end{tabular}
 \end{table}
@@ -229,17 +230,17 @@ Using these parameters and the programs created as part of this research, the
 applied to 48 ECGs creates a dataset with 126,720 files. These
 files were analyzed as stated in section \ref{08:stat-analysis}.
 The mean values of the statistical measures for each set of unique parameters 
-were calculated. Then, the threshold of recall $\ge 95\%$ was applied to the
+were calculated. Then, the threshold of recall $\ge$95\% was applied to the
 summarized data to select the parameter combinations that yield acceptable
 results. Upon further analysis, it was noted that most of the parameter
-combinations that achieved recall $\ge 95\%$ had $m=w$. To investigate this, the
-parameter combinations with $m \neq w$ and recall $\ge 95\%$ were extracted.
+combinations that achieved recall $\ge$95\% had $m=w$. To investigate this, the
+parameter combinations with $m \neq w$ and recall $\ge$95\% were extracted.
 \tabref{09:tab:ds1-results} shows the results of this analysis.
 \begin{table}[H]
     \centering
     \caption{Results of the analysis of dataset 1. The total number of
     parameter sets and the number and proportion of
-    parameter sets in dataset 1 that fulfill the conditions analysis are 
+    parameter sets in dataset 1 that fulfill the analysis conditions are 
     presented for each method.}
     \label{09:tab:ds1-results}
     \vspace{0.5em}
@@ -252,20 +253,20 @@ parameter combinations with $m \neq w$ and recall $\ge 95\%$ were extracted.
                 {\arrayrulecolor{black}}|-|}
         \multirow{-2}{*}{\cellcolor{tablegray}Method} & \multirow{-2}{*}
             {\cellcolor{tablegray}Total Sets} & \multicolumn{1}{c|}
-            {\cellcolor{tablegray}recall $\ge95\%$} & \multicolumn{1}{c|}
-            {\cellcolor{tablegray}recall $\ge95\%$ and $m \neq w$} \\\hline
-        S-SAX   & \multirow{3}{*}{$2,640$} & $3 $ $(0.1\%)$   & $0$ $(0\%)$ 
+            {\cellcolor{tablegray}recall $\ge$95\%} & \multicolumn{1}{c|}
+            {\cellcolor{tablegray}recall $\ge$95\% and $m \neq w$} \\\hline
+        S-SAX   & \multirow{3}{*}{2,640} & 3  (0.1\%)   & 0 (0\%) 
         \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
             {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
-        D-SAX   &  & $13$ $(0.5\%)$   & $0$ $(0\%)$ 
+        D-SAX   &  & 13 (0.5\%)   & 0 (0\%) 
         \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
             {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
-        MSAX    &  & $23$ $(0.9\%)$   & $3$ $(0.1\%)$ \\\hline
+        MSAX    &  & 23 (0.9\%)   & 3 (0.1\%) \\\hline
     \end{NiceTabular}
 \end{table}
-As \tabref{09:tab:ds1-results} shows, less than $1\%$ of the parameter sets
-have a recall of $\ge 95\%$, regardless of the method used. Additionally, only
-3 ($0.1\%$) parameter sets for MSAX have the desired recall and use a value for
+As \tabref{09:tab:ds1-results} shows, less than 1\% of the parameter sets
+have a recall of $\ge$95\%, regardless of the method used. Additionally, only
+3 (0.1\%) parameter sets for MSAX have the desired recall and use a value for
 $m$ that is different from $w$.
 These sets of results are too small to continue this analysis, as the goal is
 to analyze a ``top 10" selection of values. Thus, a second
@@ -282,17 +283,17 @@ optimized. As the value of $m$ is set equal to the value of $w$, the complexity
 of the computation is reduced dramatically. This is caused by two things.
 Firstly, the total number of parameter sets is decreased when factors $m$ of
 $w$ are not considered--the total number of parameter sets that have to be
-used it decreased. Secondly, dividing the number of PAA segments in 1 second
+used is decreased. Secondly, dividing the number of PAA segments in 1 second
 into multiple subsegments increases the number of subsequences that HOT SAX and
 HOT MSAX need to work with and thus the complexity of the computation. By not
 doing that, the increase in complexity is avoided. As a result of this
 reduction in complexity, a larger set of the other parameter was considered. 
 The parameters chosen for dataset 2 are shown in \tabref{09:tab:ds2-param}. For
 the SAX and MSAX parameters, all possible values were considered. Parameter 
-$w$ can be all factors of $360$. For the alphabet size $a$, all possible values 
+$w$ can be all factors of 360. For the alphabet size $a$, all possible values 
 were considered. The HOT SAX and HOT MSAX parameters were chosen as follows.
 Parameter $k$ was again assigned arbitrary values that provide a decent
-coverage for reasonable values. The value of $-1$ is again included to signify
+coverage for reasonable values. The value of -1 is again included to signify
 the use of all available discords.
 Parameter $m$ does not need to be chosen for this dataset, as it is always set
 to the value of $w$. All parameters used in dataset 2 have the same meaning as 
@@ -307,59 +308,60 @@ in dataset 1, please refer to that section for their explanations.
     \begin{tabular}{| c | c | c | c |}\hline
         \rowcolor{tablegray} Method & Parameter & Rationale & Values \\\hline
         \multirow{5}{*}{SAX/MSAX} & \multirow{3}{*}{$w$} & 
-        \multirow{3}{*}{factors of 360}  & $2,3,4,5,6,8,9,10,12,15,$  \\
-        & & & $18,20,24,30,36,40,45,$ \\
-          & & & $60,72,90,120,180,360$ \\\cline{2-4}
-           & \multirow{2}{*}{$a$} & $2 \le a \le 25,$ & \multirow{2}{*}
+        \multirow{3}{*}{factors of 360}  & 2,3,4,5,6,8,9,10,12,15,  \\
+        & & & 18,20,24,30,36,40,45, \\
+          & & & 60,72,90,120,180,360 \\\cline{2-4}
+           & \multirow{2}{*}{$a$} & 2$\le a \le$25, & \multirow{2}{*}
            {$\overline{2,\ldots,25}$} \\    
           & & length of alphabet & \\\hline
-        \multirow{3}{*}{HOT SAX/MSAX}
+        \multirow{5}{*}{HOT SAX/MSAX}
           & \multirow{2}{*}{$k$} & \multirow{2}{*}{arbitrary} & 
-            $-1,25,50,75,100,$            \\
-          & & & $150,175,200,300$  \\\cline{2-4}
-           & $m$    & same as $w$           & see $w$ \\\hline
+            -1,25,50,75,100,            \\
+          & & & 150,175,200,300  \\\cline{2-4}
+           & \multirow{3}{*}{$m$}    & \multirow{3}{*}{same as $w$} & 
+            2,3,4,5,6,8,9,10,12,15,  \\
+        & & & 18,20,24,30,36,40,45, \\
+          & & & 60,72,90,120,180,360 \\\hline
     \end{tabular}
 \end{table}
-\TODO{don't use see $w$, just put the data there}
 This table provides values that create 4,968 parameter combinations when used
 with this research's programs to analyze the 48 ECGs of the MIT-BIH database.
 As a result, dataset 2 contains 238,464 files of ECGs analyzed with HOT SAX and
 HOT MSAX. Each of those combinations was applied to all 48 ECGs. 
 As with dataset 1, these files were analyzed as stated in section 
 \ref{08:stat-analysis}. The mean values of the statistical measures for each set 
-of unique parameters were calculated and the threshold of recall $\ge 95\%$ 
+of unique parameters were calculated and the threshold of recall $\ge$95\% 
 applied. \tabref{09:tab:ds2-results} shows the results of that analysis.
 \begin{table}[H]
     \centering
     \caption{Results of the analysis of dataset 2. The total number of
     parameter sets and the number and proportion of
-    parameter sets fulfilling the conditions that recall be $\ge 95\%$.}
+    parameter sets fulfilling the conditions that recall be $\ge$95\%.}
     \label{09:tab:ds2-results}
     \vspace{0.5em}
     \begin{NiceTabular}{| c | c | r |}\hline
         \rowcolor{tablegray}
         Method & Total Sets & \multicolumn{1}{c|}{Sets Satisfying recall
-        $\ge95\%$} \\\hline
-        S-SAX   & \multirow{3}{*}{$4,968$} & $99$ $(1.2\%)$    
+        $\ge$95\%} \\\hline
+        S-SAX   & \multirow{3}{*}{4,968} & 99 (1.2\%)    
         \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
             {\arrayrulecolor{black}}|-|}
-        D-SAX   &  & $192$ $(3.9\%)$    \\\hhline{|>{\arrayrulecolor{black}}->
+        D-SAX   &  & 192 (3.9\%)    \\\hhline{|>{\arrayrulecolor{black}}->
         {\arrayrulecolor{white}}->{\arrayrulecolor{black}}|-|}
-        MSAX    &  & $255$ $(5.1\%)$    \\\hline
+        MSAX    &  & 255 (5.1\%)    \\\hline
     \end{NiceTabular}
 \end{table}
 As \tabref{09:tab:ds2-results} shows, of the 4,968 total parameter sets, 99 have
-a recall of $\ge 95\%$ for S-SAX, 192 for D-SAX, and 255 for MSAX. These
+a recall of $\ge$95\% for S-SAX, 192 for D-SAX, and 255 for MSAX. These
 dataset are large enough for the analysis to continue. As discussed in
 \ref{08:stat-analysis}, the subsets of dataset 2 for
-which the recall is $\ge 95\%$ will further be sorted by the precision, in
+which the recall is $\ge$95\% will further be sorted by the precision, in
 descending order. Then, the top 10 values of S-SAX, D-SAX, and MSAX will be
 analyzed individually. 
 
 \paragraph{Analysis of S-SAX}
 
-The top 10 values of S-SAX were first pruned by a threshold of recall $\ge
-95\%$ and then sorted descendingly by precision. \tabref{09:tab:ssax10}
+The top 10 values of S-SAX were first pruned by a threshold of recall $\ge$95\% and then sorted descendingly by precision. \tabref{09:tab:ssax10}
 provides an overview of the parameters of these top 10 values, as well as their
 recall, accuracy, and precision.
 \begin{table}[H]
@@ -389,14 +391,16 @@ recall, accuracy, and precision.
 \tabref{09:tab:ssax10} shows that for the top 10 values by precision, the
 recall values are all approximately 95\%, the accuracy is between 36\% and
 38\%, and the precision is 36\%. It is notable that all $k$ values are -1. To 
-be able to choose a best parameter
+be able to choose the best parameter
 combination of these 10, their interquartile ranges and outliers for the recall
 value will be compared with the help of a boxplot. This boxplot is based on the
 set of 48 ECGs for each ranked method. This plot can be seen in 
 \figref{09:fig:ssax_boxplot}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ssax_boxplot}
+    %\includegraphics[width=\textwidth]{ssax_boxplot}
+    \includegraphics[width=\textwidth]{tssax_boxplot}
+    \vspace{-2em}
     \caption{Boxplot showing the recall for the top 10 S-SAX parameter sets. The
     full list of parameters can be found in \tabref{09:tab:ssax10}.}
     \label{09:fig:ssax_boxplot}
@@ -421,7 +425,7 @@ data.
 \paragraph{Analysis of D-SAX}
 
 For D-SAX, the top 10 values were also first pruned by a threshold of recall 
-$\ge 95\%$ and then sorted descendingly by precision. \tabref{09:tab:dsax10}
+$\ge$95\% and then sorted descendingly by precision. \tabref{09:tab:dsax10}
 provides an overview of the parameters of these top 10 values, as well as their
 recall, accuracy, and precision.
 \begin{table}[H]
@@ -456,7 +460,9 @@ created in order to choose a best parameter combination. This plot is shown in
 \figref{09:fig:dsax_boxplot}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{dsax_boxplot}
+    %\includegraphics[width=\textwidth]{dsax_boxplot}
+    \includegraphics[width=\textwidth]{tdsax_boxplot}
+    \vspace{-2em}
     \caption{Boxplot showing the recall for the top 10 D-SAX parameter sets. The
     full list of parameters can be found in \tabref{09:tab:dsax10}.}
     \label{09:fig:dsax_boxplot}
@@ -472,7 +478,7 @@ of rank 7 is 30.
 \paragraph{Analysis of MSAX}
 
 Lastly, the top 10 parameter sets of MSAX are considered. They, too, were 
-selected based on recall $\ge 95\%$ and sorted by precision. 
+selected based on recall $\ge$95\% and sorted by precision. 
 \tabref{09:tab:msax10} shows the parameter set and statistical measures 
 associated with the top 10 MSAX parameter combinations.
 \begin{table}[H]
@@ -506,7 +512,9 @@ parameter sets to explore the interquartile range and outliers of MSAX.
 \figref{09:fig:ssax_boxplot} shows this boxplot.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{msax_boxplot}
+    %\includegraphics[width=\textwidth]{msax_boxplot}
+    \includegraphics[width=\textwidth]{tmsax_boxplot}
+    \vspace{-2em}
     \caption{Boxplot showing the recall for the top 10 MSAX parameter sets. The
     full list of parameters can be found in \tabref{09:tab:msax10}.}
     \label{09:fig:msax_boxplot}
@@ -515,7 +523,7 @@ In \figref{09:fig:msax_boxplot}, ranks 6, 8, and 10 visually stick out as
 having the lowest IQR. Calculating the IQR confirms that, yielding 0.038,
 0.033, and 0.03 for ranks 6, 8, and 10 respectively. The number of outliers for
 rank 6 is 7, for rank 8 it is 6, and for rank 10 it is 8. Because rank
-8 has the second lowest IQR and the smallest number of outliers, it is selected
+8 has the second-lowest IQR and the smallest number of outliers, it is selected
 as the optimal parameter set for MSAX. Its $w$ value of 12 results in
 a dimension reduction of 30 compared to the raw data.
 
@@ -554,12 +562,13 @@ larger for S-SAX than for the other methods. The important variables regarding
 \figref{09:fig:opt_boxplot} are summarized in \tabref{09:tab:opt-stats}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{recall_boxplot}
+    %\includegraphics[width=\textwidth]{recall_boxplot}
+    \includegraphics[width=\textwidth]{trecall_boxplot}
+    \vspace{-2em}
     \caption{Boxplot showing the recall for the optimal parameter sets of each
     method. The full list of parameters can be found in \tabref{09:tab:opt-param}.}
     \label{09:fig:opt_boxplot}
 \end{figure}
-\TODO{fix the order of the methods to reflect the order they were analyzed in}
 \begin{table}[H]
     \centering
     \caption{Table showing statistical measures for the recall of the optimal 

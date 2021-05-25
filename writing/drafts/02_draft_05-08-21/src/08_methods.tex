@@ -4,8 +4,6 @@
 
 \section{Methods}
 
-\TODO{mention that dimension reduction leads to a speed up of calculations}
-
 This section details the methods used in this work to investigate its
 research question and test its hypothesis. Below, a short introduction to time 
 series will be given. Following that, the SAX representation will be discussed, 
@@ -22,7 +20,7 @@ in time, with $n$ values recorded at each moment in time. Following
 \begin{equation}\label{08:eq:ts}
     \left\{ \mathbf{v} [t] \right\}_{t \in \{1, \ldots, T\}}
 \end{equation}
-is a $n$-variate time series where, for each time point $t$,
+is a $n$-variate time series where for each time point $t$,
 \begin{equation}\label{08:eq:ts-point}
     \mathbf{v} [t] = \left(v_1[t], \ldots, v_n[t] \right)^T
 \end{equation}
@@ -61,13 +59,13 @@ the SAX representation is a three-step process. Firstly, the raw time series is
 normalized. Secondly, the dimension of the normalized time series is reduced 
 using the Piecewise Aggregate Approximation (PAA). Thirdly, the PAA-represented 
 time series is discretized. Additionally, a distance measure between two
-equla-length SAX representations is defined.
+equal-length SAX representations is defined.
 
 \paragraph{Normalization.}
 
 The normalization for the SAX representation is necessary because, to compare
 two time series, it is standard practice to normalize both of them because
-otherwise comparisons between them are not useful \mycite{lin2003}. SAX is
+otherwise, comparisons between them are not useful \mycite{lin2003}. SAX is
 normalized by applying standard Z-normalization, resulting in a time series
 with sample mean equal to 0 and sample standard deviation equal to 1. To do 
 this, the mean and standard deviation of the univariate time series 
@@ -112,10 +110,10 @@ dimension reduction ratio depending on the choice of $w$. In
 the MIT-BIH database. It is apparent that the dimension of the ECG has been
 reduced. The original ECG section of one second contains 360 data points, while
 its PAA representation only contains 18 values--a dimension reduction of 20.
-The parameter $w$ is one only two parameters that determine the SAX
+The parameter $w$ is one of only two parameters that determine the SAX
 representation. A low number of parameters can be a great advantage in time
-series analysis because it is simpler to optimize few, understandable parameter
-compared to many unintuitive parameters.
+series analysis because it is simpler to optimize a few, understandable
+parameters compared to many unintuitive parameters.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{paa_graph}
@@ -167,7 +165,7 @@ representation.
 Once the breakpoint values have been determined, the discretization process
 begins. The process assigns all PAA segments whose value is below $\beta_1$
 the symbol ``a". The PAA segments falling in the area $\beta_1 \le$ and $<
-\beta_2$ are assigned ``b". This mapping process is continued, until all PAA
+\beta_2$ are assigned ``b". This mapping process is continued until all PAA
 segments are symbolized. Now we have arrived at the SAX representation. The SAX 
 representation of $\overline{\mathbf{v}}[t]$ is denoted $\widehat{\mathbf{v}}[t]$ and has 
 the same length as $\overline{\mathbf{v}}[t]$ ($w$). Mathematically, the
@@ -178,7 +176,7 @@ discretization process is formulated in \mycite{lin2003} as
 \end{equation}
 Here $\text{alpha}_j$ is the $j$th letter of the alphabet, i.e.
 $\text{alpha}_1=$ ``a", $\text{alpha}_2=$ ``b" \ldots{}
-The resulting time series representation has an even lower complexity than
+The resulting time series representation has even lower complexity than
 PAA because instead of infinitely many possible values for the real-valued PAA 
 values, now there are only $a$ different, equiprobable symbols. Thus, the SAX
 representation $\widehat{\mathbf{v}}[t]$ has been obtained. In
@@ -262,7 +260,7 @@ like the distance between ``b" and ``a". The distance between ``d" and ``a" is
 The Multivariate Symbolic Aggregate Approximation was introduced by
 \citeauthor{anacleto2020} in \citeyear{anacleto2020}. It is an extension of SAX
 to multivariate time series \mycite{anacleto2020}. It shares the main features
-of SAX, but expands them to multivariate time series, such as ECGs--$n$ can be
+of SAX but expands them to multivariate time series, such as ECGs--$n$ can be
 any integer $\ge1$. A lower 
 bound for the MSAX distance function also exists, i.e. distance between two 
 MSAX representations is, just as in SAX, guaranteed to be representative of 
@@ -344,7 +342,7 @@ The result will have a mean of zero and uncorrelated variables
 
 \paragraph{Dimension reduction with PAA.}
 
-Dimension reduction using PAA for MSAX is performed in exactly the same way as
+Dimension reduction using PAA for MSAX is performed in the same way as
 for SAX. The procedure outlined in the previous section is applied to 
 each of the elements $\left(V_1[t], \ldots, V_n[t] \right)^T$ of the time series
 $\mathbf{V}[t]$--equation \eqref{08:eq:paa} is applied to each part. This 
@@ -543,7 +541,7 @@ The limitations of the methods used in this research are the following: HOT
 SAX and HOT MSAX are not classifiers based on medically relevant information, 
 they classify ECG segments into discords non-discords. The methods to not work
 with beat types. This means that their applications to diagnosing heart 
-conditions is limited. HOT SAX and HOT MSAX can be used to pre-select specific 
+conditions are limited. HOT SAX and HOT MSAX can be used to pre-select specific 
 ECG segments to look analyze because they exhibit discords, but it cannot, by 
 itself, perform any type of diagnosis. 
 
@@ -567,11 +565,11 @@ algorithm, as each detected discord can be checked for correctness using the
 provided annotations. While the MIT-BIH database is not the only database that
 possesses such annotations, it is one of the most commonly used ones in the
 literature (see \mycite{prasad2018,kanani2020,kaur2016,nygaard1998,sivaraks2015,
-valupadasu2012,zhang2019}) and it represents a middle ground in a couple
+valupadasu2012,zhang2019}) and it represents a middle ground in a couple of
 important respects. The databases 48 ECGs are a manageable number, falling in
 between the extremes of around 10 and over 100 ECGs. Furthermore, the 30
-minutes length represent real-world ECGs better than 10 second excerpts, but
-are not as long and analysis-intensive as 24 hour recordings. Lastly, the
+minutes length represent real-world ECGs better than 10-second excerpts but
+are not as long and analysis-intensive as 24-hour recordings. Lastly, the
 MIT-BIH database has a sampling frequency of 360 samples per second, which is
 an adequate value \mycite{kligfield2007}. The ECG data in this database is
 unfiltered, which adds to the real-world nature of it, as every recorded ECG
@@ -696,7 +694,7 @@ creating a box plot of the 10 ten parameter sets vs their recall value. If the
 visual analysis does not yield concrete results, the method with the lowest
 spread (standard deviation or interquartile range) should be considered the
 optimal method. If this should prove inconclusive as well, an analysis of
-possible outliers, the distribution of precision values or the distribution of
+possible outliers, the distribution of precision values, or the distribution of
 the accuracy could be performed.
 
 \end{document}

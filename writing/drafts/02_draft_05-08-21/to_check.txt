@@ -1,15 +1,11 @@
-\documentclass[../01_main.tex]{subfiles}
 
-\begin{document}
-
-\section{Discussion}
+Discussion
 
 This section discussed the results presented in the previous section. It is
 this paper's goal to investigate how HOT MSAX influences the ECG discord
 discovery compared to HOT SAX. Additionally, the best parameters for
 high-recall discord discovery were sought. During the experiment phase, two
-datasets based on the MIT-BIH ECG database were used.\par
-
+datasets based on the MIT-BIH ECG database were used.
 During the analysis of the first dataset, it was
 found that both HOT SAX and HOT MSAX perform poorly when the subsequence length
 parameter is not equal to the PAA segment count parameter. A possible cause of
@@ -17,37 +13,34 @@ this is the way annotations were counted as True Positives and True Negatives.
 By only counting
 the annotations in the segment they fall into, a possible influence of the
 discord on the following segments is neglected. This could lead to HOT SAX and
-HOT MSAX identifying a discord caused by an abnormal heartbeat in the segment
+HOT MSAX identifying a discord caused by an abnormal hearbeat in the segment
 following the annotation and thus lead to the detection being labeled
 a False Positive. By making the subsequences as large as possible, the chance
-of this happening becomes smaller and accordingly, the recall value would
-increase. By setting the parameter $m$ equal to $w$ in the second dataset, the
-number and proportion of parameter sets satisfying the 95\% recall condition
-increased.\par
-
+of this happening become smaller and accordingly, the recall value would
+increase. By setting the parameter  equal to  in the second dataset, the
+number and proportion of parameter sets satisfying the 95 recall condition
+increased.
 When the second dataset was being analyzed, every set of parameters in the top 
 10 values of S-SAX, D-SAX, and MSAX had its
-$k=-1$. The parameter $k$ controls how many of the discords identified by HOT
+. The parameter  controls how many of the discords identified by HOT
 SAX and HOT MSAX will be returned after the computation is finished. Parameter
-$k$ being equal to -1 for the optimal parameters regardless of the method
-indicates that the highest concrete values of $k$, 300 for dataset 2, is too
+ being equal to -1 for the optimal parameters regardless of the method
+indicates that the highest concrete values of , 300 for dataset 2, is too
 low to enable top recall values. This behavior may be explained by considering
 the precision values. If the average precision of HOT SAX and HOT MSAX is 
-$\approx$ 36\% and the goal is to maximize recall, restricting the number of 
-detected discords that are used will directly lower the recall value.\par
-
+ 36 and the goal is to maximize recall, restricting the number of 
+detected discords that are used will directly lower the recall value.
 For all parameter sets in dataset 2, comparing S-SAX, D-SAX, and MSAX showed 
-that MSAX performs acceptably for 5.1\%
-of all parameter combinations in dataset 2. S-SAX performed acceptably for
-1.2\% and D-SAX for 3.9\%. From this is it inferred that MSAX is more robust
+that MSAX performs acceptably for 5.1
+of all parameter combinations in dataset 2. S-SAX performed accpeptably for
+1.2 and D-SAX for 3.9. From this is it inferred that MSAX is more robust
 when it comes to parameter choice. All three methods were tested with the same
 parameters, but MSAX performed acceptably for a larger share than the other
 methods. This is relevant because in applications involving unknown data, the
 parameter selection cannot be optimized without testing. A more robust method
-could still perform adequately in such a situation.\par
-
-The optimal parameter sets (see \tabref{09:tab:opt-param}) for the three 
-methods all had a value of $k=-1$,
+could still perform adequately in such a situation.
+The optimal parameter sets (see 09:tab:opt-param) for the three 
+methods all had a value of ,
 which may be the result of the subsegment-annotation relationship mentioned
 above. The PAA segment values and thus the subsequence lengths for D-SAX and
 MSAX were 12 compared to 36 for S-SAX. The dimension reduction ratio for MSAX
@@ -61,11 +54,10 @@ Euclidean Distance and thus accurately represent the raw time series, each
 average trades a decrease in information about the shape of the time series for
 a reduced dimension. If S-SAX is less effective at extracting information from
 a multivariate time series, higher numbers of PAA segments may be required to
-gain enough information to achieve high recall values.\par
-
+gain enough information to achieve high recall values.
 The interquartile ranges of the recall value for all three optimal methods are not
 significantly different, all being close to 0.03. The median recall value is very similar across
-all three methods as well, roughly 99\%. The number of outliers is 11 for 
+all three methods as well, roughly 99. The number of outliers is 11 for 
 S-SAX and 6 for the
 other two methods. The larger number of outliers for the S-SAX method could be
 attributed to it not considering the multivariate nature of ECGs. All observed
@@ -77,14 +69,13 @@ the information available, while S-SAX does not and is thus put at
 a disadvantage.
 
 A correlation between the optimal S-SAX, D-SAX, or MSAX methods
-(\tabref{09:tab:opt-param}) and the recall 
+(09:tab:opt-param) and the recall 
 value 
 has not been found. As a result, the hypothesis of this paper cannot be
 supported. There is no evidence of HOT MSAX improving the recall value compared
-to HOT SAX. \textcite{anacleto2020}, in the paper introducing MSAX, analyzed
+to HOT SAX. anacleto2020, in the paper introducing MSAX, analyzed
 a different ECG dataset as part of a collection of different time series. They
-used a $k$-Nearest-Neighbor classifier and found that there is no significant
+used a -Nearest-Neighbor classifier and found that there is no significant
 difference between the SAX representation and the MSAX representation when
 applied to ECG analysis. Their findings support this research's results.
 
-\end{document}

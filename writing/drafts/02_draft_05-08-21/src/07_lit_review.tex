@@ -16,7 +16,7 @@ This subsection will provide background information on time series and time seri
 analysis methods. A time series is a set of values recorded at specific times. 
 A common form of time series are discrete-time time series (often simply called 
 discrete time series). Discrete time series are time series whose values are 
-recorded at discrete points in time, the most common example of this are time 
+recorded at discrete points in time; the most common example of this are time 
 series with values recorded at fixed intervals. Continuous-time time series are 
 time series that are recorded continuously over a certain interval 
 \mycite{brockwell2016}. Time series that contain a single value for each moment
@@ -52,9 +52,9 @@ power because most data mining algorithms become less efficient with larger
 datasets \mycite{lin2003}. To mitigate this issue, time series dimension
 reduction (also known as dimensionality reduction or time series
 representation) is used. Dimension reduction transforms a ``raw" (unmodified) 
-time series into a representation that is simpler but nonetheless resembles the 
+time series into a representation that is simpler but resembles the 
 raw time series. This can be achieved by either using a method that reduces the
-number of values in a time series, or by extracting only the relevant features
+number of values in a time series or by extracting only the relevant features
 from the time series. According to \mycite{aghabozorgi2015,shieh2008}, there 
 are four types of dimension reduction methods:
 \begin{enumerate}
@@ -75,8 +75,8 @@ determine how much the dimension of the data should be reduced
 Data dictated methods derive their compression ratios from the data 
 automatically, the most common form of this method is the clipped
 representation \mycite{aghabozorgi2015}. This representation simply transforms
-the raw time series into a sequence of 1s and 0s. A data points is assigned
-a 1 if its values is larger than the mean value of the time series, and
+the raw time series into a sequence of 1s and 0s. A data point is assigned
+a 1 if its value is larger than the mean value of the time series, and
 a 0 otherwise. A sequence of 1s and 0s can be further compressed using various
 methods from computer science, finally yielding a very large compression ratio
 of 1057:1 \mycite{ratanamahatana2005}.
@@ -92,7 +92,7 @@ with an average value of 0, which represents both time
 and frequency information. The DWT is calculated using a series of filters
 applied to the signal. In \mycite{kaur2016}, the DWT is used to
 detect beats in ECG signals and achieves a 0.221\% detection error rate. The
-Fast Fourier Transform, an optimized form of the DFT, decomposes the its input
+Fast Fourier Transform, an optimized form of the DFT, decomposes its input
 signal into many sinus waves of different frequencies. In \mycite{prasad2018} 
 it is used in conjunction with a machine learning model to achieve a beat 
 classification accuracy of 98.7\%. The PAA is part of the process of the SAX
@@ -100,29 +100,29 @@ representation, thus it will be covered in section \ref{08:paa-proc}.
 
 \paragraph{Model-based representation}
 
-Model based methods use stochastic methods such as Hidden Markov Models (HMM) 
-and the Auto-Regressive Moving Average (ARMA) \mycite{aghabozorgi2015}. A HMM
+Model-based methods use stochastic methods such as Hidden Markov Models (HMM) 
+and the Auto-Regressive Moving Average (ARMA) \mycite{aghabozorgi2015}. An HMM
 was used in \mycite{panuccio2002} to cluster electroencephalograph recordings 
-(measuring the brain's electrical activity). It was found that their methods
+(measuring the brain's electrical activity). It was found that their method
 was competitive with other established methods in classifying 
 electroencephalograph signals. An auto-regressive model can be used to
 correctly identify a specific type of arrhythmia in an ECG and to group the
-occurrences of this arrhythmia together \mycite{corduas2008}.
+occurrences of this arrhythmia \mycite{corduas2008}.
 
-\paragraph{Data adaptive representation}
+\paragraph{Data-adaptive representation}
 
 Data adaptive methods use non-fixed size segments and aim to fit the raw data 
-most closely. Examples of data adaptive methods are the Piecewise Polynomial 
+most closely. Examples of data-adaptive methods are the Piecewise Polynomial 
 Approximation (PPA), Piecewise Linear Approximation (PLA), and SAX 
 \mycite{aghabozorgi2015}. PPA can be used to 
-compress and ECG by approximating it using polynomials. With second-order 
+compress an ECG by approximating it using polynomials. With second-order 
 polynomials, ECGs can be compressed with a minimal level of distortion 
 \mycite{nygaard1998}. The authors of \mycite{zhu2018} use a modified PLA 
 representation with adaptive ECG segmentation to successfully reconstruct the 
 12 standard leads of an ECG from only 3 leads. The SAX representation will be 
 covered in detail in 
-section \ref{08:sax} and the following subsection 
-\ref{07:section_sax} will provide background on the method and its variations.
+section \ref{08:sax}. The following subsection \ref{07:section_sax} will 
+provide background on the method and its variations.
 
 \subsubsection{SAX Representation Method}\label{07:section_sax}
 
@@ -150,7 +150,7 @@ segment into SAX \mycite{malinowski2013}. A combination of SAX and a polynomial
 approximation was used to speed up the SAX method \mycite{fuad2010}. To improve 
 the indexing performance of SAX, iSAX introduced convertible alphabet sizes, 
 allowing SAX
-representations with different alphabet sizes to compared with each other and
+representations with different alphabet sizes to be compared with each other and
 indexed into a tree structure \mycite{shieh2008}. iSAX 2.0 improves the iSAX
 index by reducing its computational complexity, enabling it to index a time
 series that has one billion elements, something that SAX or iSAX cannot do
@@ -179,10 +179,10 @@ series. They utilize multivariate normalization with a covariance matrix and a
 modified distance measure to achieve this. To analyze their method, the authors
 use MSAX and SAX in a classification task based on multiple multivariate time
 series datasets. For these multivariate datasets, SAX was applied to each of
-their individual time series and those results were combined. Their analysis 
+the time series and those results were combined. Their analysis 
 found that, overall, SAX applied in this way is superior to MSAX when it comes
 to classification accuracy. In 6 of the 14 tested datasets, SAX was
-significantly more accurate, in 2 of the MSAX was more accuarate, and in the
+significantly more accurate, in 2 of the MSAX was more accurate, and in the
 remaining 6 their performance was not significantly different. It should be
 noted that in the ECG dataset they tested, the accuracy of SAX
 ($\sim$87\%) was slightly higher than that of MSAX ($\sim$84\%), but not significantly so. \citeauthor{anacleto2020}
@@ -204,15 +204,14 @@ analysis.
 \subsection{ECGs and ECG Analysis}\label{07:section_ecg}
 
 The following subsection covers the ECG and methods used in its analysis.
-Luigi Galvani noted the electrical activity in muscles 1786, but the history of 
+Luigi Galvani noted the electrical activity in muscles in 1786, but the history of 
 the ECG only started in 1842, when Carlo Matteucci showed the electrical 
 activity of a frog's heartbeat. In the 1870s, it was discovered that each
 heartbeat is characterized by electrical changes.   
 Then, in 1901-1902, Willem Einthoven created the first ECG recording of a human 
-heartbeat
-using using 3 leads connected to the limbs of the patient.
+heartbeat using 3 leads connected to the limbs of the patient.
 Einthoven was the
-first to publish an ECG waveform with the now standard annotations P, Q, R, S,
+first to publish an ECG waveform with the now-standard annotations P, Q, R, S,
 and T for the different features (see \figref{07:fig:ecg_ann}).
 He would receive the 1924 Nobel Prize in medicine for his invention of
 the electrocardiograph. As a result of further development, the 12-lead ECG that 
@@ -225,11 +224,11 @@ the limbs) called I, II, III, aVR, aVL, aVF \mycite{meek2002}.\par
 
 An ECG records the electrical activity that accompanies the contraction and
 relaxation of the heart muscle. The sinuatrial node, which can spontaneously
-give off an electrical pulse, initiates the heart beat. Its pulse is conducted
+give off an electrical pulse, initiates the heartbeat. Its pulse is conducted
 through the heart by other specialized fibers, causing the heart to beat. The
 conduction of electricity is facilitated by Sodium, Calcium, and Potassium ions
 flowing in and out of cardiac cells \mycite{becker2006}. 
-\figref{07:fig:ecg_ann} shows a ECG wave of a single heartbeat from record 103
+\figref{07:fig:ecg_ann} shows an ECG wave of a single heartbeat from record 103
 of the MIT-BIH database \mycite{moody2001,goldberger2000} (for more 
 information on the database, see section \ref{07:ecg-db}).
 The P wave is caused by the depolarization of the atrial node, which allows
@@ -273,31 +272,25 @@ chance to make a mistake is even higher for non-specialized physicians and
 trainees \mycite{alghatrif2012,xie2020}. The American Heart Association (AHA)
 estimates that a physician needs to read at least 500 ECGs with the help of an
 expert before becoming proficient. One reason for this is that the number of 
-diagnosis that can be performed using an ECG is vast. The AHA lists 88 
+diagnoses that can be performed using an ECG is vast. The AHA lists 88 
 different conditions and an additional 22 diagnoses related to diseases and 
 conditions that may not directly affect the heart, such as hypothermia or 
 tremors caused by Parkinson's disease \mycite{kadish2001}.\par
 
 Two types of heart conditions that an ECG can detect are cardiac arrhythmias
-and ischaemic heart disease. Cardiac arrhythmia is a variation of the heart
+and ischemic heart disease. Cardiac arrhythmia is a variation of the heart
 rate or rhythm that does not have a reasonable cause. In other words, heart
 rate or rhythm variations caused by physical activity could not be considered 
 arrhythmias, while significant variations in a resting state may
 \mycite{antzelevitch2011}. In an ECG, arrhythmia is most apparent in changes in
-the interval between the QRS complexes. Ischaemic heart disease is the main 
-cause of death world-wide \mycite{nowbar2019}. Ischemic heart disease is 
+the interval between the QRS complexes. Ischemic heart disease is the main 
+cause of death worldwide \mycite{nowbar2019}. Ischemic heart disease is 
 characterized by 
 restricted blood flow to an area of the heart, causing it to not receive 
-enough blood and oxygen. Blood flow restriction is caused by a blockage (or 
-narrowing) in a blood vessel supplying the heart muscle. An artery can be 
-blocked by a blood clot, but the most common cause is plaque buildup, called 
-atherosclerosis. If the circulation to the heart is completely blocked, the 
-cells in the heart muscle begin to die. This is called myocardial infarction, 
-more commonly known as a heart attack. The deprivation of oxygen the heart 
-experiences leads to the characteristic chest pain commonly associated with 
-heart attacks \mycite{ihd2010}. In an ECG, ischaemic heart disease can be
+enough blood and oxygen, as mentioned in the introduction. In an ECG, ischemic 
+heart disease can be
 diagnosed based on changes in the ST segment and the T wave. The diagnosis of 
-ischaemic heart disease and
+ischemic heart disease and
 other heart diseases is time sensitive. If a patient has suffers from a heart 
 attack, treatment has to be started as soon as possible. Some forms of 
 treatment are most effective in the first 3 hours after symptom onset and lose 
@@ -310,7 +303,7 @@ than an ECG \mycite{herring2006}.\par
 \subsubsection{Computerized ECG analysis}
 
 The widespread use of ECGs and the time-sensitive nature of their application 
-as diagnostic tools makes errors, delays, or inconsistencies in their 
+as diagnostic tools make errors, delays, or inconsistencies in their 
 interpretation unacceptable. A recent approach to minimizing this problem is 
 the application of computer technology in ECG recording, storage, and analysis
 \mycite{kligfield2007}. Time series analysis methods can also be applied to
@@ -331,7 +324,7 @@ ECG analysis, following \mycite{kligfield2007}, are:
 \end{enumerate}
 
 Step \ref{07:comp-ecg-an:01} comprises the digital recording of ECG signals or
-the digitizing of paper-based ECG records. For either processes, the AHA
+the digitizing of paper-based ECG records. For either process, the AHA
 recommends a sampling frequency of 500 samples per second. ECG filtering is 
 performed to remove noise introduced by patient movements, power line 
 interference, and other factors \mycite{kligfield2007}. This filtering, or
@@ -339,7 +332,7 @@ denoising, is often performed using digital filters. Their drawbacks are that
 they only filter out very specific frequencies. Because noisy ECGs contain 
 different types of contaminations, digital filters can be inaccurate. Using 
 wavelet transforms for denoising has the advantage that noise can be more 
-precisely targeted and the clean signal reconstructed afterwards. Choosing 
+precisely targeted and the clean signal reconstructed afterward. Choosing 
 appropriate wavelet parameters can be challenging, but methods to optimize this 
 process have been proposed \mycite{xie2020}. Step \ref{07:comp-ecg-an:02} uses
 the same types of methods for dimension reduction that were discussed in 
@@ -363,7 +356,7 @@ the QRS complex \mycite{prasad2018} and other features \mycite{valupadasu2012}.
 The missing time 
 information in the Fast Fourier Transform can lead to difficulties in detecting 
 time-dependent features. The short-time Fourier Transform adds time information 
-to the fast Fourier Transform's data. This can increase the accuracy of the 
+to the Fast Fourier Transform's data. This can increase the accuracy of the 
 feature extraction. It has the drawback in the tradeoff between the time and 
 frequency resolutions. Wavelet transforms can also be used for feature 
 extraction \mycite{kaur2016}. They have the advantage that they are suitable for all frequency 
@@ -391,12 +384,11 @@ preserves as much of the variance in the original data as it can
 \mycite{kaur2016}. Other 
 algorithms focus on separating classes of data, pattern recognition, or 
 retaining the structure of the original data \mycite{xie2020}. Here, again, 
-the time series
-representation methods discussed in sections discussed above can be
+the time series representation methods discussed in sections above can be
 applied.\par
 
 Finally, the extracted features can be classified; this is stage 
-\ref{07:comp-ecg-an:05}. In this stage judgements are made based on the 
+\ref{07:comp-ecg-an:05}. In this stage, judgments are made based on the 
 prepared input data and the result should be a disease diagnosis.
 Traditionally, this process is performed by a trained professional, as
 discussed in section \ref{07:what-is-an-ecg}. In the early stages of 
@@ -404,9 +396,9 @@ computerized ECG analysis, classification was performed by algorithms based on
 human actions when reading an ECG. Those algorithms were basic and not 
 particularly accurate. Currently, the classification at the end of the 
 preparation process is performed by a machine learning algorithm. Such models 
-include the k-nearest-neighbors model which classifies points into groups
+include the k-nearest-neighbors model which classifies points 
 but which is very expensive to calculate for high-dimensional data. Support 
-vector machines are used for pattern recognition and are able to work with 
+vector machines are used for pattern recognition and can work with 
 small samples. Artificial neural networks are robust and can work with complex 
 problems, they are generally more accurate than support vector machines 
 \mycite{prasad2018}. The 
@@ -419,13 +411,13 @@ attention.
 
 \subsubsection{ECG databases}\label{07:ecg-db}
 
-A very important element of computarized ECG analysis is the training data.
+A very important element of computerized ECG analysis is the training data.
 This data is used to train algorithms like neural networks, to manually tweak
 parameters of methods like SAX, or to validate and test prepared models. To
 fulfill these criteria, the data must be freely available to other researchers
 to replicate experiments and it should be fully annotated, meaning that experts
 determined the diseases that are or are not present as well as annotated the
-individual heart beats. ECG databases fulfill these requirements. One of the
+individual heartbeats. ECG databases fulfill these requirements. One of the
 largest repositories of ECG data and physiological data is PhysioNet. 
 PhysioNet was founded in 1999 by the National Institutes of Health (USA) and 
 offers large collections of freely accessible ECG data \mycite{goldberger2000}.
@@ -445,9 +437,9 @@ multivariate detection methods as well as realistic circumstances, where a raw
 ECG would most likely contain 12 leads. The European ST-T Database 
 \mycite{taddei1992} (available at 
 \url{https://physionet.org/content/edb/1.0.0/}) contains 90 recordings of 79
-subects, each being 2 hours long and containing two leads. This database is
+subjects, each being 2 hours long and containing two leads. This database is
 focused on the ST segment and the T wave (hence the name) and thus focuses on
-ischaemia detection. One of the most used databases in the literature is the 
+ischemia detection. One of the most used databases in the literature is the 
 MIT-BIH (Massachusetts Institute of Technology-Beth Israel
 Hospital) Arrhythmia Database (see
 \mycite{prasad2018,kanani2020,kaur2016,nygaard1998,sivaraks2015, 
