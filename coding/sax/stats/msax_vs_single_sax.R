@@ -55,7 +55,7 @@ ran <- 1:10
 summary <- msax_data[ran, 1:4]
 d <- data.frame()
 for (i in ran) {
-    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+    d <- rbind(d, cbind(get_ecgs(actual_data, summary[i, ]), data.frame(rank = rep(i, 48))))
 }
 boxplot(recall ~ rank, data = d)
 boxplot(precision ~ rank, data = d)
@@ -66,9 +66,21 @@ actual_data <- actual_ssax
 ran <- 1:10
 summary <- ssax_data[ran, 1:4]
 d <- data.frame()
+iqrs <- c(NA)
+length(iqrs) <- 10
+ranks <- c(NA)
+length(ranks) <- 10
+num_ol <- c(NA)
+length(num_ol) <- 10
 for (i in ran) {
-    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+    ecgs <- get_ecgs(actual_data, summary[i, ])
+    d <- rbind(d, cbind(ecgs, data.frame(rank = rep(i, 48))))
+    iqrs[i] <- IQR(ecgs$recall)
+    ranks[i] <- i
+    num_ol[i] <- sum(ecgs$recall < quantile(ecgs$recall)[2] - 1.5 * iqrs[i])
 }
+iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
+iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best S-SAX Parameter Sets",
@@ -77,16 +89,28 @@ boxplot(recall ~ as.factor(rank),
         ylim = c(0, 1)
         )
 
-best_ssax <- ssax_data[2, ]
+best_ssax <- ssax_data[8, ]
 
 # DSAX BOXPLOT
 actual_data <- actual_dsax
 ran <- 1:10
 summary <- dsax_data[ran, 1:4]
 d <- data.frame()
+iqrs <- c(NA)
+length(iqrs) <- 10
+ranks <- c(NA)
+length(ranks) <- 10
+num_ol <- c(NA)
+length(num_ol) <- 10
 for (i in ran) {
-    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+    ecgs <- get_ecgs(actual_data, summary[i, ])
+    d <- rbind(d, cbind(ecgs, data.frame(rank = rep(i, 48))))
+    iqrs[i] <- IQR(ecgs$recall)
+    ranks[i] <- i
+    num_ol[i] <- sum(ecgs$recall < quantile(ecgs$recall)[2] - 1.5 * iqrs[i])
 }
+iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
+iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best D-SAX Parameter Sets",
@@ -95,17 +119,28 @@ boxplot(recall ~ as.factor(rank),
         ylim = c(0, 1)
         )
 
-best_dsax <- dsax_data[2, ]
-
+best_dsax <- dsax_data[7, ]
 
 # MSAX BOXPLOT
 actual_data <- actual_msax
 ran <- 1:10
 summary <- msax_data[ran, 1:4]
 d <- data.frame()
+iqrs <- c(NA)
+length(iqrs) <- 10
+ranks <- c(NA)
+length(ranks) <- 10
+num_ol <- c(NA)
+length(num_ol) <- 10
 for (i in ran) {
-    d <- rbind(d, cbind(get_ecgs(actual_data, summary[1, ]), data.frame(rank = rep(i, 48))))
+    ecgs <- get_ecgs(actual_data, summary[i, ])
+    d <- rbind(d, cbind(ecgs, data.frame(rank = rep(i, 48))))
+    iqrs[i] <- IQR(ecgs$recall)
+    ranks[i] <- i
+    num_ol[i] <- sum(ecgs$recall < quantile(ecgs$recall)[2] - 1.5 * iqrs[i])
 }
+iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
+iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best MSAX Parameter Sets",
@@ -114,9 +149,28 @@ boxplot(recall ~ as.factor(rank),
         ylim = c(0, 1)
         )
 
-best_msax <- msax_data[2, ]
+best_msax <- msax_data[8, ]
+
+ac_ssax <- get_ecgs(actual_ssax, best_ssax[,1:4])[,8:10]
+ac_dsax <- get_ecgs(actual_dsax, best_dsax[,1:4])[,8:10]
+ac_msax <- get_ecgs(actual_msax, best_msax[,1:4])[,8:10]
+ac_combined <- rbind(ac_ssax, ac_dsax, ac_msax)
+
+methods = c(rep("S-SAX", dim(ac_ssax)[1]), rep("D-SAX", dim(ac_dsax)[1]), rep("MSAX", dim(ac_msax)[1]))
 
 
+best_comparison <- data.frame(ac_combined, method = methods)
+
+# RECALL BOXPLOT
+boxplot(recall ~ as.factor(method), 
+        data = best_comparison,
+        main = "Boxplot of Recall by Method for Optimal Parameters",
+        ylab = "Recall",
+        # ylim = c(0,1),
+        xlab = "Method"
+        )
+boxplot(precision ~ as.factor(method), data = best_comparison)
+boxplot(accuracy ~ as.factor(method), data = best_comparison)
 
 
 
