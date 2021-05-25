@@ -4,42 +4,44 @@
 
 \section*{Abstract}
 
-Electrocardiograms are the most common tool used to diagnose heart diseases,
-which claim more lives each year than any other disease. Since their invention,
-\CITE{cite when, and who}
-electrocardiograms needed to be analyzed by
-a trained professional like a cardiologist. Since
-\CITE{cite when it became a thing},
-they can be analyzed using computers and computer-assisted methods. These
-methods can be more accurate, faster, and more versatile than humans. One
-discord discovery method is the Symbolic Aggregate Approximation, which
-\TODO{fix this as its just wrong}
-transforms an electrocardiogram into a shorter, symbolic form. This form is
-faster and simpler to analyze.\newline
-Multivariate Symbolic Aggregate Approximation takes more than one
-electrocardiogram lead into account and should thus be more accurate when it
-comes to discord discovery using Heuristically Ordered Time series using
-Symbolic Aggregate Approximation.\newline
-This paper shows, with 
-\TODO{insert significance level},
-that Multivariate Symbolic Aggregate Approximation increases the sensitivity of
-HOTSAX compared to Symbolic Aggregate Approximation.
+The electrocardiograms (ECG) is the most common diagnostic tool used for heart 
+diseases. Because heart diseases claim more lives each year than any other 
+disease, proper analysis of ECGs is very important. For humans, learning how to
+read an ECG is very difficult and even with a lot of training, mistakes are
+common. One proposed to solution to this problem is computerized ECG analysis
+which aims to use the power of computers to improve and speed up the analysis 
+of ECGs and to save lives. But even computers have their limits, and working 
+with large ECG recordings can take a prohibitively long time. One approach to
+speeding up the analysis process is to transform the ECG into a more compact
+form--a representation. These representations can be used to more efficiently
+store and compare two ECGs. The Symbolic Aggregate Approximation (SAX) is a 
+prominent such representation method that has been modified to properly 
+represent time series that record more than one value for each moment in time,
+e.g. ECGs. This modification is known as Multivariate SAX (MSAX). 
+Besides representing
+ECGs, SAX can also be used as part of an algorithm called HOT SAX, that can 
+find discords in ECGs. ECG discords are segments of the ECG that are very
+different from the other segments. Because they are so different, they are
+likely to be indicators of disease and thus their discovery can help
+a cardiologist save lives.\par
+
+This research compares the use of MSAX with the HOT SAX algorithm (HOT MSAX) to
+the use of standard HOT SAX. The novel contributions of this research are to
+use MSAX as the representation for HOT SAX, and the application of MSAX to ECG
+discord discovery. Because MSAX is meant to represent time series like ECGs and
+SAX is not, the recall value for HOT MSAX-based ECG discord discovery should be
+greater than the recall value for the HOT SAX-based method. Through
+experimental testing using the MIT-BIH Arrhythmia Database it is shown that,
+when each method is used with its optimal parameters, there is no significant
+difference between HOT SAX and HOT MSAX. Nonetheless, HOT MSAX performs as well
+as HOT SAX and could thus find applications in ECG discord discovery by
+pre-selecting potentially relevant ECG segment for the cardiologist to
+analyze and thus speeding up and simplifying the diagnosis process.
 
 \par
 \medskip
 \noindent
 \textbf{Keywords}: \thesiskeywords{}
-\TODO{fix keywords}\\
-
-\TODO{- relevance in 1 line if possible
-\\- result summary
-\\- major implications
-\\- quantitative
-\\- no abbr, citations
-\\    1. what did I do
-\\    2. why did I do it? which questions
-\\    3. how was it done? methods
-\\    4. what are the results?
-\\    5. why do the results matter? + at least 1 application}
+\TODO{put more methods into the keywords}
 
 \end{document}

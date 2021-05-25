@@ -4,19 +4,110 @@
 
 \section{Discussion}
 
+\TODO{specifically refer to the questions posed in the introduction}
+\TODO{mention that reduced dimension leads to faster computations}
+
+This section discussed the results presented in the previous section. It was
+found that both HOT SAX and HOT MSAX perform poorly when the subsequence length
+parameter is not equal to the PAA segment count parameter. A possible cause of
+this is the way annotations were counted as True Positives and True Negatives. 
+By only counting
+the annotations in the segment they fall into, a possible influence of the
+discord on the following segments is neglected. This could lead to HOT SAX and
+HOT MSAX identifying a discord caused by an abnormal hearbeat in the segment
+following the annotation and thus lead to the detection being labeled
+a False Positive. By making the subsequences as large as possible, the chance
+of this happening become smaller and accordingly, the recall value would
+increase. By setting the parameter $m$ equal to $w$ in the second dataset, the
+number and proportion of parameter sets satisfying the 95\% recall condition
+increased.\par
+
+Every set of parameters in the top 10 values of S-SAX, D-SAX, and MSAX had its
+$k=-1$. The parameter $k$ controls how many of the discords identified by HOT
+SAX and HOT MSAX will be returned after the computation is finished. Parameter
+$k$ being equal to -1 for the optimal parameters regardless of the method
+indicates that the highest concrete values of $k$, 300 for dataset 2, is too
+low to enable top recall values. This behavior may be explained by considering
+the precision values. If the average precision of HOT SAX and HOT MSAX is 
+$\approx$ 36\% and the goal is to maximize recall, restricting the number of 
+detected discords that are used will directly lower the recall value.\par
+
+Comparing S-SAX, D-SAX, and MSAX showed that MSAX performs acceptably for 5.1\%
+of all parameter combinations in dataset 2. S-SAX performed accpetably for
+1.2\% and D-SAX for 3.9\%. From this is it inferred that MSAX is more robust
+when it comes to parameter choice. All three methods were tested with the same
+parameters, but MSAX performed acceptably for a larger share than the other
+methods. This is relevant because in applications involving unknown data, the
+parameter selection cannot be optimized without testing. A more robust method
+could still perform adequately in such a situation.\par
+
+The optimal parameter sets for the three methods all had a value of $k=-1$,
+which may be the result of the subsegment-annotation relationship mentioned
+above. The PAA segment values and thus the subsequence lengths for D-SAX and
+MSAX were 12 compared to 36 for S-SAX. The dimension reduction ratio for MSAX
+and D-SAX is 30, while it is 10 for S-SAX. A possible explanation for this is
+that MSAX and D-SAX are better suited to the multivariate discord detection 
+tasks tested here. As a result of that, they do not require as much 
+information as the
+less-effective S-SAX method to achieve the same recall values. The information
+requirement is relevant because, while PAA, SAX, and MSAX all lower-bound the
+Euclidean Distance and thus accurately represent the raw time series, each
+average trades a decrease in information about the shape of the time series for
+a reduced dimension. If S-SAX is less effective at extracting information from
+a multivariate time series, higher numbers of PAA segments may be required to
+gain enough information to achieve high recall values.\par
+
+The interquartile ranges of the recall value for all three optimal methods are not
+significantly different. The median recall value is very similar across
+all three methods as well. The number of outliers is 11 for S-SAX and 6 for the
+other two methods. The larger number of outliers for the S-SAX method could be
+attributed to it not considering the multivariate nature of ECGs. All observed
+outliers were outliers below the median recall value, indicating that certain
+ECGs are more difficult for the method to analyze than others. This is
+especially true for S-SAX, which does not properly take the nature of ECGs into
+account. This result should not be surprising, as both D-SAX and MSAX use all
+the information available, while S-SAX does not and is thus put at
+a disadvantage.
+
+A correlation between the optimal S-SAX, D-SAX, or MSAX methods and the recall 
+value 
+has not been found. As a result, the hypothesis of this paper cannot be
+supported. There is no evidence of HOT MSAX improving the recall value compared
+to HOT SAX. \textcite{anacleto2020}, in the paper introducing MSAX, analyzed
+a different ECG dataset as part of a collection of different time series. They
+used a $k$-Nearest-Neighbor classifier and found that there is no significant
+difference between the SAX representation and the MSAX representation when
+applied to ECG analysis. Their findings support this research's results.
+
+\end{document}
+
+showed parameter
+sets with $k=-1$. The best parameter sets under these conditions had values of
+$w$ that were $\le 12$. Only the 7th to 10th best parameter combinations had $w
+\ge 12$. \TODO{make a table here}\TODO{do this for single and dual SAX}. As
+these values are average values, they have to investigated more closely with
+regards to their outliers and interquartile range. The following boxplot can
+illustrate the recall and precision rates for these parameter combinations.
+
+\TODO{boxplots of each of the result sections}
+\TODO{top 10 table for each of the methods}
+\TODO{investigate correlation between sax and msax for those and see if it is
+significant}
+
+\section{Discussion}
+
 \TODO{expand on this, potentially merge with results section}
 
 In the previous section the results of the data analysis were presented. It was
 found that when the optimal parameters for MSAX and dual SAX are used, there is
-no significant difference between the two methods. 
-
-The most important result is the one mentioned above, as it indicates that, we
-infer, the MSAX representation is equal in performance to the dual SAX method
-when applied to ECGs using HOT SAX. This is congruent with the results of
-\mycite{anacleto2020}, where the authors found only a slight difference between
-the dual SAX method and MSAX. Discussing the actual parameters, MSAX used a PAA
-segment count of 6, representing 60 times reduction in dimension, while dual
-SAX performed best for $w=12$, a 30 times reduction in dimension.
+no significant difference between the two methods. This shows, that for optimal
+parameter settings, the MSAX representation is equal in performance to the 
+dual SAX method when applied to ECGs using HOT SAX. This is congruent with 
+the results of \mycite{anacleto2020}, where the authors found only a slight 
+difference between the dual SAX method and MSAX. Discussing the actual 
+parameters, MSAX used a PAA segment count of 6, representing 60 times reduction 
+in dimension, while dual SAX performed best for $w=12$, a 30 times reduction in 
+dimension.
 
 \end{document}
 

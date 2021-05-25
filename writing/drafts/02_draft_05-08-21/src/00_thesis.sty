@@ -12,9 +12,8 @@ for ECG Analysis}
 \newcommand{\thesisauthor}{Moritz M. Konarski}
 \newcommand{\thesissupervisor}{Professor Taalaibek M. Imanaliev}
 \newcommand{\thesiskeywords}{
-    acute cardiac ischemia, 
-    ECG, 
-    mathematical modeling
+    Symbolic Aggregate Approximation,
+    ECG discord discovery
 }
 \newcommand{\thesissubject}{SAX and MSAX for ECG abnormality detection}
 
@@ -97,6 +96,7 @@ for ECG Analysis}
 
 \RequirePackage{graphicx}
 \graphicspath{{../graphics/}}
+\RequirePackage{wrapfig}
 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.9}
@@ -104,7 +104,6 @@ for ECG Analysis}
 
 \RequirePackage{float}
 
-%\RequirePackage{color}
 \RequirePackage{colortbl}
 
 \RequirePackage[titles]{tocloft}
@@ -130,6 +129,9 @@ for ECG Analysis}
 \setlist{nosep}
 
 \RequirePackage{diagbox}
+\RequirePackage{multirow}
+\RequirePackage{hhline}
+\RequirePackage{nicematrix}
 
 \RequirePackage{fancyvrb}
 
@@ -144,8 +146,8 @@ for ECG Analysis}
 \renewcommand{\arraystretch}{1.1}
 \setlength\arrayrulewidth{0.8pt}
 
-\numberwithin{equation}{section}
-\numberwithin{figure}{section}
-\numberwithin{table}{section}
+%\numberwithin{equation}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
 
 \endinput

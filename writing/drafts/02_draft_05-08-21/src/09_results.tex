@@ -2,19 +2,11 @@
 
 \begin{document}
 
-\section{Results and Discussion}
-\TODO{restructure this section, put all the data stuff under subsection
-results}
+\section{Results}
 
-\TODO{fix up this section, set proper headers, etc}
-\TODO{add in some information on how much data, which parameter combinations,
-etc were used}
-\TODO{make this free of interpretation}
-\TODO{mention ECG filtering}
+\TODO{talking about outliers, make sure to mention how they are below}
 
-\subsection{Results}
-
-\subsubsection{Implementation}
+\subsection{Implementation}
 
 This subsection is concerned with the implementation of the methods discussed
 in the previous section. First, the ECG data and its preparation will be
@@ -23,38 +15,15 @@ SAX methods. Lastly, the process used to analyze the results is discussed.
 All code used in the implementation of these methods is available upon request
 via email at \Verb+konarski_m@auca.kg+.
 
-\paragraph{The ECG Data}
+\subsection{ECG Analysis Program}
 
-The ECG data used in this research is the MIT-BIH Arrhythmia Database
-\mycite{moody2001,goldberger2000}. This database contains 48 ECG recordings
-that are each 30 minutes long. For each of the ECGs, this database contains two
-ECG leads and is thus multivariate data. The leads chosen are not the same in
-each ECG, they were chosen based on which of the 12 originally recorded ones
-best represent the condition of the ECG. A team of cardiologists annotated each
-heartbeat in each ECG and determined if it is a normal heartbeat or not. For
-example, a beat with the annotation ``N" is a normal beat, while ``A" denotes
-an atrial premature beat. The annotations also include non-beat features such
-as a change in signal quality, denoted by ``$\sim$", or a rhythm change, which
-is denoted as ``+". A full list of annotations and their meaning is available
-at \url{https://archive.physionet.org/physiobank/annotations.shtml}. These
-annotations make it possible to judge the performance of a discord detection
-algorithm, as each detected discord can be checked for correctness using the
-provided annotations. While the MIT-BIH database is not the only database that
-possesses such annotations, it is one of the most commonly used ones in the
-literature (see \mycite{prasad2018,kanani2020,kaur2016,nygaard1998,sivaraks2015,
-valupadasu2012,zhang2019}) and it represents a middle ground in a couple
-important respects. The databases 48 ECGs are a manageable number, falling in
-between the extremes of around 10 and over 100 ECGs. Furthermore, the 30
-minutes length represent real-world ECGs better than 10 second excerpts, but
-are not as long and analysis-intensive as 24 hour recordings. Lastly, the
-MIT-BIH database has a sampling frequency of 360 samples per second, which is
-an adequate value \mycite{kligfield2007}. The ECG data in this database is
-unfiltered.\par
+\subsubsection{ECG Preprocessing}
 
-The ECG data can be downloaded using the PhysioNet website at the url
+The ECG data used in this project can be downloaded using the PhysioNet 
+website at the url
 \url{https://www.physionet.org/content/mitdb/1.0.0/}, or, alternatively, using
-the PhysionNet-developed WFDB applications package. This package provides
-command line applications to work with PhysionNet data. For each of the
+the PhysioNet-developed WFDB applications package. This package provides
+command line applications to work with PhysioNet data. For each of the
 individually numbered ECG records, 4 files exist. The
 \Verb_.hea_ files contain metadata on the ECG record,
 including anonymized patient information and the lead names. The
@@ -80,40 +49,27 @@ simplicity. As additional support for this approach, \mycite{zhang2019} can be
 considered, which successfully uses SAX in their ECG analysis without
 mentioning any filtering performed on the ECG data.
 
-\paragraph{SAX, MSAX, HOT SAX Implementation}
+\subsubsection{SAX, MSAX, HOT SAX, and HOT MSAX}
 
-The main program for this research was developed using the Julia programming
-language. Julia is a scientific programming language that has similarities to
-R, MATLAB, and Python. Julia possesses a rich ecosystem of libraries for
-visualization, computation, and data manipulation. For more information, visit
-the Julia website at \url{https://julialang.org/}. The following subsection
-will detail the steps comprising the discord discovery program.\par
-
-The first step is the selection of the important parameters for the methods.
-The user defined parameters are:
-\begin{itemize}
-    \item the sampling frequency of the ECG data to be analyzed;
-    \item the number of PAA segments $w$ used for SAX and MSAX;
-    \item the alphabet size $a$ used for SAX and MSAX;
-    \item the subsequence length that determines HOT SAX;
-    \item the variable $k$ indicating how many discords should be found.
-\end{itemize}
-These parameters determine all actions the program performs afterward. The
-second step is to load a CSV file containing the ECG data and annotations into
-the program. Once the ECG file is loaded, it is transformed into a data frame.
+For the analysis to start, a set of parameters $k$, $w$, $m$, and $a$ needs to
+be set. Then, the next step is to load a CSV file containing the ECG data and 
+annotations into the program. This files was generated in the preprocessing
+step. Once the ECG file is loaded, it is transformed into a data frame.
 A data frame is a type of data structure that can hold heterogeneous data
 types, e.g. text and numbers. This step adds important information to the ECG
 data. The ECG data frame contains the parameters itemized above to enable
 reproduction and analysis of the results, an index range for each PAA segment
 so it can be located in the raw ECG, the beat annotations for each PAA segment,
-and empty data fields for the results of the analysis with HOT SAX. The next
+and empty data fields for the results of the analysis with HOT SAX and HOT MSAX. 
+The next
 step is the application of the SAX and MSAX representations. The transformation
 of the raw time series data to the symbolic representations is performed in the
-same order as discussed earlier in this section, and thanks to the Julia
-programming language's ecosystem of libraries, can be easily translated into
-code. SAX is applied to each of the ECG leads individually, while MSAX is
-applied as designed to both at once. HOT SAX comprises the next step. For MSAX,
-the HOT SAX process is performed using the MSAX representation and distance
+same order as discussed in the methods section. Thanks to the Julia
+programming language's ecosystem of libraries, the formulas and functions can 
+be easily translated into code. SAX is applied to each of the ECG leads 
+individually, while MSAX is applied as designed to both at once. HOT SAX and 
+HOT MSAX are the next step. For HOT MSAX,
+the process is performed using the MSAX representation and distance
 measure. The method returns a list of distances as well as a list of indices
 that indicate which PAA segment has which distance. Depending on the parameter
 $k$, only the top $k$ of these discords are returned. These results are then
@@ -121,10 +77,10 @@ added to the respective PAA segments in the ECG data frame, adding both the
 MSAX distance of the segment as well as a binary indicator of whether or not
 the segment was detected as a discord. For SAX the process slightly different.
 Because SAX is a univariate representation, it cannot be directly applied to
-a bivariate ECG. Thus, SAX is applied to each lead of the ECG separately and
-HOT SAX is performed for each representation of each lead. Each set of results
-is, like MSAX, a list of indices of PAA segments and a list of their distances.
-Each sets of results is also added to the ECG data frame. This time the
+a bivariate ECG. Thus, HOT SAX is applied to each lead of the ECG separately. 
+Each set of results is, like for HOT MSAX, a list of indices of PAA segments 
+and a list of their distances.
+Each set of results is also added to the ECG data frame. This time the
 detection indicator is quaternary, it represents no detection, detection on the
 first lead, detection on the second lead, or detection on both leads. After
 both of these processes are completed, the ECG data frame is written to a CSV
@@ -132,75 +88,31 @@ file for further analysis. This process can be repeated thousands of times to
 create data of different values for the parameters to determine optimal values
 and their influence.
 
-\paragraph{Statistical Analysis of Results}
+\subsubsection{Computerized Statistical Analysis}
 
-After completing the computations for different sets of parameters, the results
-need to be analyzed. While HOT SAX is not a classifier in the sense of
-classifying heartbeats by medical standards, it does classify them into
-discords and non-discords. Thus, it is a binary classifier. Binary classifiers
-can be evaluated using the well-known True Positive, True Negative, False
-Negative, and False Positive values. \tabref{08:tab:bin-class} shows their
-relationship.
-\begin{table}[t]
-    \centering
-    \caption{Contingency table showing the relationship between detected
-    discords and actual annotated values.}
-    \label{08:tab:bin-class}
-    \vspace{1em}
-    \begin{tabular}{|>{\columncolor{tablegray}}c | c | c |}\hline
-        \rowcolor{tablegray}
-        {\centering\diagbox{Actual}{Assigned}}& Discord Detected & Non-Discord
-        Detected \\\hline
-        Is Discord      & True Positive     & False Negative \\\hline
-        Is Non-Discord  & False Positive    & True Negative  \\\hline
-    \end{tabular}
-\end{table}
-The values in \tabref{08:tab:bin-class} can be used to calculate many useful
-ratios that assist the evaluation of the HOT SAX algorithm. This research uses
-the recall value (also known as sensitivity), the accuracy, and the precision.
-These ratios are calculated as follows: recall value is defined as
-\begin{equation}\nonumber
-    \text{Recall} = \frac{\text{True Positive}}{\text{True Positive}
-    + \text{False Negative}},
-\end{equation}
-the accuracy as
-\begin{equation}\nonumber
-    \text{Accuracy} = \frac{\text{True Positive} + \text{True Negative}}
-        {\text{True Positive} + \text{True Negative} + \text{False Positive} +
-        \text{False Negative}},
-\end{equation}
-and the precision as
-\begin{equation}\nonumber
-    \text{Precision} = \frac{\text{True Positive}}{\text{True Positive}
-    + \text{False Positive}}.
-\end{equation}
-Recall can be understood as a measure of how many of the actual discords were
-correctly assigned the label discord. This is the most important measure for the
-analysis of HOT SAX applied to ECGs because in a medical scenario, identifying
-as many possibly relevant sections of the ECG is more important than being
-100\% accurate in their identification. The second most important value is
-precision, which can be understood as a measure of how many of the detected
-discords are actually discords. While it is more important to identify as many
-discords as possible, a 100\% recall rate could be achieved simply by assigning
-the label of discord to every element in the time series. Furthermore,
-detecting too many non-discords as discords makes it harder to analyze the
-actual discords that were highlighted. This of course is not useful, and thus
-the precision of HOT SAX needs to be incorporated into the analysis. Lastly,
-accuracy is not a very good measure for this particular application, as the
-majority of the segments in an ECG are non-discords and HOT SAX only detects
-a minority of the segments in an ECG. This leads to a high True Negative rate
-and thus a relatively high accuracy, even if HOT SAX did not actually detect
-any actual discords. Nonetheless, accuracy is a very common indicator of
-classifier performance and will thus be considered.\par
-
-The analysis of the methods was performed using the data whose generation was
-discussed above. The analysis was performed using the R programming language.
-R is an established statistical and mathematical programming language with
-great support for statistical methods and tests. The first step in the analysis
-was the processing of the data generated using the Julia program. This
+The analysis of the methods is performed using the data whose generation was
+discussed above. The first step in the analysis 
+is the processing of the data generated using the Julia program. This
 consisted of calculating the True Positive, True Negative, False Negative, and
 False Positive values for each parameter combination and each method.
-A segment was considered a ``non-discord" if its annotation consisted of an
+Here, the HOT SAX and HOT MSAX methods can be segmented into three datasets.
+The dataset generated using HOT MSAX stays the same is from now on referred to
+simply as MSAX. The data generated with HOT SAX can be divided into two
+distinct data sets. The first one treats SAX like a univariate representation
+and is thus called Single SAX (S-SAX). For S-SAX, the discords which were
+discovered by HOT SAX on one lead are treated separately from the discords
+discovered on the second lead. This means that a segment is counted as
+a discord if it was discovered by one method or by both methods. Effectively
+this generates two sets of results which can be concatenated. S-SAX represents
+the performance of applying SAX to just one lead of the ECG. The second option
+is a middle ground between S-SAX and MSAX. For this dataset, a discord was
+counted if it was discovered by either the first or the second lead or both. As
+a result, SAX is, in a way, applied to a multivariate time series. Because SAX
+is applied to both ECG leads, this dataset is called Dual SAX (D-SAX).\par
+
+To calculate the values shown in \tabref{08:tab:bin-class}, the meaning of a 
+true discord and a true non-discord in the ECG needs to be defined.
+A segment is considered a ``non-discord" if its annotation consisted of an
 ``N" or nothing ``". The former is obvious; the decision to consider no
 annotation (``") a non-discord was made because for certain segments of the
 ECGs, no annotations were available. This can happen if, for example, the 
@@ -209,46 +121,44 @@ situation, one heartbeat might be represented by 5 or more subsegments. The
 heartbeat annotation, given for a specific point in time, will only fall into
 one of the 5 segments and can thus only be counted for that one segment. The
 same is true for an annotation showing a discord. This method of analysis puts
-HOT SAX at a disadvantage because a discord located in one subsegment might
+HOT SAX and HOT MSAX at a disadvantage because a discord located in one 
+subsegment might
 influence its neighboring segments and thus lead to their detection. This
 detection might be an actual discord being detected, but counting it as one
 would incorrectly inflate the True Positive rate by assuming something about
 the data that it itself does not support without some inference. Thus the
-decision was made to accept lower True Positive values than may be accurate.
-\TODO{explain why? or do so later in limitations section}. Any annotation that
-was not empty or ``N" was considered a discord. This includes the medical
-annotation for arrhythmia but also the annotations for changes in signal
-quality or noise. This is done because HOT SAX is not meant to classify
-heartbeats by medical significance, but by how different they are from other
-heartbeats. A very noisy normal heartbeat will be detected the same as
-a arrhythmic beat. The classification of the detected discords into medically
-normal and abnormal heartbeats is left to more sophisticated analysis methods
-or human experts. The purpose of the HOT SAX methods is merely to reduce the
-number of ECG segments that need to be analyzed by pre-selecting the beats
-likely to contain useful information. After calculating the True Positive, 
+decision was made to accept lower True Positive values than may be
+accurate.\par
+
+Any annotation that
+was not normal as just defined  was considered a discord. This includes the 
+medical annotations for arrhythmia but also the annotations for changes in signal
+quality or noise. This is done because, as mentioned, HOT SAX and HOT MSAX are 
+not meant to classify heartbeats by medical significance, but by how different 
+they are from other heartbeats. A very noisy normal heartbeat will be detected 
+the same as an arrhythmic beat. The classification of the detected discords 
+into medically normal and abnormal heartbeats is left to more sophisticated 
+analysis methods or human experts. The purpose of the HOT SAX and HOT MSAX 
+methods is merely to reduce the number of ECG segments that need to be analyzed by pre-selecting the beats
+likely to contain useful information.\par
+
+After calculating the True Positive, 
 True Negative, False Negative, and False Positive value for each parameter
 combination, they were collected in a data frame also containing information on 
 the parameters that lead to them. These data frames are then saved as CSV files
-for further analysis. The contingency values were analyzed for the HOT SAX with 
-MSAX method, for HOT SAX with individual SAX (only considering a single ECG 
-lead), and for a HOT SAX with combined SAX method where the detected discords 
-of the individual HOT SAX with SAX computations were combined. The very last
+for further analysis. The contingency values were analyzed for the three
+datasets mentioned above, S-SAX, D-SAX, and MSAX. The last
 step in the analysis was the calculation of the average recall, precision, and
-accuracy across all 48 ECGs for SAX and MSAX. This allows for a simpler
-comparison of the results for different parameters and enables pruning of
-certain parameter combinations before more sophisticated analysis begins.
+accuracy across all 48 ECGs for each parameter set.
 
-\subsection{Limitations}
+\subsection{Limitations of the Implementation}
 
-The limitations of this research are the following: HOT SAX is not a classifier
-based on medically relevant information, it classifies discords and not beat
-types. This means that its applications to diagnosing heart conditions is
-limited. HOT SAX can be used to pre-select specific ECG segments to look at and
-analyze because they exhibit discords, but it cannot, by itself, perform any
-type of diagnosis. The previous paragraph explains why empty annotations have
+The disussion of the definition of normal and abnormal heartbeats above 
+explains why empty annotations have
 to be counted as normal beats and while the author believes that this is 
-necessary, it does negatively influence the results. The implementation of the
-representation only allows the use of PAA segment numbers that evenly divide
+necessary, it does negatively influence the results. Another limitation is that 
+the implementation of the SAX and MSAX
+representations only allows the use of PAA segment numbers that evenly divide
 the sampling frequency of the ECG database. This was done so that the whole
 ECG, being an even multiple of the sampling frequency itself, can be evenly
 divided into PAA segments. This decision prohibits certain numbers of PAA
@@ -259,284 +169,421 @@ subsequence values to numbers that evenly divide the number of PAA segments
 $w$. This was also done to simplify the process and to guarantee that the whole
 ECG would be evenly divisible into subsequences.
 
-\TODO{finish this}\\
-\TODO{move this to somewhere else?}
-\TODO{mention the 1 second interval connection to the sampling frequency and
-why it works}
+\subsection{Data Analysis}
 
-\subsection{Data Generation 1}
+In this section, the results of the data analysis will be presented. For both
+the first and second datasets used in the research, the parameter selection and
+a summary of the results will be presented. For dataset 2, the analysis will be
+completed in accordance with the methods laid out in section 
+\ref{08:stat-analysis}.
 
-The first round of data generation involved the creation of 126,720 files which
-corresponds to 2,640 unique sets of parameters. The following itemization shows
-the different parameters that were used in this data generation. Parameter $k$
-is number of discords returned by HOT SAX, $w$ the number of PAA segments in
-one second of 360 data points; $w$ has to evenly divide 360. Parameter $m$ is
-chosen after parameter $w$ and represent the number of PAA segments that are
-grouped together to form a HOT SAX subsequence. This parameter must evenly
-divide $w$. Lastly, $a$ is the alphabet size which determines the number of
-different symbols used in the SAX and MSAX discretization processes.
-\begin{itemize}
-    \item $k \in \{-1,  25,  50, 100, 150, 200, 300, 500\}$
-    \item $w \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
-    \item $m \in \{ 2,  3,  4,  5, 12, 20, 30, 40, 60 \}$
-    \item $a \in \{ 4,  5,  6,  7,  8,  9, 10, 12, 14, 17, 20\}$
-\end{itemize}
-Analyzing the 126,720 data files by calculating the mean values of the
-statistical measures for each set of unique parameters yields, for HOT SAX with 
-MSAX, the recall value was 99.98\% for the parameters 
-$k=-1,\,w=60,\,m=60,\,a=20$. Further analysis of rhese results indicate a few 
-important things:
-\begin{itemize}
-    \item the recall value is correlated strongly to $k$, the number of discords
-        considered;
-    \item the recall value is correlated to the length of the subsequence, the
-        longer the subsequence, the higher the recall value is.
-\end{itemize}
-The second observation is most important. As the addition of different
-subsequence length smaller than the 1 second interval does not improve the
-recall value, it was decided to generate a second set of data that did not have
-subsequence lengths smaller than the interval of 1 second. Instead, a larger
-set of the other parameters would be considered. 
-\TODO{expand this statement to SAX as well, make subsections}
+\subsubsection{Dataset 1}
 
-\subsection{Data Generation 2}
-
-The second round of data generation yielded 238,464 files corresponding to
-4,968 unique parameter combinations, each for 48 ECGs. The following list shows
-the sets of possible parameters:
-\begin{itemize}
-    \item $k \in \{-1,  25,  50,  75, 100, 150, 175, 200, 300\}$
-    \item $w \in \{  2, 3,   4,   5,   6,   8,   9,  10,  12,  15,  18,  20,  
-        24,  30,  36,  40,  45, 60,  72,  90, 120, 180, 360 \}$
-    \item $m = w$
-    \item $a \in \{ 2,  3,  4 , 5, 6 , 7 , 8 , 9 ,10, 11, 12, 13, 14, 15, 16, 
-        17, 18, 19, 20, 21, 22, 23, 24, 25\}$
-\end{itemize}
-To analyze the performance of MSAX and SAX for this dataset, first the
-parameter combinations with an average recall value of 95\% were selected.
-For MSAX, this set has 255 values, for single SAX it has 99, and for
-combined SAX 192. Then, these values were sorted by their precision. This is 
-meant to represent a compromise between recall and precision. 
-
-The top 10 results for each method were chosen for further analysis. For MSAX,
-the best precision value is 36.24\% for $k=-1,\,w=m=6,\,a=24$ at a recall value
-of 95.37\%. For single SAX, the best precision value is 35.94\% for the
-parameters $k=-1,\,w=m=40,\,a=19$ at a recall value of 95.21\%, and for dual
-SAX the best precision value is 36.56\% for $k=-1,\,w=m=12,\,a=22$ at a recall
-value of 95.28\%. At first glance dual SAX seems to have a slightly higher
-precision that MSAX, while MSAX has a slighly higher recall value. Single SAX
-performs worse than both other methods. Besides the average value, the 
-distribution of recall and precision values are important.
-\figref{09:fig:recall} shows a boxplot comparing MSAX and dual SAX with
-respect to their recall values. It can be observed that they are virtually
-identical, with MSAX having a slightly higher value and being slightly more
-tightly grouped than dual SAX. MSAX has more outliers. 
-\begin{figure}[t]
+The first dataset is based on parameters that were
+arbitrarily chosen. This was done because the behavior of the methods was not
+yet known. While the choice was arbitrary, it was attempted to spread the
+values out in a reasonable way. For each parameter, \tabref{09:tab:ds1-param} 
+shows the method that it influences, the values that were chosen for it, and
+the rationale behind choosing those values. 
+For SAX and MSAX, $w$ the number of PAA segments in one second which is 
+equivalent to dividing 360 data points by $w$. Thus, $w$ has to be a factor of 
+360. These factors were chosen arbitrarily and kept small because it was not
+known how time intensive the computations would be. The second parameter is 
+$a$, the alphabet size which determines the number of different symbols used in 
+the SAX and MSAX discretization processes. Because the alphabet size is 
+constrained by the size of the English alphabet, numbers were chosen 
+arbitrarily in that range.
+For HOT SAX and HOT MSAX, the parameter $k$ is number of discords they return.
+Giving it the value $-1$ indicates that all available discords should be
+returned, regardless of how many there are. The values for $k$ were chosen
+arbitrarily. This parameter does not affect the performance of the method, it
+just determines how many of the results are considered. Parameter $m$ is chosen 
+after parameter $w$ for SAX and MSAX and represents the number of PAA segments 
+that are grouped together to form a HOT SAX or HOT MSAX subsequence. This 
+parameter must evenly divide $w$. 
+\begin{table}[H]
     \centering
-    \includegraphics[width=\textwidth]{recall}
-    \caption{Boxplot comparing the recall value for MSAX and SAX for their
-    respective best parameters. A slightly tighter grouping of can be observed
-    for the MSAX, while it also has more outliers than the SAX method.}
-    \label{09:fig:recall}
-\end{figure}
-\figref{09:fig:precision} shows a boxplot comparing MSAX and dual SAX with
-respect to their precision values. It can be observed that these, too, are 
-virtually identical. Dual SAX has a slighly higher precision, while MSAX has
-a slighly tighter grouping. There are no outliers.
-\begin{figure}[t]
+    \caption{Table of the methods used for dataset 1. the parameters of each
+    method, the rationale behind the parameter choice, and the values the
+    parameter takes are shown.}
+    \label{09:tab:ds1-param}
+    \vspace{0.5em}
+    \begin{tabular}{| c | c | c | c |}\hline
+        \rowcolor{tablegray}
+        Method & Parameter & Rationale & Values \\\hline 
+        \multirow{2}{*}{SAX/MSAX} & $w$ & arbitrary factors of 360 & 
+            $2,3,4,5,12,20,30,40,60$ \\\cline{2-4}
+        & $a$ & arbitrary, $2 \le a \le 25$ & $4,5,6,7,8,9,10,12,14,17,20$  
+        \\\hline
+        \multirow{4}{*}{HOT SAX/MSAX} & \multirow{2}{*}{$k$} & \multirow{2}{*}
+        {arbitrary} & $-1,25,50,100,$ \\
+            & & & $150,200,300,500$ \\\cline{2-4} 
+            & \multirow{2}{*}{$m$} & arbitrary factors of 360
+            & \multirow{2}{*}{$2,3,4,5,12,20,30,40,60$} \\
+            & & and of $w$ &\\\hline
+    \end{tabular}
+\end{table}
+Using these parameters and the programs created as part of this research, the
+48 ECGs of the MIT-BIH database were analyzed using HOT SAX and HOT MSAX. The 
+2,640 unique sets of parameters resulting from \tabref{09:tab:ds1-param}
+applied to 48 ECGs creates a dataset with 126,720 files. These
+files were analyzed as stated in section \ref{08:stat-analysis}.
+The mean values of the statistical measures for each set of unique parameters 
+were calculated. Then, the threshold of recall $\ge 95\%$ was applied to the
+summarized data to select the parameter combinations that yield acceptable
+results. Upon further analysis, it was noted that most of the parameter
+combinations that achieved recall $\ge 95\%$ had $m=w$. To investigate this, the
+parameter combinations with $m \neq w$ and recall $\ge 95\%$ were extracted.
+\tabref{09:tab:ds1-results} shows the results of this analysis.
+\begin{table}[H]
     \centering
-    \includegraphics[width=\textwidth]{precision}
-    \caption{Boxplot comparing the precision value for MSAX and SAX for their
-    respective best parameters. A slightly tighter grouping of can be observed
-    for the MSAX, while its average is slighly lower than that of the SAX method.}
-    \label{09:fig:precision}
+    \caption{Results of the analysis of dataset 1. The total number of
+    parameter sets and the number and proportion of
+    parameter sets in dataset 1 that fulfill the conditions analysis are 
+    presented for each method.}
+    \label{09:tab:ds1-results}
+    \vspace{0.5em}
+    \begin{NiceTabular}{| c | c | r | r |}\hline
+        \cellcolor{tablegray} & \cellcolor{tablegray}
+            &\multicolumn{2}{c|}{\cellcolor{tablegray}Sets Satisfying Analysis 
+            Conditions}
+            \\\hhline{|>{\arrayrulecolor{tablegray}}->
+                {\arrayrulecolor{tablegray}}->{\arrayrulecolor{black}}->
+                {\arrayrulecolor{black}}|-|}
+        \multirow{-2}{*}{\cellcolor{tablegray}Method} & \multirow{-2}{*}
+            {\cellcolor{tablegray}Total Sets} & \multicolumn{1}{c|}
+            {\cellcolor{tablegray}recall $\ge95\%$} & \multicolumn{1}{c|}
+            {\cellcolor{tablegray}recall $\ge95\%$ and $m \neq w$} \\\hline
+        S-SAX   & \multirow{3}{*}{$2,640$} & $3 $ $(0.1\%)$   & $0$ $(0\%)$ 
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
+            {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
+        D-SAX   &  & $13$ $(0.5\%)$   & $0$ $(0\%)$ 
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
+            {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
+        MSAX    &  & $23$ $(0.9\%)$   & $3$ $(0.1\%)$ \\\hline
+    \end{NiceTabular}
+\end{table}
+As \tabref{09:tab:ds1-results} shows, less than $1\%$ of the parameter sets
+have a recall of $\ge 95\%$, regardless of the method used. Additionally, only
+3 ($0.1\%$) parameter sets for MSAX have the desired recall and use a value for
+$m$ that is different from $w$.
+These sets of results are too small to continue this analysis, as the goal is
+to analyze a ``top 10" selection of values. Thus, a second
+dataset needs to be computed. The data presented in \tabref{09:tab:ds1-results}
+does show that using subsequence lengths $m$ for the HOT SAX and HOT MSAX 
+methods that are not equal to the PAA segment count $w$ is not effective.
+According to these findings, $m$ will be set equal to $w$ for the computation
+of dataset 2.
+
+\subsubsection{Dataset 2}
+
+Based on the analysis of dataset 1, the parameter selection for dataset 2 is
+optimized. As the value of $m$ is set equal to the value of $w$, the complexity
+of the computation is reduced dramatically. This is caused by two things.
+Firstly, the total number of parameter sets is decreased when factors $m$ of
+$w$ are not considered--the total number of parameter sets that have to be
+used it decreased. Secondly, dividing the number of PAA segments in 1 second
+into multiple subsegments increases the number of subsequences that HOT SAX and
+HOT MSAX need to work with and thus the complexity of the computation. By not
+doing that, the increase in complexity is avoided. As a result of this
+reduction in complexity, a larger set of the other parameter was considered. 
+The parameters chosen for dataset 2 are shown in \tabref{09:tab:ds2-param}. For
+the SAX and MSAX parameters, all possible values were considered. Parameter 
+$w$ can be all factors of $360$. For the alphabet size $a$, all possible values 
+were considered. The HOT SAX and HOT MSAX parameters were chosen as follows.
+Parameter $k$ was again assigned arbitrary values that provide a decent
+coverage for reasonable values. The value of $-1$ is again included to signify
+the use of all available discords.
+Parameter $m$ does not need to be chosen for this dataset, as it is always set
+to the value of $w$. All parameters used in dataset 2 have the same meaning as 
+in dataset 1, please refer to that section for their explanations. 
+\begin{table}[H]
+    \centering
+    \caption{Table of the methods used for dataset 2. The parameters of each
+    method, the rationale behind the parameter choice, and the values the
+    parameter takes are shown.}
+    \label{09:tab:ds2-param}
+    \vspace{0.5em}
+    \begin{tabular}{| c | c | c | c |}\hline
+        \rowcolor{tablegray} Method & Parameter & Rationale & Values \\\hline
+        \multirow{5}{*}{SAX/MSAX} & \multirow{3}{*}{$w$} & 
+        \multirow{3}{*}{factors of 360}  & $2,3,4,5,6,8,9,10,12,15,$  \\
+        & & & $18,20,24,30,36,40,45,$ \\
+          & & & $60,72,90,120,180,360$ \\\cline{2-4}
+           & \multirow{2}{*}{$a$} & $2 \le a \le 25,$ & \multirow{2}{*}
+           {$\overline{2,\ldots,25}$} \\    
+          & & length of alphabet & \\\hline
+        \multirow{3}{*}{HOT SAX/MSAX}
+          & \multirow{2}{*}{$k$} & \multirow{2}{*}{arbitrary} & 
+            $-1,25,50,75,100,$            \\
+          & & & $150,175,200,300$  \\\cline{2-4}
+           & $m$    & same as $w$           & see $w$ \\\hline
+    \end{tabular}
+\end{table}
+\TODO{don't use see $w$, just put the data there}
+This table provides values that create 4,968 parameter combinations when used
+with this research's programs to analyze the 48 ECGs of the MIT-BIH database.
+As a result, dataset 2 contains 238,464 files of ECGs analyzed with HOT SAX and
+HOT MSAX. Each of those combinations was applied to all 48 ECGs. 
+As with dataset 1, these files were analyzed as stated in section 
+\ref{08:stat-analysis}. The mean values of the statistical measures for each set 
+of unique parameters were calculated and the threshold of recall $\ge 95\%$ 
+applied. \tabref{09:tab:ds2-results} shows the results of that analysis.
+\begin{table}[H]
+    \centering
+    \caption{Results of the analysis of dataset 2. The total number of
+    parameter sets and the number and proportion of
+    parameter sets fulfilling the conditions that recall be $\ge 95\%$.}
+    \label{09:tab:ds2-results}
+    \vspace{0.5em}
+    \begin{NiceTabular}{| c | c | r |}\hline
+        \rowcolor{tablegray}
+        Method & Total Sets & \multicolumn{1}{c|}{Sets Satisfying recall
+        $\ge95\%$} \\\hline
+        S-SAX   & \multirow{3}{*}{$4,968$} & $99$ $(1.2\%)$    
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
+            {\arrayrulecolor{black}}|-|}
+        D-SAX   &  & $192$ $(3.9\%)$    \\\hhline{|>{\arrayrulecolor{black}}->
+        {\arrayrulecolor{white}}->{\arrayrulecolor{black}}|-|}
+        MSAX    &  & $255$ $(5.1\%)$    \\\hline
+    \end{NiceTabular}
+\end{table}
+As \tabref{09:tab:ds2-results} shows, of the 4,968 total parameter sets, 99 have
+a recall of $\ge 95\%$ for S-SAX, 192 for D-SAX, and 255 for MSAX. These
+dataset are large enough for the analysis to continue. As discussed in
+\ref{08:stat-analysis}, the subsets of dataset 2 for
+which the recall is $\ge 95\%$ will further be sorted by the precision, in
+descending order. Then, the top 10 values of S-SAX, D-SAX, and MSAX will be
+analyzed individually. 
+
+\paragraph{Analysis of S-SAX}
+
+The top 10 values of S-SAX were first pruned by a threshold of recall $\ge
+95\%$ and then sorted descendingly by precision. \tabref{09:tab:ssax10}
+provides an overview of the parameters of these top 10 values, as well as their
+recall, accuracy, and precision.
+\begin{table}[H]
+    \centering
+    \caption{Table presenting a ranking of the top 10 most precise S-SAX
+    parameter combinations and their parameters $k$, $w$, $m$, and $a$. The
+    recall and accuracy values are also shown.}
+    \label{09:tab:ssax10}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}
+        \hline
+        \rowcolor{tablegray} 
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
+            Accuracy (\%)& Precision (\%)\\\hline
+        1& -1 &  40 &  40   &  19& 95.21& 37.46&35.94  \\\hline
+        2& -1 &  24 &  24   &  24& 95.19& 37.57&35.93  \\\hline
+        3& -1 &  30 &  30   &  22& 95.37& 37.46&35.93  \\\hline
+        4& -1 &  36 &  36   &  20& 95.09& 37.41&35.92  \\\hline
+        5& -1 &  45 &  45   &  18& 95.24& 37.33&35.89  \\\hline
+        6& -1 &  24 &  24   &  25& 95.74& 37.32&35.88  \\\hline
+        7& -1 &  72 &  72   &  15& 95.02& 36.86&35.87  \\\hline
+        8& -1 &  36 &  36   &  21& 95.92& 37.06&35.86  \\\hline
+        9& -1 &  30 &  30   &  23& 95.72& 37.17&35.86  \\\hline
+        10& -1 & 120 & 120  &  13& 95.13& 36.51&35.85  \\\hline
+    \end{tabular}
+\end{table}
+\tabref{09:tab:ssax10} shows that for the top 10 values by precision, the
+recall values are all approximately 95\%, the accuracy is between 36\% and
+38\%, and the precision is 36\%. It is notable that all $k$ values are -1. To 
+be able to choose a best parameter
+combination of these 10, their interquartile ranges and outliers for the recall
+value will be compared with the help of a boxplot. This boxplot is based on the
+set of 48 ECGs for each ranked method. This plot can be seen in 
+\figref{09:fig:ssax_boxplot}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ssax_boxplot}
+    \caption{Boxplot showing the recall for the top 10 S-SAX parameter sets. The
+    full list of parameters can be found in \tabref{09:tab:ssax10}.}
+    \label{09:fig:ssax_boxplot}
 \end{figure}
-Performing Pearson correlation analysis with respect to the correlation between
-precision and the used method yields a correlation coefficient of 0.006. This
-very clearly indicates that there is no significant difference between the two
-recall values being influenced by the methods. Performing the same test with
-respect to precision yields a correlation coefficient of -0.004, also
-indicating no correlation between the methods used analyzed here.
+\figref{09:fig:ssax_boxplot} illustrates two important things. Firstly, there
+are only small differences between the recall values for any of the top 10
+S-SAX parameter sets. Secondly, a clear pattern of 9 outliers is visible.
 
-\subsection{Discussion}                                                            
-                                                                                
-\TODO{expand on this, potentially merge with results section}                   
-                                                                                
-In the previous section the results of the data analysis were presented. It was 
-found that when the optimal parameters for MSAX and dual SAX are used, there is 
-no significant difference between the two methods.                              
-                                                                                
-The most important result is the one mentioned above, as it indicates that, we  
-infer, the MSAX representation is equal in performance to the dual SAX method   
-when applied to ECGs using HOT SAX. This is congruent with the results of       
-\mycite{anacleto2020}, where the authors found only a slight difference between 
-the dual SAX method and MSAX. Discussing the actual parameters, MSAX used a PAA 
-segment count of 6, representing 60 times reduction in dimension, while dual    
-SAX performed best for $w=12$, a 30 times reduction in dimension.    
+To select the optimal parameter based on \figref{09:fig:ssax_boxplot}, the
+interquartile range (IQR) is calculated for each rank. The use of IQR versus
+the mean is justified here because of the skewed data and the outliers. Ranks 
+6, 8, and 9 have 
+the lowest IQR, at 0.0358, 0.0354, and 0.378, respectively. For further
+differentiation, the number of outliers is considered. Rank 6 has 13 outliers,
+rank 8 11, and rank 9 has 13. Considering these factors, rank 8 is chosen as
+the optimal parameter set for S-SAX. This set has the smallest IQR of the top 
+10 and the
+smallest number of outliers among those with small IQR values. With a $w$ value
+of 36, rank 8 represents a 10 time dimension reduction compared to the raw
+data.
 
-\end{document}
-showed parameter
-sets with $k=-1$. The best parameter sets under these conditions had values of
-$w$ that were $\le 12$. Only the 7th to 10th best parameter combinations had $w
-\ge 12$. \TODO{make a table here}\TODO{do this for single and dual SAX}. As
-these values are average values, they have to investigated more closely with
-regards to their outliers and interquartile range. The following boxplot can
-illustrate the recall and precision rates for these parameter combinations.
+\paragraph{Analysis of D-SAX}
 
-\TODO{boxplots of each of the result sections}
-\TODO{top 10 table for each of the methods}
-\TODO{investigate correlation between sax and msax for those and see if it is
-significant}
+For D-SAX, the top 10 values were also first pruned by a threshold of recall 
+$\ge 95\%$ and then sorted descendingly by precision. \tabref{09:tab:dsax10}
+provides an overview of the parameters of these top 10 values, as well as their
+recall, accuracy, and precision.
+\begin{table}[H]
+    \centering
+    \caption{Table presenting a ranking of the top 10 most precise D-SAX
+    parameter combinations and their parameters $k$, $w$, $m$, and $a$. The
+    recall and accuracy values are also shown.}
+    \label{09:tab:dsax10}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
+            Accuracy (\%)& Precision (\%)\\\hline
+        1 & -1 & 12 & 12 & 22 & 95.28& 41.91& 36.56\\\hline
+        2 & -1 & 10 & 10 & 25 & 95.18& 41.99& 36.53\\\hline
+        3 & -1 & 15 & 15 & 19 & 95.14& 41.70& 36.46\\\hline
+        4 & -1 & 12 & 12 & 23 & 95.18& 41.00& 36.34\\\hline
+        5 & -1 & 40 & 40 & 12 & 95.08& 39.64& 36.29\\\hline
+        6 & -1 & 15 & 15 & 20 & 96.11& 40.31& 36.27\\\hline
+        7 & -1 & 12 & 12 & 24 & 97.04& 40.16& 36.26\\\hline
+        8 & -1 & 36 & 36 & 13 & 95.80& 38.93& 36.20\\\hline
+        9 & -1 & 20 & 20 & 17 & 95.87& 39.82& 36.19\\\hline
+       10 & -1 & 30 & 30 & 14 & 96.09& 39.32& 36.18\\\hline
+    \end{tabular}
+\end{table}
+\tabref{09:tab:dsax10} shows that for the top 10 values by precision, like in
+the previous section. The 
+recall values are between 95\% and 97\%, the accuracy between 39\% and
+42\%, and the precision is 36\%. Again, all $k=-1$. A boxplot comparing recall 
+with rank is
+created in order to choose a best parameter combination. This plot is shown in 
+\figref{09:fig:dsax_boxplot}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{dsax_boxplot}
+    \caption{Boxplot showing the recall for the top 10 D-SAX parameter sets. The
+    full list of parameters can be found in \tabref{09:tab:dsax10}.}
+    \label{09:fig:dsax_boxplot}
+\end{figure}
+Visually, \figref{09:fig:dsax_boxplot} shows ranks 6, 7, and 9 to have the
+smallest IQR. This is confirmed by calculating the IQR. Rank 6 has an IQR of
+0.038, rank 7 has 0.03, and rank 9 has 0.04. Regarding the number of outliers,
+rank 7 has 6, rank 6 has 7, and rank 9 has 8. Thus rank 7 is selected as the
+optimal parameter set. It has both the smallest IQR and the lowest number of
+outliers compared to other ranks with low IQRs. The dimension reduction ratio
+of rank 7 is 30.
 
-\end{document}
+\paragraph{Analysis of MSAX}
 
-All files were analyzed with
-respect to the performance of MSAX.
+Lastly, the top 10 parameter sets of MSAX are considered. They, too, were 
+selected based on recall $\ge 95\%$ and sorted by precision. 
+\tabref{09:tab:msax10} shows the parameter set and statistical measures 
+associated with the top 10 MSAX parameter combinations.
+\begin{table}[H]
+    \centering
+    \caption{Table presenting a ranking of the top 10 most precise MSAX
+    parameter combinations and their parameters $k$, $w$, $m$, and $a$. The
+    recall and accuracy values are also shown.}
+    \label{09:tab:msax10}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
+            Accuracy (\%)& Precision (\%)\\\hline
+            1 & -1 &  6 &  6 & 24 & 95.37& 40.68& 36.24\\\hline
+            2 & -1 & 12 & 12 & 16 & 95.10& 39.85& 36.24\\\hline
+            3 & -1 &  9 &  9 & 19 & 95.20& 39.70& 36.13\\\hline
+            4 & -1 & 10 & 10 & 18 & 95.89& 39.45& 36.12\\\hline
+            5 & -1 &  8 &  8 & 21 & 96.01& 39.53& 36.12\\\hline
+            6 & -1 &  6 &  6 & 25 & 96.02& 39.94& 36.12\\\hline
+            7 & -1 & 36 & 36 & 10 & 95.16& 38.47& 36.08\\\hline
+            8 & -1 & 12 & 12 & 17 & 96.51& 38.89& 36.06\\\hline
+            9 & -1 & 30 & 30 & 11 & 95.49& 38.26& 36.03\\\hline
+           10 & -1 & 72 & 72 &  8 & 95.70& 37.74& 36.03\\\hline
+    \end{tabular}
+\end{table}
+\tabref{09:tab:msax10} shows, for the third time, that there is little
+difference between the statistical results of the top 10 best parameter sets. 
+The recall values are all 95\% to 96\%, the accuracy is between 38\% and
+41\%, and the precision is 36\%. A boxplot is constructed for these 10
+parameter sets to explore the interquartile range and outliers of MSAX.
+\figref{09:fig:ssax_boxplot} shows this boxplot.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{msax_boxplot}
+    \caption{Boxplot showing the recall for the top 10 MSAX parameter sets. The
+    full list of parameters can be found in \tabref{09:tab:msax10}.}
+    \label{09:fig:msax_boxplot}
+\end{figure}
+In \figref{09:fig:msax_boxplot}, ranks 6, 8, and 10 visually stick out as 
+having the lowest IQR. Calculating the IQR confirms that, yielding 0.038,
+0.033, and 0.03 for ranks 6, 8, and 10 respectively. The number of outliers for
+rank 6 is 7, for rank 8 it is 6, and for rank 10 it is 8. Because rank
+8 has the second lowest IQR and the smallest number of outliers, it is selected
+as the optimal parameter set for MSAX. Its $w$ value of 12 results in
+a dimension reduction of 30 compared to the raw data.
 
+\subsubsection{Comparison of Optimal Parameters}
 
-To analyze the performance of HOT SAX with SAX and MSAX as representations,
-
-\begin{itemize}
-    \item explain true positive, true negative, and so on
-    \item explain recall, accuracy, precision, f1
-    \item explain why recall was chosen and if that is fair
-    \item introduce the correlations that we would expect to find if my
-        hypothesis is true and also the ones that would disprove it
-    \item which types of correlation, significance testing, and modeling will
-        be used and why; what are the justifications
-\end{itemize}
-
-
-\TODO{the idea is to use the ECG as it would be recorded or digitized by
-anyone, without filtering. see zhang2019 if they did filtering}
-
-\TODO{make a final applications section that explains how HOT SAX will be used
-with each of the time series}
-
-\TODO{why can filtering be ignored? put this as further research to investigate
-the influence of filtering on this process}
-
-\TODO{give good reasons why I chose the methods and data bases}
-
-\TODO{goals:
-\\- reader can assess believability of results
-\\- all information necessary to replicate the research
-\\- describe all materials, procedure, ect
-\\- all the formulae
-\\- state all the limitations of the methods and the ones I impose myself
-\\- analytical methods and languages
-}
-
-\TODO{answer questions:
-\\- can someone else accurately replicate the study
-\\- can the data be obtained again
-\\- are all parts / instruments described with enough accuracy
-\\- is the data freely available
-\\- can the statistical analysis be repeated
-\\- can the algorithms be replicated?
-}
-
-\TODO{Sections:
-    \\- general overview -> flowchart
-    \\- then explain each element of the flowchart one by one
-    \\- use formulae etc
-    \\- nice amount of tikz graphs
-    \\- section on implementation with details and the more important elements
-    \\    use another flow chart?
-    \\- use graphs to illustrate all important elements
-    \\- make a data description section that describes my process of data
-    handling; which database
-    \\- explain the parameters that the methods have and what they mean
-    \\- describe how a got all the data
-}
-
-This section explains the methods used in this research. \TODO{create flow
-charts for all this shit to make it simpler}. First methods section for the
-analytical methods in a mathematical way.
-
-
-
-
-\subsection{Statistical Evaluation}
-
-\begin{itemize}
-    \item reading the data into R
-    \item summarizing the data
-    \item the summarized data files
-    \item libraries used
-\end{itemize}
-
-\TODO{must include:
-\\- present the actual results and findings
-\\- range of validity
-\\- DO NOT INTERPRET
-\\- mention positive and negative results
-\\- give enough information for others to make their own judgements
-\\- use subheadings
-\\- key results in clear statements at paragraph beginnings
-\\- could be short
-\\- 
-}
-
-\TODO{Sections
-    \\- use confusion matrices for what is is vs what was predicted [p. 44
-    anacleto2019]
-    \\- compare all the parameters and their influence
-    \\- 
-}
-
-\subsection{First Run}
-
-\begin{itemize}
-    \item parameters for this run
-    \item why could I not let it continue
-    \item what did this run indicate -> what did I change and modify for the
-        next run
-    \item keep in mind that the lower recall can be caused by the way I do the
-        ECG checking, and that I did not want to assign data to segments that
-        did not have it before out of fear that I would invent results.
-\end{itemize}
-
-\subsection{Second Run}
-
-\subsection{SAX}
-
-influence and significance of all the major parameters:
-
-\begin{itemize}
-    \item k
-    \item paa count
-    \item subsequence count
-    \item alphabet size
-    \item which ones seem to be the best
-\end{itemize}
-
-\subsection{MSAX}
-
-influence and significance of all the major parameters:
-
-\begin{itemize}
-    \item k
-    \item paa count
-    \item subsequence count
-    \item alphabet size
-    \item which ones seem to be the best
-\end{itemize}
-
-\subsection{MSAX vs SAX}
-
-Comparing SAX to MSAX is done using the recall value defined in
-\TODO{reference}. Investigating the correlation between the methods
-(represented by a 1 for SAX and a 0 for MSAX), yields the correlation
-coefficient of -0.25. This coefficient indicates that for all investigated
-parameter combinations, the use of the MSAX method is weakly correlated with an
-increase in recall. When a specific set of parameters is selected and the
-correlation analysis is repeated, the correlation coeficient is -0.73,
-indicating a strong correlation. Here $k=-1$ and paa\_count = 12.
-
-\begin{itemize}
-    \item just the results that are gained directly from the data
-    \item put results in graphs and tables to make them referencable
-\end{itemize}
+After determining the optimal parameter sets for the three methods investigated
+with the help of dataset 2, they will now be compared with each other. \tabref{09:tab:opt-param}
+summarizes the parameter sets that are optimal for S-SAX, D-SAX, and MSAX. When
+it comes to the method parameters, it is desirable for $w$ to be as small as
+possible to take advantage of the dimension reduction properties of SAX and
+MSAX. Accordingly, D-SAX and MSAX have the best $w$ parameters, as they are
+smaller than $w$ of S-SAX. Considering parameter $k$, they all have $k=-1$. The
+alphabet size $a$, while not influencing the dimension reduction, is relevant
+for the complexity of the method--lower values of $a$ result in a simpler
+representation. Accordingly, MSAX has the best value for $a$ because it is
+smaller than the competing methods.
+\begin{table}[H]
+    \centering
+    \caption{Table showing the optimal sets of parameters for S-SAX, D-SAX, and
+    MSAX. Parameters $w$ and $m$ are combined because they are equal to each
+    other. Best parameters are highlighted in bold.}
+    \label{09:tab:opt-param}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Method}{Parameter} & $k$ & $w,m$  & $a$ \\\hline
+        S-SAX   & -1    & 36             & 21               \\\hline
+        D-SAX   & -1    & \textbf{12}    & 24               \\\hline
+        MSAX    & -1    & \textbf{12}    & \textbf{17}      \\\hline
+    \end{tabular}
+\end{table}
+To further compare these sets of parameters, a boxplot of their recall values
+is created. \figref{09:fig:opt_boxplot} shows this boxplot. Visually, the IQR
+of D-SAX look to be the smallest, S-SAX the largest. The outlier spread is also
+larger for S-SAX than for the other methods. The important variables regarding
+\figref{09:fig:opt_boxplot} are summarized in \tabref{09:tab:opt-stats}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{recall_boxplot}
+    \caption{Boxplot showing the recall for the optimal parameter sets of each
+    method. The full list of parameters can be found in \tabref{09:tab:opt-param}.}
+    \label{09:fig:opt_boxplot}
+\end{figure}
+\TODO{fix the order of the methods to reflect the order they were analyzed in}
+\begin{table}[H]
+    \centering
+    \caption{Table showing statistical measures for the recall of the optimal 
+    parameter sets for each method. Best values are highlighted in bold.}
+    \label{09:tab:opt-stats}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Method}{Measure} & IQR & Median & Outliers  \\\hline
+        S-SAX   & 0.035 & \textbf{99.60\%} & 11               \\\hline
+        D-SAX   & \textbf{0.030}    & 99.35\%    & \textbf{6}     \\\hline
+        MSAX    & 0.033    & 99.13\%    & \textbf{6}     \\\hline
+    \end{tabular}
+\end{table}
+\tabref{09:tab:opt-stats} shows that D-SAX has the best IQR, S-SAX has the
+highest median recall, and both D-SAX and MSAX have the lowest number of
+outliers. As a final test, a possible biserial correlation between the methods
+and the resulting recall is investigated using R's standard \Verb_cor()_ 
+function, which calculates the Pearson correlation. The correlation coefficient 
+of the recall depending on S-SAX or D-SAX is 0.06, for the recall depending on
+S-SAX or MSAX it is 0.033, and for the recall depending on D-SAX or MSAX it is
+-0.04. All three correlation coefficients are very close to zero, which
+indicates that there is no correlation between the methods used and the
+resulting recall value.
 
 \end{document}
+

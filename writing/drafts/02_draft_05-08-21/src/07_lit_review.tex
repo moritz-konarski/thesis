@@ -68,7 +68,9 @@ reduction factors set by user-defined parameters. This means that the user can
 determine how much the dimension of the data should be reduced
 \mycite{aghabozorgi2015}.
 
-\subsubsection{Data dictated representation}\label{07:reduction-methods:01}
+\subsubsection{Time Series Representation Methods}
+
+\paragraph{Data dictated representation}
 
 Data dictated methods derive their compression ratios from the data 
 automatically, the most common form of this method is the clipped
@@ -79,7 +81,7 @@ a 0 otherwise. A sequence of 1s and 0s can be further compressed using various
 methods from computer science, finally yielding a very large compression ratio
 of 1057:1 \mycite{ratanamahatana2005}.
 
-\subsubsection{Non-data adaptive representation}\label{07:reduction-methods:02}
+\paragraph{Non-data adaptive representation}
 
 Non-data adaptive methods operate on time series segments with a fixed size to
 reduce the dimension and they are useful for comparing multiple time series with
@@ -96,7 +98,7 @@ it is used in conjunction with a machine learning model to achieve a beat
 classification accuracy of 98.7\%. The PAA is part of the process of the SAX
 representation, thus it will be covered in section \ref{08:paa-proc}.
 
-\subsubsection{Model-based representation}
+\paragraph{Model-based representation}
 
 Model based methods use stochastic methods such as Hidden Markov Models (HMM) 
 and the Auto-Regressive Moving Average (ARMA) \mycite{aghabozorgi2015}. A HMM
@@ -107,24 +109,22 @@ electroencephalograph signals. An auto-regressive model can be used to
 correctly identify a specific type of arrhythmia in an ECG and to group the
 occurrences of this arrhythmia together \mycite{corduas2008}.
 
-\subsubsection{Data adaptive representation}\label{07:reduction-methods:04}
+\paragraph{Data adaptive representation}
 
 Data adaptive methods use non-fixed size segments and aim to fit the raw data 
 most closely. Examples of data adaptive methods are the Piecewise Polynomial 
-Approximation (PPA), Piecewise Linear Approximation (PLA), Piecewise Constant 
-Approximation (PCA), and SAX \mycite{aghabozorgi2015}. PPA can be used to 
+Approximation (PPA), Piecewise Linear Approximation (PLA), and SAX 
+\mycite{aghabozorgi2015}. PPA can be used to 
 compress and ECG by approximating it using polynomials. With second-order 
 polynomials, ECGs can be compressed with a minimal level of distortion 
 \mycite{nygaard1998}. The authors of \mycite{zhu2018} use a modified PLA 
 representation with adaptive ECG segmentation to successfully reconstruct the 
-12 standard leads of an ECG from only 3 leads. Using adaptive PCA as the
-dimension reduction method, the preprocessing and segmentation of ECGs can be
-significantly sped up while maintaining accuracy comparable to precious methods
-\mycite{zifan2006}. The SAX representation will be covered in detail in 
+12 standard leads of an ECG from only 3 leads. The SAX representation will be 
+covered in detail in 
 section \ref{08:sax} and the following subsection 
 \ref{07:section_sax} will provide background on the method and its variations.
 
-\subsubsection{SAX representation background}\label{07:section_sax}
+\subsubsection{SAX Representation Method}\label{07:section_sax}
 
 A particular dimension reduction method is SAX. Introduced by 
 \citeauthor{lin2003}, SAX is a symbolic time series representation method for
@@ -315,7 +315,7 @@ interpretation unacceptable. A recent approach to minimizing this problem is
 the application of computer technology in ECG recording, storage, and analysis
 \mycite{kligfield2007}. Time series analysis methods can also be applied to
 ECGs because ECGs simply represent discrete multivariate time series. As
-discussed in section \label{07:time-series-intro}, multivariate time series are
+discussed in section \ref{07:time-series-intro}, multivariate time series are
 time series that contain more than one value at each point in time, while
 discrete time series are time series that are measured at discrete points in
 time or at set intervals. ECGs fulfill both of these requirements, as all
@@ -343,7 +343,7 @@ precisely targeted and the clean signal reconstructed afterwards. Choosing
 appropriate wavelet parameters can be challenging, but methods to optimize this 
 process have been proposed \mycite{xie2020}. Step \ref{07:comp-ecg-an:02} uses
 the same types of methods for dimension reduction that were discussed in 
-sections \ref{07:reduction-methods:01}--\ref{07:reduction-methods:04} for 
+the above sections for 
 time series and shall not be repeated here. This includes SAX, which has been
 successfully applied to ECG analysis \mycite{zhang2019}. MSAX has, at the time
 of writing, to the author's knowledge not been applied to ECG analysis. HOT SAX
@@ -357,7 +357,7 @@ from the many points of the ECG. This process can also be aided by an
 appropriate representation chosen in the previous step. 
 The main features targeted for extraction are the PQRST 
 features shown previously in \figref{07:fig:ecg_ann}. The Fast Fourier 
-Transform (see section \ref{07:reduction-methods:02}) provides a way of 
+Transform provides a way of 
 analysing the frequency domain of the ECG signal, enabling the detection of 
 the QRS complex \mycite{prasad2018} and other features \mycite{valupadasu2012}. 
 The missing time 
@@ -392,8 +392,7 @@ preserves as much of the variance in the original data as it can
 algorithms focus on separating classes of data, pattern recognition, or 
 retaining the structure of the original data \mycite{xie2020}. Here, again, 
 the time series
-representation methods discussed in sections 
-\ref{07:reduction-methods:01}--\ref{07:reduction-methods:04} can be
+representation methods discussed in sections discussed above can be
 applied.\par
 
 Finally, the extracted features can be classified; this is stage 
@@ -413,8 +412,7 @@ problems, they are generally more accurate than support vector machines
 \mycite{prasad2018}. The 
 newest approach is to forego the stages discussed here and use a single neural
 network to perform all the required tasks ``end-to-end". These networks are 
-fed raw data perform steps 
-\ref{07:reduction-methods:01}--\ref{07:reduction-methods:05} internally, as a 
+fed raw data and perform the analysis steps internally, as a 
 single model \mycite{xie2020}. This approach is relatively new and still
 actively researched. The previous approach, too, is enjoying active research
 attention. 
