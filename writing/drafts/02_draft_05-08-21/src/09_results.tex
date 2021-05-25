@@ -362,7 +362,6 @@ does show that using subsequence lengths $m$ for the HOT SAX and HOT MSAX
 methods that are not equal to the PAA segment count $w$ is not effective.
 According to these findings, $m$ will be set equal to $w$ for the computation
 of dataset 2.
-\TODO{consider why this may happen in the discussion}
 \TODO{support this conclusion by referring to the methods section where I say
 that I want to look at the top 10 values, here that is hardly possible}
 
@@ -385,7 +384,6 @@ were considered. The HOT SAX and HOT MSAX parameters were chosen as follows.
 Parameter $k$ was again assigned arbitrary values that provide a decent
 coverage for reasonable values. The value of $-1$ is again included to signify
 the use of all available discords.
-\TODO{discuss why k is always -1}
 Parameter $m$ does not need to be chosen for this dataset, as it is always set
 to the value of $w$. All parameters used in dataset 2 have the same meaning as 
 in dataset 1, please refer to that section for their explanations. 
@@ -441,8 +439,6 @@ applied. \tabref{09:tab:ds2-results} shows the results of that analysis.
 \end{table}
 As \tabref{09:tab:ds2_results} shows, of the 4,968 total parameter sets, 99 have
 a recall of $\ge 95\%$ for S-SAX, 192 for D-SAX, and 255 for MSAX. These
-\TODO{discuss the number of combinations that are acceptable and why that may
-matter}
 dataset are large enough for the analysis to continue. As discussed in
 \TODO{reference the methods statistics section}, the subsets of dataset 1 for
 which the recall is $\ge 95\%$ will further be sorted by the precision, in
@@ -462,7 +458,8 @@ recall, accuracy, and precision.
     recall and accuracy values are also shown.}
     \label{09:tab:ssax10}
     \vspace{0.5em}
-    \begin{tabular}{| c | r | r | r | r | r | r | r |}\hline
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}
+        \hline
         \rowcolor{tablegray} 
             \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
             Accuracy (\%)& Precision (\%)\\\hline
@@ -494,25 +491,21 @@ set of 48 ECGs for each ranked method. This plot can be seen in
     \label{09:fig:ssax_boxplot}
 \end{figure}
 \figref{09:fig:ssax_boxplot} illustrates two important things. Firstly, there
-is no significant difference between the recall values for any of the top 10
-S-SAX parameter sets. Secondly, a clear pattern of 9 outliers is visible. The 
-ECGs
-whose analysis resulted in an outlier are, in ascending order of recall, 102, 
-117, 200, 122, 109, 103, 121, 109, and 101. These numbers correspond to the
-identification number the ECGs have in the MIT-BIH database.\par
-As there is no significant difference between either the recall or precision
-values for these top 10 values, the statistical parameters cannot be used to
-determine an optimal parameter set. As a metric, the parameter $w$ can be used.
-It represents the number of PAA segments in a one second interval and thus the
-dimension reduction of the SAX representation. As dimension reduction is one of
-the main features of SAX, $w$ is a good parameter to choose an optimal
-parameter set by. The lower $w$, the better is the dimension reduction. The
-lowest $w$ value in \tabref{09:tab:ssax10} is 24, present in ranks 2 and 6.
-A $w$ value of 24 is a dimension reduction of 15 compared the original data.
-There is no significant difference between any of the parameters of properties
-of ranks 2 and 6. Accordingly, the higher-ranked parameter set will be
-considered optimal: rank 2 in \tabref{09:tab:ssax10} represents the optimal
-parameter set of S-SAX under the parameters of this analysis.
+are only small differences between the recall values for any of the top 10
+S-SAX parameter sets. Secondly, a clear pattern of 9 outliers is visible.
+
+To select the optimal parameter based on \figref{09:fig:ssax_boxplot}, the
+interquartile range (IQR) is calculated for each rank. The use of IQR versus
+the mean is justified here because of the skewed data and the outliers. Ranks 
+6, 8, and 9 have 
+the lowest IQR, at 0.0358, 0.0354, and 0.378, respectively. For further
+differentiation, the number of outliers is considered. Rank 6 has 13 outliers,
+rank 8 11, and rank 9 has 13. Considering these factors, rank 8 is chosen as
+the optimal parameter set for S-SAX. This set has the smallest IQR of the top 
+10 and the
+smallest number of outliers among those with small IQR values. With a $w$ value
+of 36, rank 8 represents a 10 time dimension reduction compared to the raw
+data.
 
 \subsubsection{Analysis of D-SAX}
 
@@ -527,7 +520,7 @@ recall, accuracy, and precision.
     recall and accuracy values are also shown.}
     \label{09:tab:dsax10}
     \vspace{0.5em}
-    \begin{tabular}{| c | r | r | r | r | r | r | r |}\hline
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}\hline
         \rowcolor{tablegray} 
             \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
             Accuracy (\%)& Precision (\%)\\\hline
@@ -544,7 +537,7 @@ recall, accuracy, and precision.
     \end{tabular}
 \end{table}
 \tabref{09:tab:dsax10} shows that for the top 10 values by precision, like in
-the previous section. The
+the previous section. The 
 recall values are between 95\% and 97\%, the accuracy between 39\% and
 42\%, and the precision is 36\%. Again, all $k=-1$. A boxplot comparing recall 
 with rank is
@@ -557,20 +550,13 @@ created in order to choose a best parameter combination. This plot is shown in
     full list of parameters can be found in \tabref{09:tab:dsax10}.}
     \label{09:fig:dsax_boxplot}
 \end{figure}
-\figref{09:fig:dsax_boxplot} shows a similar result to
-\figref{09:fig:ssax_boxplot}. Again the 10 parameter sets are very similar and
-there are no significant differences between them. The number of outlier for
-these parameter sets is 3. The ECGs of the MIT-BIH database for which the
-outlying recall values were recorded are, in by ascending recall, 109, 119, and 
-207.\par
-There is no significant difference between either the recall or precision
-values for the top 10 D-SAX parameter sets, the statistical parameters cannot 
-determine an optimal parameter set. Like in the previous section, $w$ shall be
-used as a metric instead, with the smallest value of $w$ indicating the optimal
-parameter set. In \tabref{09:tab:dsax10}, the lowest value for $w$ is 10. This
-corresponds to a dimension reduction of 36 compared to the raw data. As
-a result of having the lowest $w$ value, rank 2 of \tabref{09:tab:dsax10} is 
-the optimal parameter set for D-SAX.
+Visually, \figref{09:fig:dsax_boxplot} shows ranks 6, 7, and 9 to have the
+smallest IQR. This is confirmed by calculating the IQR. Rank 6 has an IQR of
+0.038, rank 7 has 0.03, and rank 9 has 0.04. Regarding the number of outliers,
+rank 7 has 6, rank 6 has 7, and rank 9 has 8. Thus rank 7 is selected as the
+optimal parameter set. It has both the smallest IQR and the lowest number of
+outliers compared to other ranks with low IQRs. The dimension reduction ratio
+of rank 7 is 30.
 
 \subsubsection{Analysis of MSAX}
 
@@ -585,7 +571,7 @@ associated with the top 10 MSAX parameter combinations.
     recall and accuracy values are also shown.}
     \label{09:tab:msax10}
     \vspace{0.5em}
-    \begin{tabular}{| c | r | r | r | r | r | r | r |}\hline
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}\hline
         \rowcolor{tablegray} 
             \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)& 
             Accuracy (\%)& Precision (\%)\\\hline
@@ -614,22 +600,78 @@ parameter sets to explore the interquartile range and outliers of MSAX.
     full list of parameters can be found in \tabref{09:tab:msax10}.}
     \label{09:fig:msax_boxplot}
 \end{figure}
-\figref{09:fig:msax_boxplot} the same thing as the previous two boxplots.
-There is no significant difference between the top 10 methods regarding recall.
-The top 10 MSAX parameters exhibit 5 outliers, MIT-BIH ECGs 117, 109, 102, 119,
-and 200.\par
-Choosing an optimal parameter set based on statistical measures is again not
-possible, as such the parameter $w$ is used. The lowest $w$ value in
-\tabref{09:tab:msax10} is 6, found in ranks 1 and 6. A $w$ value of 6 represent
-a dimension reduction of 60. As rank 1 and 6 exhibit no significant
-differences, the higher-ranked parameter set is chosen. The optimal parameter
-set for MSAX is rank 1 in \tabref{09:tab:msax10}.
-
-\subsubsection{Outlier Analysis}
+In \figref{09:fig:msax_boxplot}, ranks 6, 8, and 10 visually stick out as 
+having the lowest IQR. Calculating the IQR confirms that, yielding 0.038,
+0.033, and 0.03 for ranks 6, 8, and 10 respectively. The number of outliers for
+rank 6 is 7, for rank 8 it is 6, and for rank 10 it is 8. Because rank
+8 has the second lowest IQR and the smallest number of outliers, it is selected
+as the optimal parameter set for MSAX. Its $w$ value of 12 results in
+a dimension reduction of 30 compared to the raw data.
 
 \subsubsection{Comparison of Optimal Parameters}
 
-\TODO{base on recall, precision, outliers, dimension reduction}
+After determining the optimal parameter sets for the three methods investigated
+here, they will now be compared with each other. \tabref{09:tab:opt-param}
+summarizes the parameter sets that are optimal for S-SAX, D-SAX, and MSAX. When
+it comes to the method parameters, it is desirable for $w$ to be as small as
+possible to take advantage of the dimension reduction properties of SAX and
+MSAX. Accordingly, D-SAX and MSAX have the best $w$ parameters, as they are
+smaller than $w$ of S-SAX. Considering parameter $k$, they all have $k=-1$. The
+alphabet size $a$, while not influencing the dimension reduction, is relevant
+for the complexity of the method--lower values of $a$ result in a simpler
+representation. Accordingly, MSAX has the best value for $a$ because it is
+smaller than the competing methods.
+\begin{table}[h]
+    \centering
+    \caption{Table showing the optimal sets of parameters for S-SAX, D-SAX, and
+    MSAX. Parameters $w$ and $m$ are combined because they are equal to each
+    other. Best parameters are highlighted in bold.}
+    \label{09:tab:opt-param}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Method}{Parameter} & $k$ & $w,m$  & $a$ \\\hline
+        S-SAX   & -1    & 36             & 21               \\\hline
+        D-SAX   & -1    & \textbf{12}    & 24               \\\hline
+        MSAX    & -1    & \textbf{12}    & \textbf{17}      \\\hline
+    \end{tabular}
+\end{table}
+To further compare these sets of parameters, a boxplot of their recall values
+is created. \figref{09:fig:opt_boxplot} shows this boxplot. Visually, the IQR
+of D-SAX look to be the smallest, S-SAX the largest. The outlier spread is also
+larger for S-SAX than for the other methods. The important variables regarding
+\figref{09:fig:opt_boxplot} are summarized in \tabref{09:tab:opt-param}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{recall_boxplot}
+    \caption{Boxplot showing the recall for the optimal parameter sets of each
+    method. The full list of parameters can be found in \tabref{09:b:opt-param}.}
+    \label{09:fig:opt_boxplot}
+\end{figure}
+\begin{table}[h]
+    \centering
+    \caption{Table showing statistical measures for the recall of the optimal 
+    parameter sets for each method. Best values are highlighted in bold.}
+    \label{09:tab:opt-param}
+    \vspace{0.5em}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
+        \rowcolor{tablegray} 
+            \diagbox{Method}{Measure} & IQR & Median & Outliers  \\\hline
+        S-SAX   & 0.035 & \textbf{99.60\%} & 11               \\\hline
+        D-SAX   & \textbf{0.030}    & 99.35\%    & \textbf{6}     \\\hline
+        MSAX    & 0.033    & 99.13\%    & \textbf{6}     \\\hline
+    \end{tabular}
+\end{table}
+\tabref{09:tab:opt-param} shows that D-SAX has the best IQR, S-SAX has the
+highest median recall, and both D-SAX and MSAX have the lowest number of
+outliers. As a final test, a possible biserial correlation between the methods
+and the resulting recall is investigated using R's standard \Verb_cor()_ 
+function, which calculates the Pearson correlation. The correlation coefficient 
+of the recall depending on S-SAX or D-SAX is 0.06, for the recall depending on
+S-SAX or MSAX it is 0.033, and for the recall depending on D-SAX or MSAX it is
+-0.04. All three correlation coefficients are very close to zero, which
+indicates that there is no correlation between the methods used and the
+resulting recall value.
 
 \end{document}
 
