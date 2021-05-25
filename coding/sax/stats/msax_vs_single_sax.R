@@ -1,6 +1,9 @@
 # real test 1 is the important one
 # subsequences
 
+library(tikzDevice)
+plot_width <- 8
+plot_height <- 5
 get_ecgs <- function(ecg, v) {
     return(ecg[ecg$k == v[,1] & 
                    ecg$paa_segment_count == v[,2] & 
@@ -81,13 +84,21 @@ for (i in ran) {
 }
 iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
 iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
+
+tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/ssax_boxplot.tex",
+     width = plot_width,
+     height = plot_height)
+
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best S-SAX Parameter Sets",
         xlab = "Rank",
         ylab = "Recall",
-        ylim = c(0, 1)
+        ylim = c(0, 1),
+        col = c("gray", "red")
         )
+dev.off()
+
 
 best_ssax <- ssax_data[8, ]
 
