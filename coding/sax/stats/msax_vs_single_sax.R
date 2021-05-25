@@ -172,7 +172,56 @@ boxplot(recall ~ as.factor(method),
 boxplot(precision ~ as.factor(method), data = best_comparison)
 boxplot(accuracy ~ as.factor(method), data = best_comparison)
 
+# statistical measures SSAX
+median(ac_ssax$recall)
+IQR(ac_ssax$recall)
+sum(ac_ssax$recall < quantile(ac_ssax$recall)[2] - 1.5 * IQR(ac_ssax$recall))
 
+# statistical measures DSAX
+median(ac_dsax$recall)
+IQR(ac_dsax$recall)
+sum(ac_dsax$recall < quantile(ac_dsax$recall)[2] - 1.5 * IQR(ac_dsax$recall))
+
+# statistical measures MSAX
+median(ac_msax$recall)
+IQR(ac_msax$recall)
+sum(ac_msax$recall < quantile(ac_msax$recall)[2] - 1.5 * IQR(ac_msax$recall))
+
+# correlation analysis
+methods = c(rep(0, dim(ac_ssax)[1]), rep(1, dim(ac_dsax)[1]), rep(2, dim(ac_msax)[1]))
+best_comparison <- data_frame(best_comparison, method_num = )
+
+ssax_vs_dsax <- best_comparison[best_comparison$method != "MSAX",]
+ssax_vs_dsax <-
+    data.frame(ssax_vs_dsax, method_num = c(rep(0, dim(ac_ssax)[1]), rep(1, dim(ac_dsax)[1])))
+cor(ssax_vs_dsax$recall, ssax_vs_dsax$method_num)
+cor(ssax_vs_dsax$recall, ssax_vs_dsax$method_num, method = "kendall")
+cor(ssax_vs_dsax$recall, ssax_vs_dsax$method_num, method = "spearman")
+                                  
+ssax_vs_msax <- best_comparison[best_comparison$method != "D-SAX",]
+ssax_vs_msax <-
+    data.frame(ssax_vs_msax, method_num = c(rep(0, dim(ac_ssax)[1]), rep(1, dim(ac_msax)[1])))
+cor(ssax_vs_msax$recall, ssax_vs_msax$method_num)
+cor(ssax_vs_msax$recall, ssax_vs_msax$method_num, method = "kendall")
+cor(ssax_vs_msax$recall, ssax_vs_msax$method_num, method = "spearman")
+
+dsax_vs_msax <- best_comparison[best_comparison$method != "S-SAX",]
+dsax_vs_msax <-
+    data.frame(dsax_vs_msax, method_num = c(rep(0, dim(ac_dsax)[1]), rep(1, dim(ac_msax)[1])))
+cor(dsax_vs_msax$recall, dsax_vs_msax$method_num)
+cor(dsax_vs_msax$recall, dsax_vs_msax$method_num, method = "kendall")
+cor(dsax_vs_msax$recall, dsax_vs_msax$method_num, method = "spearman")
+                                 
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
 
 # outliers occur ssax, msax, dsax
 # very clear pattern to them -> needs investigation
