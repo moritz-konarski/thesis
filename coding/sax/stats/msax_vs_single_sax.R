@@ -85,20 +85,17 @@ for (i in ran) {
 iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
 iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
 
-tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/ssax_boxplot.tex",
+tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/tssax_boxplot.tex",
      width = plot_width,
      height = plot_height)
-
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best S-SAX Parameter Sets",
         xlab = "Rank",
         ylab = "Recall",
-        ylim = c(0, 1),
-        col = c("gray", "red")
+        ylim = c(0, 1)
         )
 dev.off()
-
 
 best_ssax <- ssax_data[8, ]
 
@@ -122,13 +119,19 @@ for (i in ran) {
 }
 iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
 iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
+
+tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/tdsax_boxplot.tex",
+     width = plot_width,
+     height = plot_height)
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best D-SAX Parameter Sets",
         xlab = "Rank",
         ylab = "Recall",
-        ylim = c(0, 1)
+        ylim = c(0, 1),
+        col = "#D8D8D8"
         )
+dev.off()
 
 best_dsax <- dsax_data[7, ]
 
@@ -152,6 +155,10 @@ for (i in ran) {
 }
 iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
 iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
+
+tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/tmsax_boxplot.tex",
+     width = plot_width,
+     height = plot_height)
 boxplot(recall ~ as.factor(rank), 
         data = d,
         main = "Boxplot of Recall for 10 best MSAX Parameter Sets",
@@ -159,6 +166,7 @@ boxplot(recall ~ as.factor(rank),
         ylab = "Recall",
         ylim = c(0, 1)
         )
+dev.off()
 
 best_msax <- msax_data[8, ]
 
@@ -171,8 +179,12 @@ methods = c(rep("S-SAX", dim(ac_ssax)[1]), rep("D-SAX", dim(ac_dsax)[1]), rep("M
 
 
 best_comparison <- data.frame(ac_combined, method = methods)
+best_comparison$method <- factor(best_comparison$method, levels = c("S-SAX", "D-SAX", "MSAX"))
 
 # RECALL BOXPLOT
+tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/trecall_boxplot.tex",
+     width = plot_width,
+     height = plot_height)
 boxplot(recall ~ as.factor(method), 
         data = best_comparison,
         main = "Boxplot of Recall by Method for Optimal Parameters",
@@ -180,6 +192,7 @@ boxplot(recall ~ as.factor(method),
         # ylim = c(0,1),
         xlab = "Method"
         )
+dev.off()
 boxplot(precision ~ as.factor(method), data = best_comparison)
 boxplot(accuracy ~ as.factor(method), data = best_comparison)
 
