@@ -445,7 +445,7 @@ which the recall is $\ge 95\%$ will further be sorted by the precision, in
 descending order. Then, the top 10 values of S-SAX, D-SAX, and MSAX will be
 analyzed individually. 
 
-\subsubsection{Analysis of S-SAX}
+\paragraph{Analysis of S-SAX}
 
 The top 10 values of S-SAX were first pruned by a threshold of recall $\ge
 95\%$ and then sorted descendingly by precision. \tabref{09:tab:ssax10}
@@ -507,7 +507,7 @@ smallest number of outliers among those with small IQR values. With a $w$ value
 of 36, rank 8 represents a 10 time dimension reduction compared to the raw
 data.
 
-\subsubsection{Analysis of D-SAX}
+\paragraph{Analysis of D-SAX}
 
 For D-SAX, the top 10 values were also first pruned by a threshold of recall 
 $\ge 95\%$ and then sorted descendingly by precision. \tabref{09:tab:dsax10}
@@ -558,7 +558,7 @@ optimal parameter set. It has both the smallest IQR and the lowest number of
 outliers compared to other ranks with low IQRs. The dimension reduction ratio
 of rank 7 is 30.
 
-\subsubsection{Analysis of MSAX}
+\paragraph{Analysis of MSAX}
 
 Lastly, the top 10 parameter sets of MSAX are considered. They, too, were 
 selected based on recall $\ge 95\%$ and sorted by precision. 
@@ -611,7 +611,7 @@ a dimension reduction of 30 compared to the raw data.
 \subsubsection{Comparison of Optimal Parameters}
 
 After determining the optimal parameter sets for the three methods investigated
-here, they will now be compared with each other. \tabref{09:tab:opt-param}
+with the help of dataset 2, they will now be compared with each other. \tabref{09:tab:opt-param}
 summarizes the parameter sets that are optimal for S-SAX, D-SAX, and MSAX. When
 it comes to the method parameters, it is desirable for $w$ to be as small as
 possible to take advantage of the dimension reduction properties of SAX and

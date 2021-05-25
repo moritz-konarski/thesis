@@ -2,15 +2,16 @@
 
 \begin{document}
 
+\TODO{mention the low number of parameters as a strength}
+\TODO{mention and introduce ssax, dsax, msax and what they mean}
+
 \section{Methods}
 
 This section details the methods used in this work to investigate its
 research question and test its hypothesis. Below, a short introduction to time 
 series will be given. Following that, the SAX representation will be discussed, 
-followed by the MSAX representation, and then the HOT SAX algorithm. The ECG
-data used to experimentally test this work's hypothesis is discussed, followed
-by a note on the implementation of the methods, and finally the statistical 
-methods used for ECG analysis.\par
+followed by the MSAX representation, and then the HOT SAX algorithm.\par
+\TODO{make sure this is correct}
 
 While MSAX and SAX both are time series representation methods, they can be
 applied to ECGs, as EGCs are discrete multivariate time series. Mathematically,
@@ -535,16 +536,6 @@ algorithm expands HOT SAX to multivariate time series,
 as MSAX can represent those. Using HOT MSAX is novel and a contribution of 
 this research.
 
-\paragraph{Limitations of the Methods}
-
-The limitations of the methods used in this research are the following: HOT 
-SAX and HOT MSAX are not classifiers based on medically relevant information, 
-they classify ECG segments into discords non-discords. The methods to not work
-with beat types. This means that their applications to diagnosing heart 
-conditions is limited. HOT SAX and HOT MSAX can be used to pre-select specific 
-ECG segments to look analyze because they exhibit discords, but it cannot, by 
-itself, perform any type of diagnosis. 
-
 \subsection{Data}
 
 The ECG data used in this research to evaluate the HOT SAX and HOT MSAX
@@ -583,14 +574,7 @@ R, MATLAB, and Python. Julia possesses a rich ecosystem of libraries for
 visualization, computation, and data manipulation. For more information, visit  
 the Julia website at \url{https://julialang.org/}. The Julia program performs
 the SAX and MSAX transformation as well as the HOT SAX and HOT MSAX discord
-discovery and saves the result to a file for further processing. During the SAX
-and MSAX transformations, the parameters $w$ and $a$ define the behavior of the
-representations. When performing HOT SAX and HOT MSAX discord detection, the
-parameter $m$, the subsequence length, is considered. The parameter $k$ does
-not influence the actual behavior of HOT SAX or HOT MSAX, but it influences the
-results by controlling the number of detected discords that are returned by the
-methods. For each analyzed parameter set, the results and parameter values will
-be saved for further analysis.\par
+discovery.\par
 
 The statistical analysis was performed using the R programming language, a 
 well-known statistical programming language.\par
@@ -598,29 +582,79 @@ well-known statistical programming language.\par
 All the code used in this work is available upon request
 (please contact \Verb+konarski_m@auca.kg+).
 
-\paragraph{Limitations of the Implementation}
+The first step is the selection of the important parameters for the methods.    
+The user-defined parameters are:                                                
+\begin{itemize}                                                                 
+    \item the sampling frequency of the ECG data to be analyzed;
+    \item the number of PAA segments $w$ used for SAX and MSAX;
+    \item the alphabet size $a$ used for SAX and MSAX;
+    \item the subsequence length $m$ that determines HOT SAX and HOT MSAX;
+    \item the variable $k$ indicating how many discords should be found.
+\end{itemize}                                                                   
+These parameters determine all actions the program performs afterward. 
 
-The implementation of the SAX and MSAX representations only allows the use of 
-PAA segment counts $w$ that are factors of the sampling frequency of the ECG 
-database. This was done so that the whole
-ECG, being an even multiple of the sampling frequency itself, can be evenly
-divided into PAA segments. This decision prohibits certain numbers of PAA
-segments as there may numbers that are not factors of the sampling frequency
-but that do evenly divide the number of raw data points in the ECG.
-A further simplification step in the same vein is the restriction of
-subsequence values $m$ to numbers that evenly divide the number of PAA segments
-$w$. This was also done to simplify the process and to guarantee that the whole
-ECG would be evenly divisible into subsequences.
+\paragaph{Transformation to SAX and MSAX}
+
+In the second step, the ECGs are classified using HOT SAX and HOT MSAX.
+First, a CSV file containing the ECG data and annotations is loaded into
+the program. Once the ECG file is loaded, it is transformed into a data frame.
+A data frame is a type of data structure that can hold heterogeneous data
+types, e.g. text and numbers. This step adds important information to the ECG
+data. The ECG data frame contains the parameters itemized above to enable
+reproduction and analysis of the results, an index range for each PAA segment
+so it can be located in the raw ECG, the beat annotations for each PAA segment,
+and empty data fields for the results of the analysis with HOT SAX and HOT MSAX. 
+The next
+step is the application of the SAX and MSAX representations. The transformation
+of the raw time series data to the symbolic representations is performed in the
+same order as discussed earlier in this section, and thanks to the Julia
+programming language's ecosystem of libraries, the formulas and algorithms can 
+be easily translated into code.\par
+
+The SAX representation is applied to each of the ECG leads individually, while 
+MSAX is applied as designed to both at once. HOT SAX and HOT MSAX comprise the 
+next step. 
+
+For HOT MSAX, the process is performed using the MSAX representation 
+and distance measure. The method returns a list of distances as well as a list 
+of indices that indicate which PAA segment has which distance. Depending on the 
+parameter $k$, only the top $k$ of these discords are returned. These results 
+are then added to the respective PAA segments in the ECG data frame, adding 
+both the MSAX distance of the segment as well as a binary indicator of whether 
+or not the segment was detected as a discord.\par
+
+\paragraph{
+
+For HOT SAX the process slightly different.
+Because SAX is a univariate representation, it cannot be directly applied to
+a bivariate ECG. Thus, the SAX representation is applied to each lead of the 
+ECG separately and then HOT SAX is performed for the representation of each
+lead. 
+Each set of results is, like in HOT MSAX, a list of indices of PAA segments and 
+a list of their distances. Each sets of results is also added to the ECG data 
+frame. This time the detection indicator is quaternary, it represents no 
+detection, detection on the first lead, detection on the second lead, or 
+detection on both leads. This enables the analysis of two different versions of
+HOT SAX. The first one, Single SAX (S-SAX), considers only those indicated PAA
+segments that were indicated by a single method or by both methods. This
+analysis is then repeated again to get the other S-SAX results. Both S-SAX data
+sets can now be combined
+
+After
+both of these processes are completed, the ECG data frame is written to a CSV
+file for further analysis. This process can be repeated thousands of times to
+create data of different values for the parameters to determine optimal values
+and their influence.
 
 \subsection{Statistical Analysis}
 
-After completing the computations of HOT SAX and HOT MSAX for different sets of 
-parameters, the results need to be analyzed. Neither HOT SAX nor HOT MSAX are 
-classifiers in the sense of classifying heartbeats by medical standards, they
-do classify them into discords and non-discords. Thus, they represent binary 
-classifiers. Binary classifiers can be evaluated using the well-known True 
-Positive, True Negative, False Negative, and False Positive values. 
-\tabref{08:tab:bin-class} shows their relationship.
+After completing the computations for different sets of parameters, the results
+need to be analyzed. While HOT SAX is not a classifier in the sense of
+classifying heartbeats by medical standards, it does classify them into
+discords and non-discords. Thus, it is a binary classifier. Binary classifiers
+can be evaluated using the well-known True Positive, True Negative, False
+Negative, and False Positive values. \tabref{08:tab:bin-class} shows their
+relationship.
 \begin{table}[t]
     \centering
     \caption{Contingency table showing the relationship between detected
@@ -636,10 +670,9 @@ Positive, True Negative, False Negative, and False Positive values.
     \end{tabular}
 \end{table}
 The values in \tabref{08:tab:bin-class} can be used to calculate many useful
-ratios that assist the evaluation of the HOT SAX and HOT MSAX algorithms. This 
-research uses the recall value (also known as sensitivity), the accuracy, and 
-the precision. These ratios are calculated as follows: recall value is defined 
-as
+ratios that assist the evaluation of the HOT SAX algorithm. This research uses
+the recall value (also known as sensitivity), the accuracy, and the precision.
+These ratios are calculated as follows: recall value is defined as
 \begin{equation}\nonumber
     \text{Recall} = \frac{\text{True Positive}}{\text{True Positive}
     + \text{False Negative}},
@@ -657,8 +690,7 @@ and the precision as
 \end{equation}
 Recall can be understood as a measure of how many of the actual discords were
 correctly assigned the label discord. This is the most important measure for the
-analysis of HOT SAX and HOT MSAX applied to ECGs because in a medical scenario, 
-identifying
+analysis of HOT SAX applied to ECGs because in a medical scenario, identifying
 as many possibly relevant sections of the ECG is more important than being
 100\% accurate in their identification. The second most important value is
 precision, which can be understood as a measure of how many of the detected
@@ -669,32 +701,36 @@ detecting too many non-discords as discords makes it harder to analyze the
 actual discords that were highlighted. This of course is not useful, and thus
 the precision of HOT SAX needs to be incorporated into the analysis. Lastly,
 accuracy is not a very good measure for this particular application, as the
-majority of the segments in an ECG are non-discords and HOT SAX/MSAX only 
-detects a minority of the segments in an ECG. This leads to a high True 
-Negative rate and thus a relatively high accuracy, even if HOT SAX/MSAX did not 
-detect any actual discords. Nonetheless, accuracy is a very common indicator of
-classifier performance and is calculated here.\par
+majority of the segments in an ECG are non-discords and HOT SAX only detects
+a minority of the segments in an ECG. This leads to a high True Negative rate
+and thus a relatively high accuracy, even if HOT SAX did not actually detect
+any actual discords. Nonetheless, accuracy is a very common indicator of
+classifier performance and will thus be considered.\par
 
-Once these statistical measures have been calculated, the parameter
-optimization can begin. During this process, the large set of parameters will
-be reduced until an optimal set of parameters $k$, $w$, $m$, and $a$ is found.
-The first step in this process is the introduction of a threshold. As stated
-above, recall is the most important statistical factor in this work.
-Accordingly, only parameter sets that achieve an average recall value of 95\% 
-or above for the MIT-BIH database. Only the subset of the data fulfilling this
-requirement will be considered. As the second most important parameter,
-precision is considered next. The subset of the data equal to or greater than
-the threshold will be sorted by average precision in descending order, singling 
-out the parameter sets that have a recall value $\ge$ 95\% and, in this subset, 
-the highest precision. Next, the first 10 parameter sets will be chosen from this
-subset. Those represent a kind of ``top 10" of the parameters: they fulfill the
-threshold and have the highest precision values. Out of these top 10 values,
-one optimal set of parameters should be chosen. This should be possible by
-creating a box plot of the 10 ten parameter sets vs their recall value. If the
-visual analysis does not yield concrete results, the method with the lowest
-spread (standard deviation or interquartile range) should be considered the
-optimal method. If this should prove inconclusive as well, an analysis of
-possible outliers, the distribution of precision values or the distribution of
-the accuracy could be performed.
+\subsection{Limitations of the Methods}
+
+The limitations of this research are the following: HOT SAX is not a classifier
+based on medically relevant information, it classifies discords and not beat
+types. This means that its applications to diagnosing heart conditions is
+limited. HOT SAX can be used to pre-select specific ECG segments to look at and
+analyze because they exhibit discords, but it cannot, by itself, perform any
+type of diagnosis. The previous paragraph explains why empty annotations have
+to be counted as normal beats and while the author believes that this is
+necessary, it does negatively influence the results. The implementation of the
+representation only allows the use of PAA segment numbers that evenly divide
+the sampling frequency of the ECG database. This was done so that the whole
+ECG, being an even multiple of the sampling frequency itself, can be evenly
+divided into PAA segments. This decision prohibits certain numbers of PAA
+segments as there may be numbers that do not evenly divide into the sampling
+frequency but that do evenly divide the number of raw data points in the ECG.
+A further simplification step in the same vein is the restriction of
+subsequence values to numbers that evenly divide the number of PAA segments
+$w$. This was also done to simplify the process and to guarantee that the whole
+ECG would be evenly divisible into subsequences.
+
+\TODO{finish this}\\
+\TODO{move this to somewhere else?}
+\TODO{mention the 1 second interval connection to the sampling frequency and
+why it works}
 
 \end{document}
