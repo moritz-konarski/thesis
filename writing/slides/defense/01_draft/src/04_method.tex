@@ -80,10 +80,24 @@
 
 \begin{frame}{SAX and MSAX -- Distance Measure}
     \begin{itemize}
-        \item two SAX or MSAX segments can be compared (``distance")
         \item basically the sum of distances between symbols
-        \item 
+        \item symbol distance is based on difference of breakpoints
+        \item lower-bounds Euclidean Distance, corresponds to ``real" distance
     \end{itemize}
+    \begin{table}
+        \caption{Distance matrix for 5 symbols.}
+    \centering
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r | r |}\hline
+        \rowcolor{tablegray} & \multicolumn{1}{c|}{a} & \multicolumn{1}{c|}{b}
+            & \multicolumn{1}{c|}{c} & \multicolumn{1}{c|}{d} &
+            \multicolumn{1}{c|}{e} \\\hline
+        a & 0       & 0        &0.59     &1.09     &1.68  \\\hline
+        b & 0       & 0        &0        &0.51     &1.09  \\\hline
+        c & 0.59    & 0        &0        &0        &0.59  \\\hline
+        d & 1.09    & 0.51     &0        &0        &0     \\\hline
+        e & 1.68    & 1.09     &0.59     &0        &0     \\\hline
+    \end{tabular}
+    \end{table}
 \end{frame}
 
 \subsection*{HOT SAX and HOT MSAX}
@@ -98,6 +112,36 @@
         \item HOT MSAX can work with multivariate time series
     \end{itemize}
 \end{frame}
+
+\begin{frame}{HOT SAX and HOT MSAX -- Heuristic}
+    \begin{itemize}
+        \item two assumptions:
+            \begin{itemize}[label=--]
+                \item time series discords are rare
+                \item similar segments are similarly rare
+            \end{itemize}
+        \item speed up discord discovery:
+            \begin{itemize}[label=--]
+                \item consider rarest segments first
+                \item consider segments similar to the rarest first
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\subsection*{Parameter Optimization}
+
+\begin{frame}{Parameter Optimization}
+    \begin{itemize}
+        \item perform HOT SAX and HOT MSAX for many parameter combinations
+        \item find recall for each combination
+        \item recall threshold of 95\%, then sort by precision
+        \item choose top 10 of those parameters for each method
+        \item choose best parameters using box plot, interquartile range,
+            outliers
+    \end{itemize}
+\end{frame}
+
+\end{document}
 
 \begin{frame}{HOTSAX}
     \begin{itemize}                                                             
@@ -118,7 +162,6 @@
     \end{itemize}                                                               
 \end{frame}                                                                     
                                                                                 
-\end{document}
 
 \subsection*{SAX and MSAX}
 

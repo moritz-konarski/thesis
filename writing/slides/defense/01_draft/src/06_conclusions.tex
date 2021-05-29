@@ -1,0 +1,80 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Conclusions}
+
+\begin{frame}{Discussion}
+    \begin{itemize}
+        \item no statistically significant difference in recall for the methods
+        \item[$\rightarrow$] hypothesis cannot be supported
+        \item MSAX has both the smallest alphabet size and highest dimension
+            reduction
+        \item[$\rightarrow$] this points to MSAX being more efficient in
+            achieving the same results 
+        \item \textcite{anacleto2020} showed similar performance for ECG
+            classification, supports this work's conclusion
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \item could not demonstrate superiority of HOT MSAX for best parameters
+        \item contributed the HOT MSAX method to literature
+        \item HOT MSAX was found to be more efficient than HOT SAX
+        \item showed viability of a discord classifier for ECG analysis
+    \end{itemize}
+\end{frame}
+
+\end{document}
+
+\subsection*{Preliminary Results}
+
+\begin{frame}{Preliminary Results}
+    \begin{itemize}
+        \item compared SAX and MSAX using the top $k=80$ discords (816 sets of
+            discords total)
+        \item analyzed the relevance of results with recall (sensitivity)
+            \mynote{how many relevant items are selected}
+            \mynote{recall = true positive / (true positive + false negative)}
+            \mynote{this is done because for medical things it is more useful
+            to look at a couple too many segments than not enough}
+        \item recall for MSAX is higher compared to SAX
+        \item if SAX is applied to two leads and the results combined, it
+            slightly outperforms MSAX
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{box_single_sax}}
+        \caption{Boxplot comparing Recall for MSAX and single-lead SAX}
+    \end{figure}
+    \mynote{msax: average = 17.5\%}
+    \mynote{sax: average = 6.4\%}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{box_double_sax}}
+        \caption{Boxplot comparing Recall for MSAX and dual-lead SAX}
+    \end{figure}
+    \mynote{msax: average = 17.5\%}
+    \mynote{sax: average = 18.5\%}
+\end{frame}
+
+\subsection*{Remaining Tasks}
+
+\begin{frame}{Remaining Tasks}
+    \begin{itemize}
+        \item perform tests for statistical significance of the result
+            \mynote{for example t-test, biserieal correlation}
+        \item analyze the outliers visible in the boxplots
+        \item compute more sets of discords with different parameters
+        \item explore the influence of the parameters on the result
+    \end{itemize}
+\end{frame}
+
+\end{document}

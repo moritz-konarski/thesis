@@ -2,27 +2,65 @@
 
 \begin{document}
 
-\section[Results]{Preliminary Results}
+\section{Results}
 
-\subsection*{Implementation}
-
-\begin{frame}{Implementation}
-    \begin{itemize}
-        \item SAX, MSAX, HOTSAX was implemented in Julia (scientific
-            programming language)
-            \mynote{fast, type support, great libraries, JIT compilation}
-        \item used annotated digital ECGs from the MIT-BIH arrhythmia database
-            \mycite{moody1992}
-            \mynote{ecgs have all heart beats annotated}
-            \mynote{know which are normal, diseases, noise, etc}
-            \mynote{48 recordings of 30 minutes}
-        \item HOTSAX was performed for different $w$, $B$, subsequence lengths
-            \mynote{$w$ - paa segments; $B$ - alphabet size; subsequence
-            length for HOTSAX}
-        \item results were exported to CSV file and analyzed using the
-            R programming language
-    \end{itemize}
+\begin{frame}{Overview of Results}
+    \begin{table}
+        \caption{Coarse Overview of Results. Shown are sets of parameters for
+        each method that satisfy the recall threshold of 95\%.}
+    \centering
+    \begin{NiceTabular}{| c | c | r |}\hline                                    
+        \rowcolor{tablegray}                                                    
+        Method & Total Sets & \multicolumn{1}{c|}{Sets Satisfying recall        
+        $\ge$95\%} \\\hline                                                     
+        S-SAX   & \multirow{3}{*}{4,968} & 99 (1.2\%)                           
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->        
+            {\arrayrulecolor{black}}|-|}                                        
+        D-SAX   &  & 192 (3.9\%)    \\\hhline{|>{\arrayrulecolor{black}}->      
+        {\arrayrulecolor{white}}->{\arrayrulecolor{black}}|-|}                  
+        MSAX    &  & 255 (5.1\%)    \\\hline                                    
+    \end{NiceTabular}
+    \end{table}
 \end{frame}
+
+\begin{frame}{Best Parameter Sets by Method}
+    \begin{table}
+        \caption{Best Parameter sets for each of the methods. Best overall
+        parameters highlighted in bold.}
+        \centering
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline          
+        \rowcolor{tablegray}                                                    
+            \diagbox{Method}{Parameter} & $k$ & $w,m$  & $a$ \\\hline           
+        S-SAX   & -1    & 36             & 21               \\\hline            
+        D-SAX   & -1    & \textbf{12}    & 24               \\\hline            
+        MSAX    & -1    & \textbf{12}    & \textbf{17}      \\\hline            
+    \end{tabular}  
+    \end{table}
+\end{frame}
+
+\begin{frame}{Comparing Best Parameter Sets -- Recall}
+    \begin{figure}
+        \includegraphics[width=0.93\textwidth]{trecall_boxplot}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Comparing Best Parameter Sets -- Recall}
+    \begin{table}
+        \centering
+        \caption{Statistical measures for recall of optimal
+        parameter sets. Best overall values highlighted in bold.}
+        \vspace{0.5em}
+        \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
+            \rowcolor{tablegray}
+                \diagbox{Method}{Measure} & IQR & Median & Outliers  \\\hline
+            S-SAX   & 0.035 & \textbf{99.60\%} & 11               \\\hline
+            D-SAX   & \textbf{0.030}    & 99.35\%    & \textbf{6}     \\\hline
+            MSAX    & 0.033    & 99.13\%    & \textbf{6}     \\\hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\end{document}
 
 \subsection*{Preliminary Results}
 
