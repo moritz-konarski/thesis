@@ -1,0 +1,251 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Methods}
+
+\subsection*{Overview}
+
+\begin{frame}{Previous Research}
+    \begin{itemize}
+        \item \citeauthor*{lin2003} (\citeyear{lin2003}):\\
+            Symbolic Aggregate Approximation (SAX)---simplified, symbolic
+            representation
+            \mycite{lin2003}
+            \mynote{ecg as letters that mean same thing as original}
+            \mynote{guaranteed to behave like the original data}
+            \mynote{works on univariate time series}
+            \mynote{has been used on ECGs}
+            \mycite{zhang2019}
+        \item \citeauthor*{keogh2005} (\citeyear{keogh2005}):\\
+            Heuristically Ordered Time series using SAX (HOT SAX)---discord
+            discovery algorithm using SAX\mycite{keogh2005}
+            \mynote{uses sax representation to make the finding of discords
+            easier}
+            \mynote{can use MSAX just as well}
+        \item \citeauthor*{anacleto2020} (\citeyear{anacleto2020}):\\
+            Multivariate SAX (MSAX)---expands SAX to multivariate time series
+            \mycite{anacleto2020}
+            \mynote{takes the correlation between ecg leads into account}
+            \mynote{cov mat: covariance between each lead and variance on diag}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{This Work's Novel Contributions}
+    \begin{itemize}
+        \item application of MSAX to ECG discord discovery
+        \item the HOT MSAX algorithm
+        \item the expansion of HOT SAX to multivariate time series through HOT
+            MSAX
+    \end{itemize}
+\end{frame}
+
+\subsection*{SAX and MSAX}
+
+\begin{frame}{SAX and MSAX -- Overview}
+    \centering
+    \begin{tabular}{ p{0.45\textwidth} | p{0.45\textwidth} }
+        \multicolumn{1}{c|}{SAX}    & \multicolumn{1}{c}{MSAX}      \\\hline
+        \multicolumn{2}{c}{Application} \\\hline
+        univariate time series      & multivariate time series      \\
+        e.g. a single ECG lead      & e.g. multiple ECG leads       \\\hline
+        \multicolumn{2}{c}{Steps}                                   \\\hline
+        (1) univariate z-normalization  & (1) multivariate z-normalization  \\
+        (2) PAA dimension reduction     & (2) PAA dimension reduction       \\
+        (3) SAX discretization          & (3) SAX discretization            \\
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{SAX and MSAX -- Step (2)}
+    \begin{figure}
+        \begin{minipage}[c]{0.8\textwidth}
+            \includegraphics[height=0.8\textheight]{paa_graph}
+        \end{minipage}\hfill
+        \begin{minipage}[c]{0.17\textwidth}
+            \caption{ECG with PAA (MIT-BIH/103, $w = 18$, $T = 360$)}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{SAX and MSAX -- Step (3)}
+    \begin{figure}
+        \begin{minipage}[c]{0.8\textwidth}
+            \includegraphics[height=0.8\textheight]{sax_graph}
+        \end{minipage}\hfill
+        \begin{minipage}[c]{0.17\textwidth}
+            \caption{ECG with SAX (MIT-BIH/103, $w = 18$, $T = 360$)}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{SAX and MSAX -- Distance Measure}
+    \begin{itemize}
+        \item two SAX or MSAX segments can be compared (``distance")
+        \item basically the sum of distances between symbols
+        \item 
+    \end{itemize}
+\end{frame}
+
+\subsection*{HOT SAX and HOT MSAX}
+
+\begin{frame}{HOT SAX and HOT MSAX -- Overview}
+    \begin{itemize}
+        \item HOT SAX: find discords in SAX-represented time series
+        \item speeds up the ``brute force" approach
+        \item classifies time series segments into ``discord" and
+            ``non-discord"
+        \item HOT MSAX: uses MSAX instead of SAX
+        \item HOT MSAX can work with multivariate time series
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{HOTSAX}
+    \begin{itemize}                                                             
+        \item ``brute-force" discord discovery is slow, needs $T^2$ operations
+        \item HOTSAX speeds up discord discovery by considering:
+            \begin{itemize}
+                \item discords are rare, start with rarest segment
+                \item similar segments have similar distances, consider together
+            \end{itemize}
+        \item HOTSAX detects anomalies, it is not a classifier
+            \mynote{this is the basic idea that can speed up the process}       
+            \mynote{it is not guaranteed to do so, but it does not decrease     
+            efficiency}
+        \item it uses SAX and MSAX for dimensionality reduction
+            \mynote{this speeds up the process even more as we have fewer
+            elements}
+            \mynote{because of lower bounding, it still gives accurate results}
+    \end{itemize}                                                               
+\end{frame}                                                                     
+                                                                                
+\end{document}
+
+\subsection*{SAX and MSAX}
+
+\begin{frame}{Step 1: Z-Normalization}
+    \mynote{say that the process is the same as MSAX based on SAX}
+    \begin{block}{Assumption}
+        The time series values are normally distributed.
+    \end{block}%
+    \mynote{this is assumed and this worked for other people who applied SAX to
+    ECGs}
+    \mynote{to compare time series, normalization is the accepted step}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item normalize univariate time series
+                \item uses scalar mean and variance
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item normalize multivariate time series
+               \item uses vector mean and covariance matrix
+               \mynote{what is this}
+               \mynote{takes into account the correlation between leads}
+           \end{itemize}
+       \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Step 2: Dimensionality Reduction}
+    \begin{block}{PAA}
+        Piecewise Aggregate Approximation (PAA) takes $T$ time series points,
+        splits them into $w$ ($w<T$) segments, and averages each of them.
+    \end{block}
+    \mynote{this reduces complexity}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item apply PAA to time series
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item apply PAA to each of the time series individually
+           \end{itemize}
+       \end{column}
+    \end{columns}
+    \mynote{PAA form of time series is shorter and simpler}
+    \mynote{it still somewhat corresponds to the original}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[height=0.9\textheight]{paa_graph}}
+        \caption{ECG with PAA (MITBIH/100, $w = 18$, $T = 360$)}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Step 3: Discretization}
+    \begin{block}{SAX Discretization}
+        Find breakpoints splitting $\mathcal{N}(0,1)$ into $B$ equiprobable 
+        segments.\\
+        Assign a letter to each area, starting with \textit{a} to the left-most
+        segment.\\
+        PAA segments get letters based on which area they are in.\\
+    \end{block}
+    \mynote{result is called word}
+    \mynote{$N$ is the alphabet size}
+    \mynote{big thing here is that this gives defined probability to each
+    letter; makes no sense for real numbers (like PAA values)}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{center} SAX \end{center}
+            \begin{itemize}
+                \item discretize the time series
+                \item results in one \emph{word}
+            \end{itemize}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.5\textwidth}
+           \begin{center} MSAX \end{center}
+           \begin{itemize}
+               \item discretize each time series
+               \item results in one \emph{word} with one letter for each time 
+                   series
+           \end{itemize}
+       \end{column}
+    \end{columns}
+    \mynote{simplifies time series even more}
+    \mynote{creates discrete categories, can be more useful}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[height=0.9\textheight]{sax_graph}}
+        \caption{SAX (MITBIH/100, $w = 18$, $T = 360$, $B=4$)}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Step 4: Distance Measure}
+    \begin{block}{MINDIST}
+        A distance measure is defined to compare two SAX words.
+        It is defined for a pair of letters, distances between words are sums
+        of distances between letters. 
+    \end{block}%
+    \mynote{distance is based on letter pairs}
+    \mynote{SAX: sqrt of sum of squared distance}
+    \mynote{MSAX: sqrt of sum of squared distance; also sum all leads}
+    \mynote{this lower-bounds the euclidean distance, meaning that results in
+    SAX should hold true for the real data too}
+    \begin{table}
+        \centering
+        \caption{Difference matrix for $B=4$}
+        \begin{tabular}{| c | c | c | c | c |}\hline
+                &   a   &   b   & c     &       d \\\hline
+             a  &  0     &0     &0.67449& 1.34898 \\\hline
+             b  &  0     &0     &0    & 0.67449\\\hline
+             c  &  0.67449 &0     &0    & 0\\\hline
+             d  &  1.34898 &0.67449 &0    & 0\\\hline
+        \end{tabular}
+    \end{table}
+\end{frame}

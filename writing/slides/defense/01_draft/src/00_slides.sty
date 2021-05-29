@@ -1,0 +1,148 @@
+% LATEX THESIS PRESENTATION PACKAGE
+% AMERICAN UNIVERSITY OF CENTRAL ASIA, 2021-05-29
+% Moritz Konarski, konarski_m@auca.kg
+
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{slides}
+    [2021/04/27 v0.01 LaTeX package for my own purposes]
+
+\newcommand{\thesistitle}{Multivariate Symbolic Aggregate Approximation\\
+    for ECG Analysis}
+\newcommand{\shortthesistitle}{MSAX for ECG Analysis}
+\newcommand{\thesisauthor}{Moritz M. Konarski}
+\newcommand{\shortthesisauthor}{M. Konarski}
+\newcommand{\thesissupervisor}{Prof. Taalaibek M. Imanaliev}
+\newcommand{\thesiskeywords}{
+    Symbolic Aggregate Approximation, 
+    ECG Discord Discovery, 
+    HOT SAX, 
+    MSAX,
+    Time Series Analysis
+}
+\newcommand{\thesissubject}{SAX and MSAX for ECG abnormality detection}
+\newcommand{\institution}{American University of Central Asia}
+\newcommand{\shortinstitution}{AUCA}
+\newcommand{\department}{Applied Mathematics and Informatics Program}
+\newcommand{\duedate}{May 31, 2021}
+
+\title[\shortthesistitle{}]{\thesistitle{}}
+
+\author[\shortthesisauthor{}]{\thesisauthor{}\\Supervised by \thesissupervisor{}}
+
+%\institute[\shortinstitution{}]{\department{},\\[2pt]\institution{}\vspace{3em}}
+\institute[\shortinstitution{}]{\department{},\\[2pt]\institution{}\\[1.5em]
+\tiny{*Partially supported by AUCA FRG ``Mathematical Model in Acute 
+Cardiac Ischemia Evaluation"}\\[1em]}
+
+\date[\duedate{}]{
+    \footnotesize\duedate{}\\Bishkek, Kyrgyz Republic\\[0.5em]
+    \includegraphics[height=0.1\textheight]{auca_logo}
+    }
+
+% style of citations to be used
+\newcommand{\mycite}[1]{[#1]}
+%\newcommand{\mycite}[1]{\cite{#1}}
+%\newcommand{\mycite}[1]{\nocite{#1}}
+\newcommand{\mynote}[1]{\note<1->{- #1\\}}
+
+% show or hide notes
+\setbeameroption{show notes}
+%\setbeameroption{hide notes}
+%\setbeameroption{show only notes}
+% beamer presentation setup
+\usetheme{Luebeck}
+\usecolortheme{whale}
+\useoutertheme{infolines}
+\useinnertheme{rectangles}
+\usefonttheme{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
+% color of blue in the AUCA logo
+\definecolor{aucablue}{RGB}{34, 80, 169}
+\definecolor{tablegray}{gray}{0.85}
+% title colors
+\setbeamercolor{titlelike}{fg=white,bg=aucablue,parent=structure}
+% colors of the side bars
+\setbeamercolor{palette sidebar primary}{fg=aucablue!90,bg=aucablue}
+\setbeamercolor{palette sidebar secondary}{fg=aucablue!90,bg=aucablue}
+\setbeamercolor{palette sidebar tertiary}{fg=aucablue!90,bg=aucablue}
+% color of the top and bottom bars
+\setbeamercolor{palette primary}{fg=white,bg=aucablue!90}
+\setbeamercolor{palette secondary}{fg=white,bg=aucablue!90}
+\setbeamercolor{palette tertiary}{fg=white,bg=aucablue!90}
+% set the frame titles to the center
+\setbeamertemplate{frametitle}[default][center]
+% make definitions and theorems numbered
+\setbeamertemplate{definitions}[numbered]
+\setbeamertemplate{examples}[numbered]
+% set the margins
+\setbeamersize{text margin left=10mm,text margin right=10mm}
+
+% set the presentation font
+\RequirePackage[no-math]{fontspec}
+\setmainfont
+    [Path={/home/moritz/Documents/thesis.git/writing/drafts/00_fonts/}]
+    {times.ttf}[
+    BoldFont       = XCharter-Bold.otf,
+    ItalicFont     = XCharter-Italic.otf,
+    BoldItalicFont = XCharter-Roman.otf
+    ]
+
+% package for hyphenation and stuff
+\RequirePackage[american]{babel}
+
+% graphics package
+\RequirePackage{graphicx}
+\graphicspath{{../graphics/}}
+\RequirePackage{float}
+
+% graphics package
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\RequirePackage{tikzscale}
+
+% set enumeration parameters
+\RequirePackage[inline]{enumitem}
+\setlist[itemize]{itemsep=1em, label={\textbullet}}
+
+% package enabling quotation and citation
+\RequirePackage{csquotes}
+\RequirePackage[
+    backend=biber,
+    style=ieee,
+    citestyle=numeric,
+    maxnames=4,
+    sortcites
+]{biblatex}
+% add bibliography
+\addbibresource{../bib/bibliography.bib}
+% set font to smaller for slides
+\renewcommand*{\bibfont}{\footnotesize}
+
+% how links look and some pdf parameters
+\hypersetup{
+    urlcolor=aucablue,
+    urlbordercolor=aucablue,
+    final,
+    pdftitle={\thesistitle{}},
+    pdfauthor={\thesisauthor{}},
+    pdfkeywords={\thesiskeywords{}},
+    pdfsubject={\thesissubject{}}
+}
+
+\RequirePackage{colortbl}
+\RequirePackage{diagbox}
+\RequirePackage{multirow}
+\RequirePackage{hhline}
+\RequirePackage{nicematrix}
+
+% package allowing separate latex files to form a whole
+\RequirePackage{subfiles}
+
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\newcommand{\tabref}[1]{\tablename~\ref{#1}}
+
+\renewcommand{\arraystretch}{1.1}
+\setlength\arrayrulewidth{0.8pt}
+
+\endinput
