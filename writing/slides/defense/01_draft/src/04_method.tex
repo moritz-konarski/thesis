@@ -9,6 +9,7 @@
 
 \subsection*{Overview}
 
+% TODO: chuck this out
 \begin{frame}{Method Background}
     \begin{itemize}
         \item \citeauthor*{lin2003} (\citeyear{lin2003}):\\
@@ -34,15 +35,15 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Novel Contributions}
-    \begin{itemize}
-        \item application of MSAX to ECG discord discovery and medical data in
-            general
-        \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
-        \item the expansion of HOT SAX to multivariate time series through HOT
-            MSAX
-    \end{itemize}
-\end{frame}
+ % \begin{frame}{Novel Contributions}
+ %     \begin{itemize}
+ %         \item application of MSAX to ECG discord discovery and medical data in
+ %             general
+ %         \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
+ %         \item the expansion of HOT SAX to multivariate time series through HOT
+ %             MSAX
+ %     \end{itemize}
+ % \end{frame}
 
 \subsection*{SAX and MSAX}
 
@@ -77,19 +78,19 @@
             \includegraphics[height=0.8\textheight]{sax_graph}
         \end{minipage}\hfill
         \begin{minipage}[c]{0.17\textwidth}
-            \caption{ECG with SAX, $w = 18$, $a=4$)}
+            \caption{ECG with SAX, $w = 18$, $a=4$}
         \end{minipage}
     \end{figure}
 \end{frame}
 
-% TODO: fix this graph, it's hard to read
+% TODO: chuck this out
 \begin{frame}{MSAX -- Step (3)}
     \begin{figure}
         \begin{minipage}[c]{0.8\textwidth}
             \includegraphics[height=0.8\textheight]{msax}
         \end{minipage}\hfill
         \begin{minipage}[c]{0.17\textwidth}
-            \caption{ECG with MSAX, $w = 18$, $a=4$)}
+            \caption{ECG with MSAX, $w = 18$, $a=4$}
         \end{minipage}
     \end{figure}
 \end{frame}
@@ -106,10 +107,10 @@
 
 \subsection*{HOT SAX and HOT MSAX}
 
+% TODO: add some points from next slide
 \begin{frame}{HOT SAX and HOT MSAX -- Overview}
     \begin{itemize}
         \item HOT SAX: find discords in SAX-represented time series
-        \item speeds up the ``brute force" approach
         \item classifies time series segments into ``discord" and
             ``non-discord"
         \item HOT MSAX: uses MSAX instead of SAX
@@ -117,6 +118,7 @@
     \end{itemize}
 \end{frame}
 
+% TODO: move to appendix
 \begin{frame}{HOT SAX and HOT MSAX -- Heuristic}
     \begin{itemize}
         \item two parameters: $m$ and $k$
@@ -128,7 +130,7 @@
         \item speed up discord discovery:
             \begin{itemize}[label=--]
                 \item consider rarest segments first
-                \item consider segments similar to the rarest first
+                \item consider similar segments together
             \end{itemize}
     \end{itemize}
 \end{frame}
@@ -139,7 +141,7 @@
     \begin{enumerate}[label=(\arabic*)]
         \item perform HOT SAX and HOT MSAX for many parameter combinations for
             all ECGs in the MIT-BIH database
-        \item find recall for each combination
+        \item find recall, precision for each combination
         \item set recall threshold of 95\%, then sort by precision
         \item choose top 10 of those parameters for each method
         \item choose best parameters for each method using box plot, 

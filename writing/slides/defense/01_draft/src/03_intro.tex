@@ -6,6 +6,7 @@
 
 \subsection*{Introduction}
 
+% TODO: merge first two slides
 \begin{frame}{Introduction}
     \begin{itemize}
         \item ischemic heart disease (IHD) makes up 16\% of global deaths but
@@ -13,11 +14,11 @@
             \mycite{who2020}
         \item manual ECG analysis is slow and error-prone, computers can help
             \mynote{requires years of training and practice to become good at}
-        \item long ECGs are problematic even for computers $\rightarrow$
+        \item long ECGs are problematic even for computers →
             simplification through representation
             \mynote{computers and programs can be faster and more accurate than
             humans}
-        \item such representations should be simple, but still correspond to
+        \item such representations should be simpler, but still correspond to
             the original data
     \end{itemize}
 \end{frame}
@@ -65,6 +66,8 @@
         \item HOT SAX can be used to classify ECG segments into discord and
             non-discord
         \item this work uses HOT MSAX to combine MSAX and HOT SAX
+        \item effectiveness of the methods will be judged by recall and
+            precision
     \end{itemize}
 \end{frame}
 
@@ -72,13 +75,24 @@
 
 \begin{frame}{Research Questions \& Hypothesis}
     \begin{itemize}
-        \item effectiveness of the methods will be judged by recall and
-            precision
-        \item using the MIT-BIH ECG database, determine the parameters
-            maximizing HOT SAX and HOT MSAX recall
-        \item compare recall value for best parameters
-        \item HOT MSAX should have higher recall than HOT SAX if both use their 
-            best parameters
+        \item Using the MIT-BIH ECG database, what parameters
+            maximize HOT SAX and HOT MSAX recall?
+        \item Which is better: optimal HOT SAX or optimal HOT MSAX?
+    \end{itemize}
+    \begin{exampleblock}{}
+    HOT MSAX should have higher recall than HOT SAX if both use their 
+    best parameters
+    \end{exampleblock}
+\end{frame}
+
+% TODO: put into conclusion
+\begin{frame}{Novel Contributions}
+    \begin{itemize}
+        \item application of MSAX to ECG discord discovery and medical data in
+            general
+        \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
+        \item the expansion of HOT SAX to multivariate time series through HOT
+            MSAX
     \end{itemize}
 \end{frame}
 
