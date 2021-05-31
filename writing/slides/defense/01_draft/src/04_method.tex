@@ -1,49 +1,8 @@
 \documentclass[../01_main.tex]{subfiles}
 
-% TODO: insert a "more information button into each slide to make getting to
-% appendix simple"
-
 \begin{document}
 
 \section{Methods}
-
-\subsection*{Overview}
-
-% TODO: chuck this out
-\begin{frame}{Method Background}
-    \begin{itemize}
-        \item \citeauthor*{lin2003} (\citeyear{lin2003}):\\
-            Symbolic Aggregate Approximation (SAX): simplified, symbolic
-            representation
-            \mycite{lin2003}
-            \mynote{ecg as letters that mean same thing as original}
-            \mynote{guaranteed to behave like the original data}
-            \mynote{works on univariate time series}
-            \mynote{has been used on ECGs}
-            \mycite{zhang2019}
-        \item \citeauthor*{keogh2005} (\citeyear{keogh2005}):\\
-            Heuristically Ordered Time series using SAX (HOT SAX): discord
-            discovery algorithm using SAX\mycite{keogh2005}
-            \mynote{uses sax representation to make the finding of discords
-            easier}
-            \mynote{can use MSAX just as well}
-        \item \citeauthor*{anacleto2020} (\citeyear{anacleto2020}):\\
-            Multivariate SAX (MSAX): expands SAX to multivariate time series
-            \mycite{anacleto2020}
-            \mynote{takes the correlation between ecg leads into account}
-            \mynote{cov mat: covariance between each lead and variance on diag}
-    \end{itemize}
-\end{frame}
-
- % \begin{frame}{Novel Contributions}
- %     \begin{itemize}
- %         \item application of MSAX to ECG discord discovery and medical data in
- %             general
- %         \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
- %         \item the expansion of HOT SAX to multivariate time series through HOT
- %             MSAX
- %     \end{itemize}
- % \end{frame}
 
 \subsection*{SAX and MSAX}
 
@@ -55,9 +14,12 @@
         univariate time series, e.g.& multivariate time series, e.g.      \\
              a single ECG lead      & multiple ECG leads (whole ECG)\\\hline
         \multicolumn{2}{c}{Steps}                                   \\\hline
-        (1) univariate z-normalization  & (1) multivariate z-normalization  \\
-        (2) PAA dimension reduction ($w$) & (2) PAA dimension reduction ($w$) \\
-        (3) SAX discretization ($a$)    & (3) SAX discretization ($a$)  \\
+        \hyperlink{s-u-norm}{(1) univariate z-normalization}
+            & \hyperlink{s-m-norm}{(1) multivariate z-normalization} \\
+        \hyperlink{s-paa}{(2) PAA dimension reduction ($w$)}
+            & \hyperlink{s-paa}{(2) PAA dimension reduction ($w$)} \\
+        \hyperlink{s-sax-disc}{(3) SAX discretization ($a$)} 
+            & \hyperlink{s-sax-disc}{(3) SAX discretization ($a$)} \\
     \end{tabular}
 \end{frame}
 
@@ -83,55 +45,28 @@
     \end{figure}
 \end{frame}
 
-% TODO: chuck this out
-\begin{frame}{MSAX -- Step (3)}
-    \begin{figure}
-        \begin{minipage}[c]{0.8\textwidth}
-            \includegraphics[height=0.8\textheight]{msax}
-        \end{minipage}\hfill
-        \begin{minipage}[c]{0.17\textwidth}
-            \caption{ECG with MSAX, $w = 18$, $a=4$}
-        \end{minipage}
-    \end{figure}
-\end{frame}
-
 \begin{frame}{SAX and MSAX -- Distance Measure}
     \begin{itemize}
-        \item needed to compare two SAX/MSAX segments
+        \item \hyperlink{s-mindist}{needed to compare two SAX/MSAX segments}
         \item sum of distances between symbols
         \item symbol distance is based on difference of breakpoints
-        \item lower-bounds Euclidean Distance, i.e. corresponds to ``real" 
-            distance
+        \item \hyperlink{s-lb}{lower-bounds Euclidean Distance, i.e. 
+            corresponds to ``real" distance}
     \end{itemize}
 \end{frame}
 
 \subsection*{HOT SAX and HOT MSAX}
 
-% TODO: add some points from next slide
 \begin{frame}{HOT SAX and HOT MSAX -- Overview}
     \begin{itemize}
-        \item HOT SAX: find discords in SAX-represented time series
+        \item \hyperlink{s-hs}{HOT SAX: find discords in SAX-represented time 
+            series}
         \item classifies time series segments into ``discord" and
             ``non-discord"
         \item HOT MSAX: uses MSAX instead of SAX
         \item HOT MSAX can work with multivariate time series
-    \end{itemize}
-\end{frame}
-
-% TODO: move to appendix
-\begin{frame}{HOT SAX and HOT MSAX -- Heuristic}
-    \begin{itemize}
-        \item two parameters: $m$ and $k$
-        \item two assumptions:
-            \begin{itemize}[label=--]
-                \item time series discords are rare
-                \item segments similar to discords may also be discords
-            \end{itemize}
-        \item speed up discord discovery:
-            \begin{itemize}[label=--]
-                \item consider rarest segments first
-                \item consider similar segments together
-            \end{itemize}
+        \item \hyperlink{s-hs}{simple heuristic}
+        \item only two parameters
     \end{itemize}
 \end{frame}
 
@@ -141,7 +76,7 @@
     \begin{enumerate}[label=(\arabic*)]
         \item perform HOT SAX and HOT MSAX for many parameter combinations for
             all ECGs in the MIT-BIH database
-        \item find recall, precision for each combination
+        \item \hyperlink{s-stats}{find recall, precision for each combination}
         \item set recall threshold of 95\%, then sort by precision
         \item choose top 10 of those parameters for each method
         \item choose best parameters for each method using box plot, 

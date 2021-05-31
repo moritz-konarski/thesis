@@ -9,7 +9,7 @@
 \begin{frame}{Overview of Results}
     \begin{table}
         \caption{Coarse Overview of Results. Shown are sets of parameters for
-        each method that satisfy the recall threshold of 95\%.}
+        each method that satisfy the recall threshold of 95\%.\mkbtn{s-params}}
     \centering
     \begin{NiceTabular}{| c | c | r |}\hline                                    
         \rowcolor{tablegray}                                                    
@@ -43,16 +43,14 @@
 \end{frame}
 
 \begin{frame}[plain]
-    % TODO: fix this
     \includegraphics[width=\textwidth]{trecall_boxplot}
 \end{frame}
 
-% TODO: write down correlation coefficients
 \begin{frame}{Comparing Best Parameter Sets -- Recall}
     \begin{table}
         \centering
         \caption{Statistical measures for recall of optimal
-        parameter sets. Best overall values highlighted in bold.}
+        parameter sets. Best overall values highlighted in bold.\mkbtn{s-params}}
         \vspace{0.5em}
         \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r |}\hline
             \rowcolor{tablegray}
@@ -62,57 +60,6 @@
             MSAX    & 0.033    & 99.13\%    & \textbf{6}     \\\hline
         \end{tabular}
     \end{table}
-\end{frame}
-
-\end{document}
-
-\subsection*{Preliminary Results}
-
-\begin{frame}{Preliminary Results}
-    \begin{itemize}
-        \item compared SAX and MSAX using the top $k=80$ discords (816 sets of
-            discords total)
-        \item analyzed the relevance of results with recall (sensitivity)
-            \mynote{how many relevant items are selected}
-            \mynote{recall = true positive / (true positive + false negative)}
-            \mynote{this is done because for medical things it is more useful
-            to look at a couple too many segments than not enough}
-        \item recall for MSAX is higher compared to SAX
-        \item if SAX is applied to two leads and the results combined, it
-            slightly outperforms MSAX
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[plain]
-    \begin{figure}
-        \centering
-        \fbox{\includegraphics[width=\textwidth]{box_single_sax}}
-        \caption{Boxplot comparing Recall for MSAX and single-lead SAX}
-    \end{figure}
-    \mynote{msax: average = 17.5\%}
-    \mynote{sax: average = 6.4\%}
-\end{frame}
-
-\begin{frame}[plain]
-    \begin{figure}
-        \centering
-        \fbox{\includegraphics[width=\textwidth]{box_double_sax}}
-        \caption{Boxplot comparing Recall for MSAX and dual-lead SAX}
-    \end{figure}
-    \mynote{msax: average = 17.5\%}
-    \mynote{sax: average = 18.5\%}
-\end{frame}
-
-\subsection*{Remaining Tasks}
-
-\begin{frame}{Remaining Tasks}
-    \begin{itemize}
-        \item perform tests for statistical significance of the result
-            \mynote{for example t-test, biserieal correlation}
-        \item analyze the outliers visible in the boxplots
-        \item compute more sets of discords with different parameters
-        \item explore the influence of the parameters on the result
-    \end{itemize}
 \end{frame}
 
 \end{document}

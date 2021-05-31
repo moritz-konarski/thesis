@@ -6,68 +6,34 @@
 
 \subsection*{Introduction}
 
-% TODO: merge first two slides
 \begin{frame}{Introduction}
     \begin{itemize}
-        \item ischemic heart disease (IHD) makes up 16\% of global deaths but
-            can be diagnosed using an electrocardiogram (ECG or EKG) 
+        \item ischemic heart disease causes 16\% of global deaths, 
+            can be diagnosed using electrocardiogram (ECG or EKG) 
             \mycite{who2020}
-        \item manual ECG analysis is slow and error-prone, computers can help
+        \item \hyperlink{s-ann-ecg}{an ECG records the heart's electrical 
+            activity}
+        \item manual (by cardiologist) ECG analysis is slow and error-prone →
+            computers can help
             \mynote{requires years of training and practice to become good at}
         \item long ECGs are problematic even for computers →
-            simplification through representation
+            representation needed
             \mynote{computers and programs can be faster and more accurate than
             humans}
-        \item such representations should be simpler, but still correspond to
-            the original data
+        \item representations are simpler and still correspond to raw data
     \end{itemize}
-\end{frame}
-
-\begin{frame}{What is an ECG?}
-    \begin{columns}
-        \begin{column}{0.60\textwidth}
-            \begin{figure}
-                \includegraphics[width=\textwidth,
-                height=0.73\textheight]{03_ecg}\vspace{-1.1em}
-                \caption{ECG of one heartbeat.}
-            \end{figure}
-            \mynote{P wave: blood entering the heart}
-            \mynote{QRS complex: heart contraction pumping blood}
-            \mynote{T: return of ventricle to polarized state}
-            \mynote{U: present in 25\%}
-        \end{column}
-        \begin{column}{0.40\textwidth}
-            \begin{itemize}[leftmargin=0pt]
-                \item records the heart's electrical activity 
-                    \mynote{muscle contractions caused by electric pulses}
-                    \mynote{electric pulse can be measured on the skin}
-                \item contains up to 12 leads (simultaneous measurements)
-                    \mycite{moody1992}
-                    \mynote{electrodes form leads (need 2 to measure anything)}
-                    \mynote{most types of heart disease can be detected}
-                    \mynote{diagnosis and analysis is performed by trained
-                    cardiologists}
-                    \mynote{\textbf{datasets available online; contain 2 or 
-                    more leads (the most significant ones)}}
-                    \mynote{\textbf{I will be using online datasets for my
-                    analysis}}
-                    \mynote{heart diseases are some of the most deadly ones,
-                    thus ECG are really important}
-            \end{itemize}
-        \end{column}
-    \end{columns}
 \end{frame}
 
 \begin{frame}{Representation and Classification}
     \begin{itemize}
-        \item for simplification, time series can be represented, e.g. as SAX
-            or MSAX
-        \item then, the representation can be analyzed instead of the raw data
-        \item HOT SAX can be used to classify ECG segments into discord and
-            non-discord
-        \item this work uses HOT MSAX to combine MSAX and HOT SAX
-        \item effectiveness of the methods will be judged by recall and
-            precision
+        \item \hyperlink{s-ts}{time series} can be represented using 
+            \hyperlink{s-method-bg}{SAX, MSAX}
+        \item representation can be analyzed instead of raw data
+        \item HOT SAX can be used to classify ECG segments as ``discord", 
+            ``non-discord"
+        \item this work combines MSAX and HOT SAX into HOT MSAX
+        \item \hyperlink{s-stats}{effectiveness of methods judged by recall
+            and precision}
     \end{itemize}
 \end{frame}
 
@@ -83,17 +49,6 @@
     HOT MSAX should have higher recall than HOT SAX if both use their 
     best parameters
     \end{exampleblock}
-\end{frame}
-
-% TODO: put into conclusion
-\begin{frame}{Novel Contributions}
-    \begin{itemize}
-        \item application of MSAX to ECG discord discovery and medical data in
-            general
-        \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
-        \item the expansion of HOT SAX to multivariate time series through HOT
-            MSAX
-    \end{itemize}
 \end{frame}
 
 \end{document}

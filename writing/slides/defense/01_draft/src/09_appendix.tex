@@ -1,0 +1,466 @@
+\documentclass[../01_main.tex]{subfiles}
+
+\begin{document}
+
+\section{Appendix}
+
+\begin{frame}{}
+    \vfill
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+        \usebeamerfont{title}Appendix\par%
+    \end{beamercolorbox}
+    \vfill
+\end{frame}
+
+\begin{frame}{Annotated ECG Graph}
+    \label{s-ann-ecg}
+    \centering
+    \includegraphics[width=\textwidth,height=0.85\textheight]{03_ecg_ann}
+\end{frame}
+
+\begin{frame}{Background on Methods}
+    \label{s-method-bg}
+    \begin{itemize}
+        \item \citeauthor*{lin2003} (\citeyear{lin2003}):\\
+            Symbolic Aggregate Approximation (SAX): simplified, symbolic
+            representation
+            \mycite{lin2003}
+            \mycite{zhang2019}
+        \item \citeauthor*{keogh2005} (\citeyear{keogh2005}):\\
+            Heuristically Ordered Time series using SAX (HOT SAX): discord
+            discovery algorithm using SAX\mycite{keogh2005}
+        \item \citeauthor*{anacleto2020} (\citeyear{anacleto2020}):\\
+            Multivariate SAX (MSAX): expands SAX to multivariate time series
+            \mycite{anacleto2020}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Time Series}
+    \label{s-ts}
+    Time series after \cite{anacleto2020}:
+    \begin{equation}\nonumber
+        \left\{ \mathbf{v} [t] \right\}_{t \in \{1, \ldots, T\}}
+    \end{equation}
+    is a $n$-variate time series where for each time point $t$,
+    \begin{equation}\nonumber
+        \mathbf{v} [t] = \left(v_1[t], \ldots, v_n[t] \right)^T
+    \end{equation}
+    are the values. $T$ is length of time series, $n$ is the number of values 
+    per moment
+\end{frame}
+
+\begin{frame}{Univariate Normalization}
+    \label{s-u-norm}
+    Sample mean:
+    \begin{equation}\nonumber
+        \overline{x} = \frac{1}{T} \sum_{t=1}^T{\mathbf{v}[t]}.
+    \end{equation}
+    Sample standard deviation:
+    \begin{equation}\nonumber
+        s = \sqrt{\frac{1}{T-1} \sum_{t=1}^T{\left(\mathbf{v}[t] - \overline{x} 
+        \right)^2}}
+    \end{equation}
+    Normalization:
+    \begin{equation}\nonumber
+        \mathbf{v}[t] = \frac{\mathbf{v}[t] - \overline{x}}{s}, \qquad \forall 
+        t \in \{1,\ldots,T\}.
+    \end{equation}
+\end{frame}
+
+\begin{frame}{Multivariate Normalization I}
+    \label{s-m-norm}
+    Mean vector:
+    \begin{equation}\nonumber
+        E(\mathbf{V}[t]) = \vec E =
+        \begin{bmatrix}
+            \text{mean}(V_1[t]) \\
+            \vdots \\
+            \text{mean}(V_n[t])
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \frac{1}{T} \sum_{t=1}^T{V_1[t]} \\
+            \vdots \\
+            \frac{1}{T} \sum_{t=1}^T{V_n[t]} \\
+        \end{bmatrix}.
+    \end{equation}
+    Covariance matrix:
+    \begin{equation}\nonumber
+        \text{Var}(\mathbf{V}[t]) =
+        \Sigma_{n\times n}
+        =
+        \begin{bmatrix} 
+            \text{cov}(V_1, V_1) & \dots  & \text{cov}(V_1, V_n) \\
+            \vdots               & \ddots & \vdots \\
+            \text{cov}(V_n, V_1) & \dots  & \text{cov}(V_n, V_n) \\ 
+        \end{bmatrix}.
+    \end{equation}
+\end{frame}
+
+\begin{frame}{Multivariate Normalization II}
+    Covariance Function:
+    \begin{equation}\nonumber
+        \text{cov}(V_i[t], V_j[t]) = E\Big( \big[V_i[t] - E(V_i[t])\big] \cdot
+            \big[V_j[t] - E(V_j[t])\big] \Big)
+    \end{equation}
+    Normalization following \cite{anacleto2020}
+    \begin{equation}\nonumber
+        \mathbf{V}[t] = \left(\Sigma_{n\times n}\right)^{-1/2} 
+        \left(\mathbf{V}[t] - \vec E\right).
+    \end{equation}
+\end{frame}
+
+\begin{frame}{Piecewise Aggregate Approximation}
+    \label{s-paa}
+    Following \cite{lin2003}, PAA is calculated as
+    \begin{equation}\nonumber
+        \overline{\mathbf{v}}[t] = \frac{w}{T} \sum_{j
+        = \frac{n}{w}(t-1)+1}^{\frac{n}{w}t}{\mathbf{v}[t]},\qquad \forall t \in
+        \{1,\ldots,w\}.
+    \end{equation}
+    Performs smoothing and dimension reduction.
+\end{frame}
+
+\begin{frame}{SAX Discretization I}
+    \label{s-sax-disc}
+    Idea: create $a$ equiprobable symbols for discretization.\\
+    Action: split $\mathcal{N}(0, 1)$ into $a$ segments, use the resulting
+    breakpoints. Breakpoints are $B = \beta_1,\ldots,\beta_{a-1}$. The area 
+    under the  normal curve $\mathcal{N}(0,1)$ (i.e. the probability) between 
+    two consecutive segments $\beta_i$ and $\beta_{i+1}=1/a$.
+\end{frame}
+
+\begin{frame}{SAX Discretization II}
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{Breakpoint values for numbers of breakpoints $a$ from 3 to 6.   
+    Table contents are quoted from \cite{lin2003}.}                           
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r |}\hline       
+        \rowcolor{tablegray}                                                    
+        {\centering\diagbox{$\beta_i$}{$a$}}& \multicolumn{1}{c|}{3} &          
+        \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{5}  &                      
+        \multicolumn{1}{c|}{6}   \\\hline                                       
+        $\beta_1$   & -0.43 & -0.67  & -0.84 & -0.97    \\\hline                
+        $\beta_2$   &  0.43 &   0  & -0.25 & -0.43    \\\hline                  
+        $\beta_3$   & \multicolumn{1}{c|}{---} &  0.67  &  0.25 &   0    \\\hline
+        $\beta_4$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&       
+        0.84 &  0.43    \\\hline                                                
+        $\beta_5$   & \multicolumn{1}{c|}{---} &\multicolumn{1}{c|}{---}&       
+        \multicolumn{1}{c|}{---}&  0.97    \\\hline                             
+    \end{tabular}                                                               
+\end{table}
+\end{frame}
+
+\begin{frame}{SAX Discretization III}
+    \centering
+    \includegraphics[height=0.85\textheight]{msax}
+\end{frame}
+
+\begin{frame}{SAX/MSAX Distance Measure I}
+    \label{s-mindist}
+    SAX distance \cite{lin2003}:
+    \begin{equation}\nonumber
+MINDIST\left(\widehat{\mathbf{u}}[t], \widehat{\mathbf{v}}[t] \right) \equiv
+    \sqrt{\frac{T}{w}}
+    \sqrt{\sum_{t=1}^{w}{\left(dist(\widehat{\mathbf{u}}[t],
+    \widehat{\mathbf{v}}[t]) \right)^2}}.
+    \end{equation}
+    MSAX distance \cite{anacleto2020}:
+    \begin{equation}\nonumber
+    MINDIST\_MSAX
+        \left(
+            \widehat{\mathbf{U}}[t], \widehat{\mathbf{V}}[t]
+        \right)
+    \equiv
+    \sqrt{\frac{T}{w}}
+    \sqrt{
+        \sum_{t=1}^{w}{
+            \left(
+                \sum_{i=1}^{n}{
+                    \left(
+                        dist(\widehat{U_i}[t],\widehat{V_i}[t])
+                    \right)^2
+                }
+            \right)
+        }
+    }.
+\end{equation}
+\end{frame}
+
+\begin{frame}{SAX/MSAX Distance Measure II}
+    $dist$ function \cite{lin2003}, is difference between breakpoints:
+    \begin{equation}\nonumber
+        \text{cell}_{r,c} =
+        \left\{ \,
+            \begin{aligned}
+                0,
+                    &\quad \text{if}\,\,\, |r-c| \le 1 \\
+                \beta_{\text{max}(r,c)-1} - \beta_{\text{min}(r,c)},
+                    &\quad \text{otherwise}
+            \end{aligned}
+        \right.
+    \end{equation}
+\end{frame}
+
+\begin{frame}{SAX/MSAX Distance Measure III}
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{A table for the $dist$ function for $a=5$. Each cell               
+    displays the distance between the symbols denoting its row and column.}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | r | r | r | r | r |}\hline   
+        \rowcolor{tablegray} & \multicolumn{1}{c|}{a} & \multicolumn{1}{c|}{b}  
+            & \multicolumn{1}{c|}{c} & \multicolumn{1}{c|}{d} &                 
+            \multicolumn{1}{c|}{e} \\\hline                                     
+        a & 0       & 0        &0.59     &1.09     &1.68  \\\hline              
+        b & 0       & 0        &0        &0.51     &1.09  \\\hline              
+        c & 0.59    & 0        &0        &0        &0.59  \\\hline              
+        d & 1.09    & 0.51     &0        &0        &0     \\\hline              
+        e & 1.68    & 1.09     &0.59     &0        &0     \\\hline              
+    \end{tabular}                                                               
+\end{table}
+\end{frame}
+
+\begin{frame}{SAX/MSAX Distance Measure IV}
+    \label{s-lb}
+    Lower-bounding: infimum from set theory: largest value in set $S$ smaller 
+    than all elements of a set $V \in S$.\\
+    For SAX, MSAX: MINDIST is smaller than Euclidean Distance (``true"
+    distance), thus it is representative
+\end{frame}
+
+\begin{frame}{HOT SAX/HOT MSAX Heuristic I}
+    \label{s-hs}
+    \begin{itemize}
+        \item two parameters: $m$ and $k$
+        \item two assumptions:
+            \begin{itemize}[label=--]
+                \item time series discords are rare
+                \item segments similar to discords may also be discords
+            \end{itemize}
+        \item speed up discord discovery:
+            \begin{itemize}[label=--]
+                \item consider rarest segments first
+                \item consider similar segments together
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{HOT SAX/HOT MSAX Heuristic II}
+    \centering                                                                  
+    \includegraphics[height=0.85\textheight]{fig4}
+\end{frame}
+
+\begin{frame}{Statistical Analysis I}
+    \label{s-stats}
+\begin{table}[t]
+    \centering
+    \caption{Contingency table showing the relationship between detected
+    discords and actual annotated values.}
+    \begin{tabular}{|>{\columncolor{tablegray}}c | c | c |}\hline
+        \rowcolor{tablegray}
+        {\centering\diagbox{Actual}{Assigned}}& Discord Detected & Non-Discord
+        Detected \\\hline
+        Is Discord      & True Positive     & False Negative \\\hline
+        Is Non-Discord  & False Positive    & True Negative  \\\hline
+    \end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Statistical Analysis II}
+\begin{equation}\nonumber                                                       
+    \text{Recall} = \frac{\text{True Positive}}{\text{True Positive}            
+    + \text{False Negative}},                                                   
+\end{equation}                                                                  
+
+\begin{equation}\nonumber                                                       
+    \text{Accuracy} = \frac{\text{True Positive} + \text{True Negative}}        
+        {\text{True Positive} + \text{True Negative} + \text{False Positive} +  
+        \text{False Negative}},                                                 
+\end{equation}                                                                  
+
+\begin{equation}\nonumber                                                       
+    \text{Precision} = \frac{\text{True Positive}}{\text{True Positive}         
+    + \text{False Positive}}.                                                   
+\end{equation}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- Dataset 1}
+    \label{s-params}
+    Dataset 1 failed, thus dataset 2 was made
+    \footnotesize
+\begin{table}[H]
+    \centering
+    \caption{Table of the methods used for dataset 1, the parameters of each
+    method, the rationale behind the parameter choice, and the values the
+    parameter takes are shown.}
+    \label{09:tab:ds1-param}
+    \begin{tabular}{| c | c | c | c |}\hline
+        \rowcolor{tablegray}
+        Method & Parameter & Rationale & Values \\\hline
+        \multirow{2}{*}{SAX/MSAX} & $w$ & arbitrary factors of 360 &
+            2,3,4,5,12,20,30,40,60 \\\cline{2-4}
+        & $a$ & arbitrary, 2$\le a \le$25 & 4,5,6,7,8,9,10,12,14,17,20
+        \\\hline
+        \multirow{4}{*}{HOT SAX/MSAX} & \multirow{2}{*}{$k$} & \multirow{2}{*}
+        {arbitrary} & -1,25,50,100, \\
+            & & & 150,200,300,500 \\\cline{2-4}
+            & \multirow{2}{*}{$m$} & arbitrary factors of 360
+            & \multirow{2}{*}{2,3,4,5,12,20,30,40,60} \\
+            & & and of $w$ &\\\hline
+    \end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- Dataset 1}
+\begin{table}[H]
+    \centering
+    \caption{Results of the analysis of dataset 1. The total number of
+    parameter sets and the number and proportion of
+    parameter sets in dataset 1 that fulfill the analysis conditions are
+    presented for each method.}
+    \label{09:tab:ds1-results}
+    \begin{NiceTabular}{| c | c | r | r |}\hline
+        \cellcolor{tablegray} & \cellcolor{tablegray}
+            &\multicolumn{2}{c|}{\cellcolor{tablegray}Sets Satisfying Analysis
+            Conditions}
+            \\\hhline{|>{\arrayrulecolor{tablegray}}->
+                {\arrayrulecolor{tablegray}}->{\arrayrulecolor{black}}->
+                {\arrayrulecolor{black}}|-|}
+        \multirow{-2}{*}{\cellcolor{tablegray}Method} & \multirow{-2}{*}
+            {\cellcolor{tablegray}Total Sets} & \multicolumn{1}{c|}
+            {\cellcolor{tablegray}recall $\ge$95\%} & \multicolumn{1}{c|}
+            {\cellcolor{tablegray}recall $\ge$95\% and $m \neq w$} \\\hline
+        S-SAX   & \multirow{3}{*}{2,640} & 3  (0.1\%)   & 0 (0\%)
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
+            {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
+        D-SAX   &  & 13 (0.5\%)   & 0 (0\%)
+        \\\hhline{|>{\arrayrulecolor{black}}->{\arrayrulecolor{white}}->
+            {\arrayrulecolor{black}}->{\arrayrulecolor{black}}|-|}
+        MSAX    &  & 23 (0.9\%)   & 3 (0.1\%) \\\hline
+    \end{NiceTabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- Dataset 2}
+    \footnotesize
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{Table of the methods used for dataset 2.}
+    \begin{tabular}{| c | c | c | c |}\hline                                    
+        \rowcolor{tablegray} Method & Parameter & Rationale & Values \\\hline   
+        \multirow{5}{*}{SAX/MSAX} & \multirow{3}{*}{$w$} &                      
+        \multirow{3}{*}{factors of 360}  & 2,3,4,5,6,8,9,10,12,15,  \\          
+        & & & 18,20,24,30,36,40,45, \\                                          
+          & & & 60,72,90,120,180,360 \\\cline{2-4}                              
+           & \multirow{2}{*}{$a$} & 2$\le a \le$25, & \multirow{2}{*}           
+           {$\overline{2,\ldots,25}$} \\                                        
+          & & length of alphabet & \\\hline                                     
+        \multirow{5}{*}{HOT SAX/MSAX}                                           
+          & \multirow{2}{*}{$k$} & \multirow{2}{*}{arbitrary} &                 
+            -1,25,50,75,100,            \\                                      
+          & & & 150,175,200,300  \\\cline{2-4}                                  
+           & \multirow{3}{*}{$m$}    & \multirow{3}{*}{same as $w$} &           
+            2,3,4,5,6,8,9,10,12,15,  \\                                         
+        & & & 18,20,24,30,36,40,45, \\                                          
+          & & & 60,72,90,120,180,360 \\\hline                                   
+    \end{tabular}                                                               
+    \end{table}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- S-SAX}
+    \scriptsize
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{Ranking of top 10 most precise S-SAX parameter combinations.}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}
+        \hline                                                                  
+        \rowcolor{tablegray}                                                    
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)&   
+            Accuracy (\%)& Precision (\%)\\\hline                               
+        1& -1 &  40 &  40   &  19& 95.21& 37.46&35.94  \\\hline                 
+        2& -1 &  24 &  24   &  24& 95.19& 37.57&35.93  \\\hline                 
+        3& -1 &  30 &  30   &  22& 95.37& 37.46&35.93  \\\hline                 
+        4& -1 &  36 &  36   &  20& 95.09& 37.41&35.92  \\\hline                 
+        5& -1 &  45 &  45   &  18& 95.24& 37.33&35.89  \\\hline                 
+        6& -1 &  24 &  24   &  25& 95.74& 37.32&35.88  \\\hline                 
+        7& -1 &  72 &  72   &  15& 95.02& 36.86&35.87  \\\hline                 
+        \cellcolor{gray}\textbf{8}& -1 &  36 &  36   &  21& 95.92& 37.06&35.86  \\\hline                 
+        9& -1 &  30 &  30   &  23& 95.72& 37.17&35.86  \\\hline                 
+        10& -1 & 120 & 120  &  13& 95.13& 36.51&35.85  \\\hline                 
+    \end{tabular}                                                               
+\end{table} 
+\end{frame}
+
+\begin{frame}[plain]
+    \centering
+    \includegraphics[width=\textwidth]{tssax_boxplot}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- D-SAX}
+    \scriptsize
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{Ranking of top 10 most precise D-SAX parameter combinations.}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}
+        \hline
+        \rowcolor{tablegray}                                                    
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)&   
+            Accuracy (\%)& Precision (\%)\\\hline                               
+        1 & -1 & 12 & 12 & 22 & 95.28& 41.91& 36.56\\\hline                     
+        2 & -1 & 10 & 10 & 25 & 95.18& 41.99& 36.53\\\hline                     
+        3 & -1 & 15 & 15 & 19 & 95.14& 41.70& 36.46\\\hline                     
+        4 & -1 & 12 & 12 & 23 & 95.18& 41.00& 36.34\\\hline                     
+        5 & -1 & 40 & 40 & 12 & 95.08& 39.64& 36.29\\\hline                     
+        6 & -1 & 15 & 15 & 20 & 96.11& 40.31& 36.27\\\hline                     
+        \cellcolor{gray}\textbf{7} & -1 & 12 & 12 & 24 & 97.04& 40.16& 36.26\\\hline                     
+        8 & -1 & 36 & 36 & 13 & 95.80& 38.93& 36.20\\\hline                     
+        9 & -1 & 20 & 20 & 17 & 95.87& 39.82& 36.19\\\hline                     
+       10 & -1 & 30 & 30 & 14 & 96.09& 39.32& 36.18\\\hline                     
+    \end{tabular}                                                               
+\end{table}
+\end{frame}
+
+\begin{frame}[plain]
+    \centering
+    \includegraphics[width=\textwidth]{tdsax_boxplot}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- MSAX}
+    \scriptsize
+\begin{table}[H]                                                                
+    \centering                                                                  
+    \caption{Ranking of top 10 most precise MSAX parameter combinations.}
+    \begin{tabular}{|>{\columncolor{tablegray}} c | r | r | r | r | r | r | r |}
+        \hline
+        \rowcolor{tablegray}
+            \diagbox{Rank}{Properties} & $k$ & $w$ & $m$ & $a$ & Recall (\%)&
+            Accuracy (\%)& Precision (\%)\\\hline
+            1 & -1 &  6 &  6 & 24 & 95.37& 40.68& 36.24\\\hline
+            2 & -1 & 12 & 12 & 16 & 95.10& 39.85& 36.24\\\hline
+            3 & -1 &  9 &  9 & 19 & 95.20& 39.70& 36.13\\\hline
+            4 & -1 & 10 & 10 & 18 & 95.89& 39.45& 36.12\\\hline
+            5 & -1 &  8 &  8 & 21 & 96.01& 39.53& 36.12\\\hline
+            6 & -1 &  6 &  6 & 25 & 96.02& 39.94& 36.12\\\hline
+            7 & -1 & 36 & 36 & 10 & 95.16& 38.47& 36.08\\\hline
+            \cellcolor{gray}\textbf{8} & -1 & 12 & 12 & 17 & 96.51& 38.89& 36.06\\\hline
+            9 & -1 & 30 & 30 & 11 & 95.49& 38.26& 36.03\\\hline
+           10 & -1 & 72 & 72 &  8 & 95.70& 37.74& 36.03\\\hline
+    \end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}[plain]
+    \centering
+    \includegraphics[width=\textwidth]{tmsax_boxplot}
+\end{frame}
+
+\begin{frame}{Finding Best Parameters -- Comparison}
+    Biserial Correlation Analysis was performed with the goal of identifying the
+    influence of the methods. It was found that:\\
+    S-SAX vs D-SAX: 0.06\\
+    S-SAX vs MSAX: 0.033\\
+    D-SAX vs MSAX: -0.04
+\end{frame}
+
+\end{document}

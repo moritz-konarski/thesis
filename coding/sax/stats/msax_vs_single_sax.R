@@ -156,7 +156,7 @@ for (i in ran) {
 iqr_rank <- data.frame(rank = ranks, iqr_val = iqrs, outliers = num_ol)
 iqr_rank <- iqr_rank[order(iqr_rank$iqr_val), ]
 
-tikz(file = "../../../writing/drafts/02_draft_05-08-21/graphics/tmsax_boxplot.tex",
+tikz(file = "../../../writing/slides/defense/01_draft/graphics/tmsax_boxplot.tex",
      width = plot_width,
      height = plot_height)
 boxplot(recall ~ as.factor(rank), 

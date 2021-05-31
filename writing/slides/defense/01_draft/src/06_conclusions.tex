@@ -4,31 +4,38 @@
 
 \section{Conclusion}
 
-% TODO: be more clear what is up
-% state what the hypothesis is when saying what was found
 \begin{frame}{Discussion}
     \begin{itemize}
-        \item no statistically significant difference in recall for the methods
-        \item[→] hypothesis cannot be supported
-        \item MSAX has both the smallest alphabet size and highest dimension
-            reduction
-        \item[→] this points to MSAX being more efficient in
-            achieving the same results 
-        \item \textcite{anacleto2020} showed similar performance for ECG
-            classification, supports this work's conclusion
+        \item no significant difference in recall for the methods
+        \item[→] hypothesis that HOT MSAX has higher recall than HOT SAX cannot 
+            be supported
+        \item MSAX has smallest alphabet size and highest dimension reduction
+        \item[→] MSAX may be more efficient in achieving same results as S-SAX,
+            D-SAX
+        \item \citeauthor*{anacleto2020} showed similar D-SAX vs MSAX 
+            performance which supports this work's conclusion
     \end{itemize}
 \end{frame}
 
-% TODO: mention they did MSAX, and phrase their conclusions as supporting
+\begin{frame}{Novel Contributions}
+    \begin{itemize}
+        \item application of MSAX to ECG discord discovery and medical data in
+            general
+        \item the HOT MSAX algorithm, a modification of HOT SAX that uses MSAX
+        \item the expansion of HOT SAX to multivariate time series through HOT
+            MSAX
+    \end{itemize}
+\end{frame}
+
 \begin{frame}{Conclusion}
     \begin{itemize}
-        \item could not demonstrate superiority of HOT MSAX for best parameters
-        \item contributed the HOT MSAX method to literature % FIXME
-        \item showed viability of a discord classifier for ECG analysis
-            % relativise this
-        \item in future research: different ECG data, different detection
-            criteria
-            % make sure to put who would do it; rewrite
+        \item best parameters for S-SAX, D-SAX, MSAX were found
+        \item could not demonstrate higher recall of HOT MSAX for best 
+            parameters
+        \item showed viability of a discord classifier to assist with ECG 
+            analysis
+        \item future research possibilities: use different ECG data, different 
+            detection criteria
     \end{itemize}
 \end{frame}
 
