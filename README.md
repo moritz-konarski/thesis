@@ -1,4 +1,4 @@
-# Senior Thesis Repository
+# Bachelor's Thesis Repository
 
 This repository contains the results of my Bachelor's thesis at the [American
 University of Central Asia][1]. I graduated on the 5th of June 2021 with
