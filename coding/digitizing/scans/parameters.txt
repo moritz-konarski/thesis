@@ -1,2 +1,0 @@
-Brightness: -100
-Contrast:     65
